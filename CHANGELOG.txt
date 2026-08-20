@@ -1,0 +1,8 @@
+Miracle-Ear Clinical Assistant v1.3.2
+July 29, 2026
+
+- Restored the original Miracle-Ear logo on the splash screen and page header.
+- Replaced the prior favicon with a simplified, thick-stroke ear icon.
+- Added favicon sizes optimized for 16, 24, 32, 48, and 64 pixels.
+- Updated the browser tab title to "Clinical Assistant".
+- Preserved all existing workflows, layout, saved outcomes, and autosave behavior.

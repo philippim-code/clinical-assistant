@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clinical Assistant</title>
+<meta name="theme-color" content="#008c95" />
+<meta name="application-name" content="Miracle-Ear Clinical Assistant" />
+<link rel="icon" href="assets/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png" />
+<link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="24x24" href="assets/favicon-24x24.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
+<link rel="apple-touch-icon" sizes="192x192" href="assets/icon-192.png" />
+<link rel="manifest" href="manifest.json" />
+<link rel="stylesheet" href="css/styles.css" />
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clinical Assistant">
+<meta name="theme-color" content="#ffffff">
+</head>
+<body>
+<div id="splash" class="splash"><div class="splash-card"><img src="assets/logo.png" class="splash-logo" alt="Miracle-Ear Logo"><div class="splash-title">Miracle-Ear</div><div class="splash-subtitle">Clinical Assistant <span data-app-version></span></div></div></div>
+<div class="header"><img src="assets/logo.png" class="logo" alt="Miracle-Ear Logo"><div><h1>Miracle-Ear</h1><h2>Clinical Assistant</h2></div></div>
+<div class="container">
+
+<div class="appbar">
+  <div class="appbar-left"><span class="status-dot"></span><span class="app-title-group"><span class="appbar-title">Miracle-Ear Clinical Assistant</span><span class="appbar-version">Version <span data-app-version></span></span></span><span id="autosaveStatus" class="autosave-status">Draft autosave ready.</span></div>
+  <div class="appbar-actions">
+    <button type="button" class="tiny ghost" onclick="showHelp()">Help</button>
+  </div>
+</div>
+
+<div class="warning">Only document what was actually completed. Do not check any test, service, or counseling item unless it was actually performed.</div>
+<div class="tabs"><button class="tab-btn active" onclick="showTab('home',this)">🏠 Home</button><button class="tab-btn" onclick="showTab('notes',this)">📝 Sycle Notes</button><button class="tab-btn" onclick="showTab('outcomes',this)">💾 Saved Outcomes</button><button class="tab-btn" onclick="showTab('tools',this)">🦻 Clinical Tools</button><button class="tab-btn" onclick="showTab('references',this)">📚 References</button><button class="tab-btn" onclick="showTab('settings',this)">⚙️ Settings</button><button class="tab-btn" data-tab="about" onclick="showTab('about',this)">ℹ️ About</button></div>
+<div id="home" class="tab-panel active">
+  <div class="section hero-panel">
+    <h3>Home Dashboard</h3>
+    <p class="muted">Start a new appointment, resume an unfinished appointment, or jump back into saved outcomes.</p>
+    <div class="dashboard-grid" id="dashboardCards"></div>
+  </div>
+  <div class="section">
+    <h3>New Appointment</h3>
+    <div class="appt-grid compact">
+      <div class="appt-card" onclick="startAppointment('hae')">HAE</div>
+      <div class="appt-card" onclick="startAppointment('aftercare')">Aftercare</div>
+      <div class="appt-card" onclick="startAppointment('delivery')">Delivery</div>
+      <div class="appt-card" onclick="startAppointment('retest')">Annual Retest</div>
+    </div>
+  </div>
+  <div class="section">
+    <h3>Recent Activity</h3>
+    <div id="homeRecent"><p class="muted">No saved activity yet.</p></div>
+  </div>
+</div>
+<div id="notes" class="tab-panel"><h3>Select Appointment Type</h3><div class="appt-grid"><div class="appt-card" onclick="loadAppointment('hae',this)">HAE</div><div class="appt-card" onclick="loadAppointment('aftercare',this)">Aftercare</div><div class="appt-card" onclick="loadAppointment('delivery',this)">Delivery</div><div class="appt-card" onclick="loadAppointment('retest',this)">Annual Retest</div></div><div class="section active-patient-panel"><h3>Current Patient / Quick Label</h3><div class="grid-2"><div><label class="inline-label">Patient label <span class="muted">(initials, first name, or appointment time)</span></label><input type="text" id="currentPatientLabel" placeholder="ex. 10:30 AM - J.S."></div><div><label class="inline-label">Optional reminder/status</label><input type="text" id="currentPatientReminder" placeholder="ex. Needs closeout, waiting on payment"></div></div><p class="muted">Used when saving to Saved Outcomes. Keep identifiers minimal if possible. Keep identifiers minimal if possible.</p></div><div class="layout"><div class="section" id="workflow"><h3>Workflow</h3><p>Select an appointment type above.</p></div><div><div class="section"><h3>Additional Details</h3><textarea id="details" placeholder="Add any extra details here..."></textarea></div><div class="section"><h3>Generated Note</h3><textarea id="output" readonly placeholder="Click Generate Note when finished..."></textarea><button class="success" onclick="generateNote()">✓ Generate & Copy Note</button><button class="primary" onclick="saveOutcome()">💾 Save Outcome</button><button class="danger-outline" onclick="clearAll()">Clear</button><div class="muted" id="copyStatus"></div></div></div></div></div>
+
+<div id="outcomes" class="tab-panel"><div class="section"><h3>Saved Outcomes</h3><p class="muted">Saved outcomes stay on this computer/browser using local storage. Use initials, first name, appointment time, or another minimal identifier if possible.</p><div class="grid-2"><div><label class="inline-label">Search Saved Outcomes</label><input type="text" id="outcomeSearch" placeholder="Search patient label, appointment type, reminder, or note..." oninput="renderOutcomes()"></div><div class="toolbar-actions"><button class="info" onclick="exportTodaysOutcomes()">Export Saved Outcomes</button><button class="success-outline" onclick="markAllOutcomesComplete()">Mark All Complete</button><button class="danger-outline" onclick="clearCompletedOutcomes()">Clear Completed</button><button class="danger-outline" onclick="clearAllOutcomes()">Clear All</button></div></div><div id="outcomeSummary" class="result-box">No saved outcomes yet.</div><div id="outcomeList" style="margin-top:14px;"><p>No saved outcomes yet.</p></div></div></div>
+<div id="tools" class="tab-panel"><div class="section"><h3>PTA Severity Calculator</h3><div class="grid-2"><div><label class="inline-label">Right Ear PTA</label><input type="number" id="toolRightPTA" placeholder="ex. 45" oninput="updateStandalonePTA()"></div><div><label class="inline-label">Left Ear PTA</label><input type="number" id="toolLeftPTA" placeholder="ex. 40" oninput="updateStandalonePTA()"></div></div><div class="result-box" id="toolPTAResult">Enter PTA values to see severity.</div><p class="muted">PTA guide: No Loss (&lt;25 dB), Mild (26–40 dB), Moderate (41–55 dB), Moderate to Severe (56–69 dB), Severe to Profound (70–95 dB), Unaidable (&gt;95 dB).</p></div></div>
+<div id="references" class="tab-panel"><div class="section"><h3>Quick Reference</h3><p>This tab is ready for future tools like product lookup, receiver/dome guide, consumer guide prompts, financing reference, and counseling reminders.</p></div><div class="section"><h3>Version Notes</h3><ul class="item-list"><li>1.0 RC standardizes the permanent App/Data/Backups folder structure, removes the desktop shortcut creator, and keeps the launcher/folder path stable for future updates. Earlier prototype milestones added Saved Outcomes, Generate & Copy Note, autosaved drafts, keyboard shortcuts, and workflow refinements.</li><li>v7.2 removes default selections, adds patient concern sections, and streamlines wrap-up items.</li><li>My Essentials now lives under purchase/trade-up outcomes.</li><li>Top-level checkbox clutter reduced for HAE and Retest workflows.</li><li>COU formatting remains built into HAE and Annual Retest 3+ workflows.</li></ul></div></div>
+
+<div id="settings" class="tab-panel"><div class="section"><h3>Settings</h3><p class="muted">These settings are saved on this computer/browser. They are meant to keep the app easy to customize without editing code.</p><div class="grid-2"><div><label class="inline-label">Financing Companies <span class="muted">one per line</span></label><textarea id="settingsFinance" placeholder="PatientFi
+Powerpay
+Paymonthly/Care Credit
+HFD"></textarea></div><div><label class="inline-label">Common Programming Presets <span class="muted">one per line</span></label><textarea id="settingsAdjustments" placeholder="Increased speech 1 click AU
+Ran feedback test"></textarea></div></div><button class="primary" onclick="saveSettings()">Save Settings</button><button class="danger-outline" onclick="resetSettings()">Reset Defaults</button><div class="result-box" id="settingsStatus">Settings ready.</div></div><div class="section"><h3>Portable App Notes</h3><ul class="item-list"><li>The app is designed to run from OneDrive or a shared folder without installation.</li><li>Saved Outcomes and draft autosave are stored in the browser on this computer.</li><li>Use Export Saved Outcomes before switching computers or clearing browser data.</li><li>If the app looks plain, extract the ZIP first and keep index.html next to the css, js, and assets folders.</li></ul></div></div>
+<div id="about" class="tab-panel">
+  <div class="about-hero section">
+    <div class="about-brand">
+      <img src="assets/logo.png" class="about-logo" alt="Miracle-Ear Logo">
+      <div>
+        <div class="about-eyebrow">MIRACLE-EAR</div>
+        <h3>Clinical Assistant</h3>
+        <p class="about-version-line">Version <strong id="aboutVersion" data-app-version></strong> <span class="about-status"><span class="status-dot"></span> Ready</span></p>
+        <p class="muted">A portable, browser-based workflow assistant built to make clinical documentation faster, clearer, and more consistent.</p>
+      </div>
+    </div>
+    <div class="about-hero-actions">
+      <button class="primary" onclick="contactDeveloper()">✉️ Contact Developer</button>
+      <button class="secondary" onclick="copyDiagnosticInfo()">Copy Diagnostic Info</button>
+    </div>
+  </div>
+
+  <div class="about-nav">
+    <button class="ghost" onclick="openAboutSection('aboutOverview')">Overview</button>
+    <button class="ghost" onclick="openAboutSection('aboutData')">Data & Privacy</button>
+    <button class="ghost" onclick="openAboutSection('aboutShortcuts')">Shortcuts</button>
+    <button class="ghost" onclick="openAboutSection('aboutWhatsNew')">What's New</button>
+  </div>
+
+  <div class="about-grid">
+    <div class="section about-card" id="aboutOverview">
+      <div class="about-icon">🩺</div>
+      <h3>Purpose</h3>
+      <p>Clinical Assistant supports the day-to-day workflow of a Hearing Instrument Specialist. It organizes commonly completed appointment steps and turns selected items into a concise Sycle-ready note.</p>
+      <p class="muted">It is a documentation aid—not a substitute for clinical judgment, company policy, required testing, or medical referral standards.</p>
+    </div>
+    <div class="section about-card">
+      <div class="about-icon">✨</div>
+      <h3>Core Features</h3>
+      <ul class="about-list">
+        <li>HAE, Aftercare, Delivery, and Annual Retest workflows</li>
+        <li>Generated notes with automatic copy</li>
+        <li>Unfinished appointment autosave and resume</li>
+        <li>Saved Outcomes with pending/completed tracking</li>
+        <li>Clinical tools, quick references, and customizable presets</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section" id="aboutData">
+    <div class="about-section-head"><div><div class="about-icon">🔒</div><h3>Data & Privacy</h3></div><span class="badge">Local storage only</span></div>
+    <p>Clinical Assistant does not require an account or send appointment information to an online database. Drafts, settings, and Saved Outcomes are stored in the browser's local storage on the computer being used.</p>
+    <div class="about-storage" id="aboutStorageSummary"></div>
+    <div class="about-notice"><strong>Important:</strong> Use minimal patient identifiers. Browser data can be cleared, and saved information does not automatically move to another computer. Export Saved Outcomes before changing computers or clearing browser data.</div>
+  </div>
+
+  <div class="about-grid">
+    <div class="section about-card" id="aboutShortcuts">
+      <div class="about-icon">⌨️</div>
+      <h3>Keyboard Shortcuts</h3>
+      <div class="shortcut-row"><kbd>Ctrl</kbd><span>+</span><kbd>Enter</kbd><span>Generate & Copy Note</span></div>
+      <div class="shortcut-row"><kbd>Ctrl</kbd><span>+</span><kbd>S</kbd><span>Save Outcome</span></div>
+      <div class="shortcut-row"><kbd>Ctrl</kbd><span>+</span><kbd>1–7</kbd><span>Switch tabs</span></div>
+    </div>
+    <div class="section about-card">
+      <div class="about-icon">🧰</div>
+      <h3>Portable App</h3>
+      <p>Designed to run directly from OneDrive or a shared folder without installation. Keep the complete folder together so the HTML, CSS, JavaScript, logo, icons, and manifest remain connected.</p>
+      <button class="tiny secondary" onclick="runHealthCheck()">Run App Health Check</button>
+    </div>
+  </div>
+
+  <div class="section" id="aboutWhatsNew">
+    <div class="about-section-head"><div><div class="about-icon">🚀</div><h3>What's New in v1.3.9</h3></div><span class="badge">August 15, 2026</span></div>
+    <ul class="about-list changelog-list">
+      <li><strong>Fixed Edit Saved Outcome</strong> so clicking Edit reliably opens Sycle Notes and restores the saved appointment workflow.</li>
+      <li><strong>Editing now updates the existing Saved Outcome</strong> instead of creating a duplicate when the corrected outcome is saved.</li>
+      <li><strong>Added safer edit recovery</strong> so a restore error returns to Saved Outcomes without changing or deleting the stored note.</li>
+      <li><strong>Preserved all v1.3.6 features</strong>, including the About tab and corrected Contact Developer email formatting.</li>
+    </ul>
+  </div>
+
+  <div class="section about-disclaimer">
+    <h3>Clinical Documentation Reminder</h3>
+    <p>Only document services, testing, counseling, findings, and outcomes that were actually completed. Review every generated note before placing it in the patient record.</p>
+  </div>
+
+  <div class="about-copyright">
+    <strong>© 2026 Philip Pim. All rights reserved.</strong>
+    <span>Miracle-Ear Clinical Assistant · Version <span data-app-version></span></span>
+  </div>
+</div>
+
+<div class="footer">Miracle-Ear Clinical Assistant <span data-app-version></span> | Ctrl + Enter = Generate & Copy Note | Ctrl + S = Save Outcome</div>
+</div>
+<div id="toast" class="toast"></div>
+<script src="js/app.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(console.warn));
+}
+</script>
+</body>
+</html>
