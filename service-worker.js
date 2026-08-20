@@ -1,5 +1,5 @@
-const CACHE_NAME='clinical-assistant-mobile-v1';
-const APP_ASSETS=["./index.html", "./CHANGELOG.txt", "./manifest.json", "./css/styles.css", "./js/app.js", "./assets/icon-192.png", "./assets/favicon-32x32.png", "./assets/miracle-ear-logo-original.png", "./assets/logo.png", "./assets/favicon-24x24.png", "./assets/icon-512.png", "./assets/favicon-64x64.png", "./assets/favicon-16x16.png", "./assets/icon-master.png", "./assets/favicon.ico", "./assets/favicon-48x48.png", "./assets/logo.ico"];
+const CACHE_NAME='clinical-assistant-mobile-v2';
+const APP_ASSETS=["./index.html", "./styles.css", "./app.js", "./manifest.json", "./icon-192.png", "./icon-512.png", "./favicon-16x16.png", "./favicon-24x24.png", "./favicon-32x32.png", "./favicon-48x48.png", "./favicon-64x64.png", "./favicon.ico", "./logo.ico", "./logo.png", "./icon-master.png", "./miracle-ear-logo-original.png"];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(APP_ASSETS)));self.skipWaiting();});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))));self.clients.claim();});
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request).then(r=>{const x=r.clone();caches.open(CACHE_NAME).then(c=>c.put(e.request,x));return r;}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))));});
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE_NAME).then(c=>c.put(e.request,copy));return r;}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))));});

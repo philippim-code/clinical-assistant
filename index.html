@@ -6,15 +6,15 @@
 <title>Clinical Assistant</title>
 <meta name="theme-color" content="#008c95" />
 <meta name="application-name" content="Miracle-Ear Clinical Assistant" />
-<link rel="icon" href="assets/favicon.ico" sizes="any" />
-<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64x64.png" />
-<link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png" />
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
-<link rel="icon" type="image/png" sizes="24x24" href="assets/favicon-24x24.png" />
-<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
-<link rel="apple-touch-icon" sizes="192x192" href="assets/icon-192.png" />
+<link rel="icon" href="favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64x64.png" />
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="24x24" href="favicon-24x24.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
 <link rel="manifest" href="manifest.json" />
-<link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="styles.css" />
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,8 +22,8 @@
 <meta name="theme-color" content="#ffffff">
 </head>
 <body>
-<div id="splash" class="splash"><div class="splash-card"><img src="assets/logo.png" class="splash-logo" alt="Miracle-Ear Logo"><div class="splash-title">Miracle-Ear</div><div class="splash-subtitle">Clinical Assistant <span data-app-version></span></div></div></div>
-<div class="header"><img src="assets/logo.png" class="logo" alt="Miracle-Ear Logo"><div><h1>Miracle-Ear</h1><h2>Clinical Assistant</h2></div></div>
+<div id="splash" class="splash"><div class="splash-card"><img src="logo.png" class="splash-logo" alt="Miracle-Ear Logo"><div class="splash-title">Miracle-Ear</div><div class="splash-subtitle">Clinical Assistant <span data-app-version></span></div></div></div>
+<div class="header"><img src="logo.png" class="logo" alt="Miracle-Ear Logo"><div><h1>Miracle-Ear</h1><h2>Clinical Assistant</h2></div></div>
 <div class="container">
 
 <div class="appbar">
@@ -69,7 +69,7 @@ Ran feedback test"></textarea></div></div><button class="primary" onclick="saveS
 <div id="about" class="tab-panel">
   <div class="about-hero section">
     <div class="about-brand">
-      <img src="assets/logo.png" class="about-logo" alt="Miracle-Ear Logo">
+      <img src="logo.png" class="about-logo" alt="Miracle-Ear Logo">
       <div>
         <div class="about-eyebrow">MIRACLE-EAR</div>
         <h3>Clinical Assistant</h3>
@@ -157,7 +157,7 @@ Ran feedback test"></textarea></div></div><button class="primary" onclick="saveS
 <div class="footer">Miracle-Ear Clinical Assistant <span data-app-version></span> | Ctrl + Enter = Generate & Copy Note | Ctrl + S = Save Outcome</div>
 </div>
 <div id="toast" class="toast"></div>
-<script src="js/app.js"></script>
+<script src="app.js"></script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(console.warn));
