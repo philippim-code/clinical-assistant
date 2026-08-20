@@ -228,3 +228,36 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
   .tab-btn{padding-left:11px!important;padding-right:11px!important}
   .section{padding-left:10px;padding-right:10px}
 }
+
+
+/* ===== iPhone workflow checkbox fix =====
+   The general mobile input rule made checkboxes/radios 100% wide,
+   which pushed workflow headings off-screen. Keep touch sizing for
+   text fields, but restore native sizing for checkbox/radio controls.
+*/
+@media(max-width:700px){
+  input[type="checkbox"],
+  input[type="radio"]{
+    width:auto !important;
+    min-width:0 !important;
+    height:auto !important;
+    min-height:0 !important;
+    flex:0 0 auto !important;
+    margin-top:0 !important;
+  }
+
+  .workflow-head{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:10px !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+    white-space:normal !important;
+    overflow:visible !important;
+  }
+
+  .workflow-head input[type="checkbox"]{
+    margin:0 8px 0 0 !important;
+  }
+}
