@@ -1,4 +1,4 @@
-const APP_VERSION='1.4.4';
+const APP_VERSION='1.6.0-dev1';
 let editingOutcomeId=null;
 let currentAppointment='';let replacedItems=[];
 const DEFAULT_SETTINGS={finance:['PatientFi','Powerpay','Paymonthly/Care Credit','HFD'],adjustments:['Increased speech 1 click AU','Ran feedback test']};
@@ -17,7 +17,7 @@ function miniSection(id,title,body){return `<div class="workflow-card mini-card"
 function toggleSection(id,box){document.getElementById('card_'+id).classList.toggle('active',box.checked)}
 function checkGroup(cls,on){document.querySelectorAll('.'+cls).forEach(b=>b.checked=on);markNoteAsNotGenerated()}
 function toggleBox(id,show){document.getElementById(id).classList.toggle('hidden',!show)}
-function otoscopy(prefix){return `<div class="subbox"><div class="row-title">Otoscopy</div><label class="inline-label"><input type="radio" name="${prefix}OtoStatus" value="normal" onchange="toggleBox('${prefix}OtoAbnormalBox',false)">Normal AU</label><label class="inline-label"><input type="radio" name="${prefix}OtoStatus" value="abnormal" onchange="toggleBox('${prefix}OtoAbnormalBox',true)">Abnormal</label><div id="${prefix}OtoAbnormalBox" class="hidden"><div class="grid-2"><div><label class="inline-label">Ear</label><select id="${prefix}OtoEar"><option value="">Select ear...</option><option value="AD">Right / AD</option><option value="AS">Left / AS</option><option value="AU">Both / AU</option></select></div><div><label class="inline-label">Finding</label><input type="text" id="${prefix}OtoDetails" placeholder="ex. excessive cerumen, drainage, redness"></div></div><span class="required">Ear and finding are required when abnormal is selected.</span></div></div>`}
+function otoscopy(prefix){return `<div class="subbox"><div class="row-title">Otoscopy</div><label class="inline-label"><input type="radio" name="${prefix}OtoStatus" value="normal" onchange="toggleBox('${prefix}OtoAbnormalBox',false)">Normal AU</label><label class="inline-label"><input type="radio" name="${prefix}OtoStatus" value="abnormal" onchange="toggleBox('${prefix}OtoAbnormalBox',true)">Abnormal</label><div id="${prefix}OtoAbnormalBox" class="hidden"><div class="grid-2"><div><label class="inline-label">Ear</label><select id="${prefix}OtoEar"><option value="">Select ear...</option><option value="AD">Right / AD</option><option value="AS">Left / AS</option><option value="AU">Both / AU</option></select></div><div><label class="inline-label">Finding</label><input type="text" id="${prefix}OtoDetails" placeholder="ex. excessive cerumen, drainage, redness"></div></div><span class="required">Ear and finding are required when abnormal is selected.</span></div><label class="inline-label">Additional Otoscopy Note <span class="muted">(optional)</span></label><input type="text" id="${prefix}OtoCustom" placeholder="ex. minor cerumen buildup AU"></div>`}
 function renderEvaluation(prefix,opts={}){return section(prefix+'Eval','Evaluation',`${otoscopy(prefix)}${cb(prefix+'FDA','Patient Denies All FDA Questions')}${cb(prefix+'Test','Tested AC + BC and Entered into NOAH')}${hearingLoss(prefix)}${medReferral(prefix)}`)}
 function concernSection(prefix,title='Patient Concern / Reason for Visit',placeholder='ex. Patient states hearing aids are not working.'){return section(prefix+'Concern',title,`<label class="inline-label">Concern / Reported Difficulty</label><textarea id="${prefix}ConcernText" placeholder="${placeholder}"></textarea>`)}
 function cb(id,label,checked=false){return `<label class="inline-label"><input type="checkbox" id="${id}" ${checked?'checked':''}>${label}</label>`}
@@ -70,7 +70,20 @@ function fragmentText(text){return lowerFirst(text)}
 
 function medText(prefix){if(!checked(prefix+'Med'))return'';let r=fragmentText(val(prefix+'MedReason'));return r?'Med referred due to '+r:'Med referral recommended; reason not entered'}
 function concernText(prefix){if(!checked('sec_'+prefix+'Concern'))return'';return fragmentText(val(prefix+'ConcernText'))}
-function otoscopyText(prefix){const status=radio(prefix+'OtoStatus');if(status==='normal')return 'Otoscopy normal AU';if(status==='abnormal'){const ear=val(prefix+'OtoEar'),details=fragmentText(val(prefix+'OtoDetails'));if(ear&&details)return `Otoscopy abnormal ${ear}: ${details}`;if(details)return `Otoscopy abnormal: ${details}`;return 'Otoscopy abnormal'}return ''}
+function otoscopyText(prefix){
+  const status=radio(prefix+'OtoStatus');
+  const custom=fragmentText(val(prefix+'OtoCustom'));
+  let base='';
+  if(status==='normal')base='Otoscopy normal AU';
+  else if(status==='abnormal'){
+    const ear=val(prefix+'OtoEar'),details=fragmentText(val(prefix+'OtoDetails'));
+    if(ear&&details)base=`Otoscopy abnormal ${ear}: ${details}`;
+    else if(details)base=`Otoscopy abnormal: ${details}`;
+    else base='Otoscopy abnormal';
+  }
+  if(custom)return base?`${base}; ${custom}`:`Otoscopy: ${custom}`;
+  return base;
+}
 function trialText(prefix){if(!checked(prefix+'Trial'))return '';const device=fixAcronyms(val(prefix+'TrialDevice'));const date=val(prefix+'TrialDate');let text='Accepted a 3-day take-home trial';if(device)text+=' of '+device;if(date){const d=new Date(date+'T00:00:00');text+=`; follow-up scheduled for ${d.toLocaleDateString()}`;}return text}
 function couText(prefix){if(!checked(prefix+'COU'))return'';let baseline=radio(prefix+'COUBaseline')||'unaided',u=val(prefix+'CU'),a1=val(prefix+'CA1'),a2=val(prefix+'CA2'),a3=val(prefix+'CA3');if(u&&a1&&a2&&a3){return baseline==='existing hearing aids'?`COU completed with existing hearing aids: ${u}% VS ${a1}%-${a2}%-${a3}% with new technology`:`COU completed unaided: ${u}% VS ${a1}%-${a2}%-${a3}% with demo hearing aids`;}return baseline==='existing hearing aids'?'COU completed with existing hearing aids':'COU completed unaided with demo hearing aids'}
 function financeText(prefix){if(!checked(prefix+'Fin'))return'';let c=radio(prefix+'Finance');return c?'financed through '+c:'financed'}
@@ -1257,7 +1270,7 @@ setSavedOutcomes=function(items){
 
 /* Save after each input/change as well as on close/background. */
 document.addEventListener('input',e=>{
-  if(e.target.id!=='output')persistActiveDraftNow();
+  persistActiveDraftNow();
 },true);
 document.addEventListener('change',()=>persistActiveDraftNow(),true);
 window.addEventListener('beforeunload',persistActiveDraftNow);
@@ -1502,3 +1515,80 @@ What's new:
 • Appearance preferences are saved locally
 • Built on the cleaned and tested v1.4.4 foundation`);
 }
+
+
+/* =========================================================
+   v1.6.0-dev1 Clinical Tools + Home customization
+   ========================================================= */
+const CLINICAL_TERMINOLOGY=[
+  ['AU','Both ears'],
+  ['AD','Right ear'],
+  ['AS','Left ear'],
+  ['AC','Air conduction'],
+  ['BC','Bone conduction'],
+  ['PTA','Pure-tone average'],
+  ['SRT','Speech reception threshold'],
+  ['MCL','Most comfortable level'],
+  ['UCL','Uncomfortable loudness level'],
+  ['WR','Word recognition'],
+  ['HL','Hearing loss'],
+  ['SNHL','Sensorineural hearing loss'],
+  ['CHL','Conductive hearing loss'],
+  ['ABG','Air-bone gap'],
+  ['HAE','Hearing aid evaluation'],
+  ['RIC','Receiver-in-canal'],
+  ['BTE','Behind-the-ear'],
+  ['ITE','In-the-ear'],
+  ['ITC','In-the-canal'],
+  ['CIC','Completely-in-canal']
+];
+
+function renderClinicalTerminology(){
+  const box=document.getElementById('terminologyList');
+  if(!box)return;
+  const q=(document.getElementById('terminologySearch')?.value||'').trim().toLowerCase();
+  const rows=CLINICAL_TERMINOLOGY.filter(([abbr,meaning])=>(abbr+' '+meaning).toLowerCase().includes(q));
+  box.innerHTML=rows.length?rows.map(([abbr,meaning])=>`<div class="term-card"><strong>${abbr}</strong><span>${meaning}</span></div>`).join(''):'<p class="muted">No matching terminology.</p>';
+}
+
+const HOME_PREFS_KEY='meClinicalHomePrefs';
+const DEFAULT_HOME_PREFS={dashboard:true,newAppointment:true,recent:true};
+
+function getHomePrefs(){
+  try{return {...DEFAULT_HOME_PREFS,...JSON.parse(localStorage.getItem(HOME_PREFS_KEY)||'{}')};}
+  catch(e){return {...DEFAULT_HOME_PREFS};}
+}
+function applyHomePrefs(prefs=getHomePrefs()){
+  const map=[
+    ['homeDashboardSection',prefs.dashboard],
+    ['homeNewAppointmentSection',prefs.newAppointment],
+    ['homeRecentSection',prefs.recent]
+  ];
+  map.forEach(([id,show])=>{const el=document.getElementById(id);if(el)el.style.display=show?'':'none';});
+}
+function renderHomePreferenceSettings(){
+  const p=getHomePrefs();
+  const a=document.getElementById('homeShowDashboard'),b=document.getElementById('homeShowNewAppointment'),c=document.getElementById('homeShowRecent');
+  if(a)a.checked=p.dashboard;if(b)b.checked=p.newAppointment;if(c)c.checked=p.recent;
+}
+const _v160SaveSettings=saveSettings;
+saveSettings=function(){
+  _v160SaveSettings();
+  const prefs={
+    dashboard:document.getElementById('homeShowDashboard')?.checked!==false,
+    newAppointment:document.getElementById('homeShowNewAppointment')?.checked!==false,
+    recent:document.getElementById('homeShowRecent')?.checked!==false
+  };
+  localStorage.setItem(HOME_PREFS_KEY,JSON.stringify(prefs));
+  applyHomePrefs(prefs);
+};
+const _v160RenderSettings=renderSettings;
+renderSettings=function(){
+  _v160RenderSettings();
+  renderHomePreferenceSettings();
+};
+window.addEventListener('load',()=>{
+  renderClinicalTerminology();
+  applyHomePrefs();
+  renderHomePreferenceSettings();
+});

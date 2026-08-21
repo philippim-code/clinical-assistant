@@ -358,3 +358,15 @@ html[data-theme="sycle"] .brand-title,html[data-theme="sycle"] h2,html[data-them
 html[data-appearance="dark"] .brand-title,html[data-appearance="dark"] h2,html[data-appearance="dark"] h3{color:var(--text)}
 html[data-appearance="dark"] .topbar,html[data-appearance="dark"] .appbar{background:var(--surface);color:var(--text)}
 html[data-appearance="dark"] .outcome-note,html[data-appearance="dark"] .outcome-title{color:var(--text)}
+
+
+/* ===== v1.6.0-dev1 Clinical Tools / Home customization ===== */
+.clinical-learning-box{margin-top:14px;padding:14px;border:1px solid var(--line-theme,var(--border));border-radius:12px;background:var(--soft-theme,#f7fbfc)}
+.clinical-learning-box h4{margin:0 0 8px}
+.formula-box{font-weight:700;font-size:16px;padding:12px;margin:10px 0;border-radius:10px;background:var(--surface,#fff);border:1px solid var(--line-theme,var(--border));text-align:center}
+.terminology-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:14px}
+.term-card{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--line-theme,var(--border));border-radius:10px;background:var(--surface,#fff)}
+.term-card strong{min-width:48px;color:var(--accent,var(--teal));font-size:16px}
+.term-card span{color:var(--text,#1f2933)}
+.home-toggle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:6px 14px}
+#output:not([readonly]){border-width:2px}
