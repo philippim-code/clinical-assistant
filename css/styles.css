@@ -370,3 +370,15 @@ html[data-appearance="dark"] .outcome-note,html[data-appearance="dark"] .outcome
 .term-card span{color:var(--text,#1f2933)}
 .home-toggle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:6px 14px}
 #output:not([readonly]){border-width:2px}
+
+/* ===== v1.6.0-dev3 Medical Referral Manager ===== */
+.referral-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,1fr);gap:22px;align-items:start}
+.referral-form{padding:14px;border:1px solid var(--line-theme,var(--border));border-radius:12px;background:var(--soft-theme,#f7fbfc)}
+.referral-form textarea{height:86px;min-height:86px}.referral-list{display:grid;gap:10px;margin-top:12px;max-height:610px;overflow:auto}
+.referral-card{padding:14px;border:1px solid var(--line-theme,var(--border));border-radius:12px;background:var(--surface,#fff)}
+.referral-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.referral-card h4{margin:0;color:var(--accent,var(--teal))}
+.referral-detail{margin-top:7px;white-space:pre-wrap;overflow-wrap:anywhere}.referral-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.referral-actions button,.referral-actions a{margin:0}
+.referral-link{display:inline-flex;align-items:center;text-decoration:none;padding:7px 10px;border-radius:9px;background:var(--teal);color:#fff;font-weight:bold;font-size:13px}
+.referral-link:hover{background:var(--teal-dark)}.referral-empty{padding:16px;text-align:center;border:1px dashed var(--border);border-radius:10px}.referral-considerations{margin-top:18px}
+@media(max-width:850px){.referral-layout{grid-template-columns:1fr}.referral-list{max-height:none}}
+@media(max-width:520px){.referral-card-head{flex-direction:column}.referral-actions>*{flex:1 1 120px;justify-content:center;text-align:center;min-height:40px}}
