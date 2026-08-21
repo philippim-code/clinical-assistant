@@ -1,4 +1,11 @@
-Miracle-Ear Clinical Assistant v1.6.0-dev3
+Miracle-Ear Clinical Assistant v1.6.0-dev4
+
+v1.6.0-dev4
+- Kept the PTA Calculator first and immediately visible in Clinical Tools.
+- Replaced the always-expanded Medical Referral Manager with a compact reusable tool card and responsive open/close panel.
+- Preserved the referral directory, guidance, actions, and local persistence without changing clinical or documentation workflows.
+
+v1.6.0-dev3
 August 21, 2026
 
 - Added a locally stored Medical Referrals directory with add, edit, delete, search, call, directions, and website actions.

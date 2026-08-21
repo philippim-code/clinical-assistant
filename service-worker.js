@@ -1,4 +1,4 @@
-const CACHE_NAME='clinical-assistant-v1.6.0-dev3';
+const CACHE_NAME='clinical-assistant-v1.6.0-dev4';
 const APP_ASSETS=["./index.html", "./css/styles.css", "./js/app.js", "./manifest.json","./clinical-assistant-icon-v2.png", "./icon-192.png", "./icon-512.png", "./favicon-16x16.png", "./favicon-24x24.png", "./favicon-32x32.png", "./favicon-48x48.png", "./favicon-64x64.png", "./favicon.ico", "./logo.ico", "./logo.png", "./icon-master.png", "./miracle-ear-logo-original.png"];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(APP_ASSETS)));self.skipWaiting();});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))));self.clients.claim();});

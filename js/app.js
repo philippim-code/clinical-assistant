@@ -1,4 +1,4 @@
-const APP_VERSION='1.6.0-dev3';
+const APP_VERSION='1.6.0-dev4';
 let editingOutcomeId=null;
 let currentAppointment='';let replacedItems=[];
 const DEFAULT_SETTINGS={finance:['PatientFi','Powerpay','Paymonthly/Care Credit','HFD'],adjustments:['Increased speech 1 click AU','Ran feedback test']};
@@ -1508,11 +1508,10 @@ function showVersionInfo(){
 Version ${APP_VERSION}
 
 What's new:
-• Locally stored Medical Referrals directory
-• Add, edit, delete, search, call, directions, and website actions
-• Optional Referred To selection in HAE and Annual Retest
-• Referral selections preserved with drafts and Saved Outcomes
-• Informational Referral Considerations reference`);
+• PTA Calculator remains first and immediately visible in Clinical Tools
+• Medical Referrals now opens from a compact, reusable tool card
+• Responsive referral panel with clear Open and Close controls
+• Existing referral directory, actions, guidance, and local persistence preserved`);
 }
 
 
@@ -1597,6 +1596,28 @@ window.addEventListener('load',()=>{
    v1.6.0-dev3 Medical Referral Manager
    ========================================================= */
 const REFERRALS_KEY='meClinicalReferrals';
+let clinicalToolOpener=null;
+
+function openClinicalTool(id){
+  const overlay=document.getElementById(id);if(!overlay)return;
+  clinicalToolOpener=document.activeElement;
+  overlay.classList.remove('hidden');document.body.classList.add('clinical-tool-open');
+  renderReferrals();
+  requestAnimationFrame(()=>overlay.querySelector('.clinical-tool-panel')?.focus());
+}
+function closeClinicalTool(id){
+  const overlay=document.getElementById(id);if(!overlay)return;
+  overlay.classList.add('hidden');document.body.classList.remove('clinical-tool-open');
+  clinicalToolOpener?.focus?.();clinicalToolOpener=null;
+}
+function closeClinicalToolFromBackdrop(event){
+  if(event.target===event.currentTarget)closeClinicalTool(event.currentTarget.id);
+}
+document.addEventListener('keydown',event=>{
+  if(event.key!=='Escape')return;
+  const openPanel=document.querySelector('.clinical-tool-overlay:not(.hidden)');
+  if(openPanel)closeClinicalTool(openPanel.id);
+});
 
 function getReferrals(){
   try{
