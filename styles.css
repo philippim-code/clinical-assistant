@@ -261,3 +261,112 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
     margin:0 8px 0 0 !important;
   }
 }
+
+
+/* ===== v1.4.0 reminder emphasis ===== */
+.outcome-reminder{
+  margin-top:8px;
+  padding:8px 10px;
+  border-radius:8px;
+  background:#fff6d8;
+  border-left:4px solid #d99a00;
+  color:#5b4300;
+  font-size:13px;
+  line-height:1.35;
+}
+.outcome-reminder .reminder-icon{
+  color:#d99a00;
+  margin-right:5px;
+}
+.recent-reminder{
+  font-weight:700;
+  color:#8a6200;
+}
+@media(max-width:700px){
+  .outcome-reminder{font-size:14px;padding:10px 11px}
+}
+
+
+/* ===== v1.4.3 cleanup ===== */
+.outcomes-toolbar-grid{
+  align-items:end;
+}
+.outcomes-search{
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+}
+.outcomes-actions{
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-end;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0;
+}
+.outcomes-actions button{
+  margin:0;
+  min-height:42px;
+}
+#outcomeSearch{
+  margin-bottom:0;
+}
+.sycle-shortcut{
+  white-space:nowrap;
+}
+@media(max-width:700px){
+  .outcomes-toolbar-grid{
+    grid-template-columns:1fr !important;
+  }
+  .outcomes-actions{
+    justify-content:stretch;
+  }
+  .outcomes-actions button{
+    flex:1 1 140px;
+  }
+}
+
+/* ===== v1.5.0 personalization ===== */
+.settings-group{margin:14px 0 18px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+.settings-group h4{margin:0 0 12px}.settings-hint{margin:8px 0 0}
+:root{
+ --app-bg:#f5f9f9;--surface:#ffffff;--surface-2:#eef7f6;--text:#183232;--muted-theme:#657777;
+ --accent:#079b96;--accent-2:#087d79;--line-theme:#d5e5e3;--soft-theme:#f0f8f7;
+}
+html[data-theme="clinical"]{--accent:#079b96;--accent-2:#087d79;--surface-2:#eef7f6;--line-theme:#d5e5e3;--soft-theme:#f0f8f7}
+html[data-theme="sycle"]{
+ --accent:#10067a;--accent-2:#33268f;--surface-2:#eeeefa;--line-theme:#cbc9e6;--soft-theme:#f4effa;
+}
+html[data-appearance="dark"]{
+ --app-bg:#111719;--surface:#192124;--surface-2:#222c30;--text:#edf4f4;--muted-theme:#aab9ba;--line-theme:#344347;--soft-theme:#202a2d;
+}
+html[data-appearance="dark"][data-theme="sycle"]{
+ --app-bg:#11101b;--surface:#1b1928;--surface-2:#25213a;--text:#f4f1fb;--muted-theme:#bbb5ce;--line-theme:#3c3659;--soft-theme:#221f34;--accent:#8178db;--accent-2:#a59ee9;
+}
+/* Theme overlay: intentionally targets existing app primitives without changing layout. */
+html[data-theme] body{background:var(--app-bg);color:var(--text)}
+html[data-theme] .section,html[data-theme] .workflow-card,html[data-theme] .dashboard-card,html[data-theme] .outcome-card,
+html[data-theme] .result-box,html[data-theme] .subbox{background-color:var(--surface);border-color:var(--line-theme)}
+html[data-theme] .muted{color:var(--muted-theme)}
+html[data-theme] input,html[data-theme] textarea,html[data-theme] select{background:var(--surface);color:var(--text);border-color:var(--line-theme)}
+html[data-theme] .tab-btn.active,html[data-theme] button.primary,html[data-theme] .appt-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+html[data-theme] .tab-btn,html[data-theme] button,html[data-theme] .appt-btn{border-color:var(--line-theme)}
+html[data-theme] .workflow-head{background:var(--surface-2)}
+html[data-theme] .settings-group{background:var(--soft-theme);border-color:var(--line-theme)}
+html[data-theme="sycle"] .appbar{border-bottom-color:var(--accent)}
+html[data-theme="sycle"] .brand-title,html[data-theme="sycle"] h2,html[data-theme="sycle"] h3{color:var(--accent)}
+html[data-appearance="dark"] .brand-title,html[data-appearance="dark"] h2,html[data-appearance="dark"] h3{color:var(--text)}
+html[data-appearance="dark"] .topbar,html[data-appearance="dark"] .appbar{background:var(--surface);color:var(--text)}
+html[data-appearance="dark"] .outcome-note,html[data-appearance="dark"] .outcome-title{color:var(--text)}
+
+
+/* ===== v1.6.0-dev1 Clinical Tools / Home customization ===== */
+.clinical-learning-box{margin-top:14px;padding:14px;border:1px solid var(--line-theme,var(--border));border-radius:12px;background:var(--soft-theme,#f7fbfc)}
+.clinical-learning-box h4{margin:0 0 8px}
+.formula-box{font-weight:700;font-size:16px;padding:12px;margin:10px 0;border-radius:10px;background:var(--surface,#fff);border:1px solid var(--line-theme,var(--border));text-align:center}
+.terminology-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:14px}
+.term-card{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--line-theme,var(--border));border-radius:10px;background:var(--surface,#fff)}
+.term-card strong{min-width:48px;color:var(--accent,var(--teal));font-size:16px}
+.term-card span{color:var(--text,#1f2933)}
+.home-toggle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:6px 14px}
+#output:not([readonly]){border-width:2px}
