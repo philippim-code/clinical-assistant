@@ -1,4 +1,4 @@
-const APP_VERSION='1.6.0-dev1';
+const APP_VERSION='1.6.0-dev4';
 let editingOutcomeId=null;
 let currentAppointment='';let replacedItems=[];
 const DEFAULT_SETTINGS={finance:['PatientFi','Powerpay','Paymonthly/Care Credit','HFD'],adjustments:['Increased speech 1 click AU','Ran feedback test']};
@@ -8,7 +8,7 @@ function resetSettings(){if(!confirm('Reset settings to defaults?'))return;local
 function renderSettings(){const s=getSettings();const f=document.getElementById('settingsFinance');const a=document.getElementById('settingsAdjustments');if(f)f.value=s.finance.join('\n');if(a)a.value=s.adjustments.join('\n');}
 function financeOptions(prefix){return getSettings().finance.map(x=>`<label class="inline-label"><input type="radio" name="${prefix}Finance" value="${x.replace(/"/g,'&quot;')}">${x}</label>`).join('')}
 function adjustmentPresetPills(id){return getSettings().adjustments.map(x=>`<span class="preset" onclick="setText('${id}','${x.replace(/'/g,"&#39;")}')">${x}</span>`).join('')}
-function showTab(tabId,button){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(tabId).classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));button.classList.add('active');if(tabId==='home')renderDashboard();if(tabId==='outcomes')renderOutcomes();if(tabId==='settings')renderSettings();if(tabId==='about')renderAbout();}
+function showTab(tabId,button){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(tabId).classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));button.classList.add('active');if(tabId==='home')renderDashboard();if(tabId==='outcomes')renderOutcomes();if(tabId==='tools')renderReferrals();if(tabId==='settings')renderSettings();if(tabId==='about')renderAbout();}
 function severityForPTA(value){const n=parseFloat(value);if(isNaN(n))return{label:'Not entered',cls:'severity-invalid'};if(n<25)return{label:'No Loss',cls:'severity-normal'};if(n<=40)return{label:'Mild',cls:'severity-mild'};if(n<=55)return{label:'Moderate',cls:'severity-moderate'};if(n<=69)return{label:'Moderate to Severe',cls:'severity-modsev'};if(n<=95)return{label:'Severe to Profound',cls:'severity-severe'};return{label:'Unaidable',cls:'severity-profound'}}
 function updateStandalonePTA(){const r=severityForPTA(document.getElementById('toolRightPTA').value),l=severityForPTA(document.getElementById('toolLeftPTA').value);document.getElementById('toolPTAResult').innerHTML=`Right: <span class="${r.cls}">${r.label}</span> &nbsp; | &nbsp; Left: <span class="${l.cls}">${l.label}</span>`}
 function setText(id,value){document.getElementById(id).value=value;markNoteAsNotGenerated()}
@@ -23,7 +23,7 @@ function concernSection(prefix,title='Patient Concern / Reason for Visit',placeh
 function cb(id,label,checked=false){return `<label class="inline-label"><input type="checkbox" id="${id}" ${checked?'checked':''}>${label}</label>`}
 /* v1.4.4: removed superseded duplicate function declaration */
 
-function medReferral(prefix){return `<div class="subbox"><label class="inline-label"><input type="checkbox" id="${prefix}Med" onchange="toggleBox('${prefix}MedBox',this.checked)">Med Referral</label><div id="${prefix}MedBox" class="hidden"><label class="inline-label">Reason for Medical Referral</label><input type="text" id="${prefix}MedReason" placeholder="ex. air-bone gap, cerumen buildup, drainage"><span class="required">Required if med referral is checked.</span><div class="pill-row"><span class="preset" onclick="setText('${prefix}MedReason','air-bone gap')">Air-bone gap</span><span class="preset" onclick="setText('${prefix}MedReason','cerumen buildup')">Cerumen buildup</span><span class="preset" onclick="setText('${prefix}MedReason','drainage')">Drainage</span><span class="preset" onclick="setText('${prefix}MedReason','ear pain')">Ear pain</span><span class="preset" onclick="setText('${prefix}MedReason','sudden change in hearing')">Sudden change</span></div></div></div>`}
+function medReferral(prefix){const options=getReferrals().map(r=>`<option value="${escapeHtml(r.id)}">${escapeHtml(r.name)} — ${escapeHtml(r.type)}</option>`).join('');return `<div class="subbox"><label class="inline-label"><input type="checkbox" id="${prefix}Med" onchange="toggleBox('${prefix}MedBox',this.checked)">Med Referral</label><div id="${prefix}MedBox" class="hidden"><label class="inline-label">Reason for Medical Referral</label><input type="text" id="${prefix}MedReason" placeholder="ex. air-bone gap, cerumen buildup, drainage"><span class="required">Required if med referral is checked.</span><div class="pill-row"><span class="preset" onclick="setText('${prefix}MedReason','air-bone gap')">Air-bone gap</span><span class="preset" onclick="setText('${prefix}MedReason','cerumen buildup')">Cerumen buildup</span><span class="preset" onclick="setText('${prefix}MedReason','drainage')">Drainage</span><span class="preset" onclick="setText('${prefix}MedReason','ear pain')">Ear pain</span><span class="preset" onclick="setText('${prefix}MedReason','sudden change in hearing')">Sudden change</span></div><label class="inline-label" for="${prefix}MedDestination">Referred To <span class="muted">(optional)</span></label><select id="${prefix}MedDestination" onchange="syncReferralDestination('${prefix}')"><option value="">Other / Not Specified</option>${options}</select><input type="hidden" id="${prefix}MedDestinationName"></div></div>`}
 function cou(prefix){return `<div class="subbox"><label class="inline-label"><input type="checkbox" id="${prefix}COU">COU Completed</label><div class="grid-2"><div><label class="inline-label">Baseline</label><label class="inline-label"><input type="radio" name="${prefix}COUBaseline" value="unaided">Unaided</label><label class="inline-label"><input type="radio" name="${prefix}COUBaseline" value="existing hearing aids">Existing Hearing Aids</label></div><div><label class="inline-label">Baseline Score</label><input type="number" min="0" max="100" id="${prefix}CU" placeholder="ex. 10"></div></div><div class="grid-3"><div><label class="inline-label">New Technology 1</label><input type="number" min="0" max="100" id="${prefix}CA1" placeholder="ex. 80"></div><div><label class="inline-label">New Technology 2</label><input type="number" min="0" max="100" id="${prefix}CA2" placeholder="ex. 90"></div><div><label class="inline-label">New Technology 3</label><input type="number" min="0" max="100" id="${prefix}CA3" placeholder="ex. 100"></div></div></div>`}
 function financing(prefix){return `<label class="inline-label"><input type="checkbox" id="${prefix}Fin" onchange="toggleBox('${prefix}FinBox',this.checked)">Financed</label><div id="${prefix}FinBox" class="subbox hidden">${financeOptions(prefix)}</div>`}
 /* v1.4.4: removed superseded duplicate function declaration */
@@ -68,7 +68,7 @@ function sentenceText(text){text=capFirst(text);if(text&&!/[.!?]$/.test(text))te
 function fragmentText(text){return lowerFirst(text)}
 /* v1.4.4: removed superseded duplicate function declaration */
 
-function medText(prefix){if(!checked(prefix+'Med'))return'';let r=fragmentText(val(prefix+'MedReason'));return r?'Med referred due to '+r:'Med referral recommended; reason not entered'}
+function medText(prefix){if(!checked(prefix+'Med'))return'';let r=fragmentText(val(prefix+'MedReason')),destination=val(prefix+'MedDestinationName');if(!destination)return r?'Med referred due to '+r:'Med referral recommended; reason not entered';let text=r?'Med referral recommended due to '+r:'Med referral recommended; reason not entered';return text+'. Referred to '+destination}
 function concernText(prefix){if(!checked('sec_'+prefix+'Concern'))return'';return fragmentText(val(prefix+'ConcernText'))}
 function otoscopyText(prefix){
   const status=radio(prefix+'OtoStatus');
@@ -255,8 +255,8 @@ function runHealthCheck(){
 function activateTabByIndex(index){const btn=document.querySelectorAll('.tab-btn')[index];if(btn)btn.click()}
 
 window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('splash')?.classList.add('hidden'),650);restoreDraft();renderOutcomes();});
-document.addEventListener('input',e=>{if(e.target.id!=='output'){markNoteAsNotGenerated();saveDraftDebounced();}});
-document.addEventListener('change',e=>{if(e.target.id!=='output'){markNoteAsNotGenerated();saveDraftDebounced();}});
+document.addEventListener('input',e=>{if(e.target.closest('#notes')&&e.target.id!=='output'){markNoteAsNotGenerated();saveDraftDebounced();}});
+document.addEventListener('change',e=>{if(e.target.closest('#notes')&&e.target.id!=='output'){markNoteAsNotGenerated();saveDraftDebounced();}});
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();generateNote();toast('✓ Note generated.');saveDraftNow('Draft autosaved.');}
   if(e.ctrlKey&&e.key.toLowerCase()==='s'){e.preventDefault();saveOutcome();}
@@ -762,7 +762,7 @@ function applyAppointmentStateCore(state, options={}){
 
 
 function checkForUpdates(){
-  alert('Update check\n\nCurrent version: 1.0.3\n\nThis portable/browser version cannot automatically download updates yet. Replace the App folder—or this app.js file—when a new version is released.');
+  alert(`Update check\n\nCurrent version: ${APP_VERSION}\n\nThis portable/browser version cannot automatically download updates yet. Replace the App folder when a new version is released.`);
 }
 
 /* v1.4.4: removed superseded duplicate function declaration */
@@ -1269,9 +1269,9 @@ setSavedOutcomes=function(items){
 
 /* Save after each input/change as well as on close/background. */
 document.addEventListener('input',e=>{
-  persistActiveDraftNow();
+  if(e.target.closest('#notes'))persistActiveDraftNow();
 },true);
-document.addEventListener('change',()=>persistActiveDraftNow(),true);
+document.addEventListener('change',e=>{if(e.target.closest('#notes'))persistActiveDraftNow();},true);
 window.addEventListener('beforeunload',persistActiveDraftNow);
 window.addEventListener('pagehide',persistActiveDraftNow);
 document.addEventListener('visibilitychange',()=>{
@@ -1508,11 +1508,10 @@ function showVersionInfo(){
 Version ${APP_VERSION}
 
 What's new:
-• Light, Dark, and System appearance modes
-• Clinical Teal and Sycle-inspired color themes
-• Default landing page preference
-• Appearance preferences are saved locally
-• Built on the cleaned and tested v1.4.4 foundation`);
+• PTA Calculator remains first and immediately visible in Clinical Tools
+• Medical Referrals now opens from a compact, reusable tool card
+• Responsive referral panel with clear Open and Close controls
+• Existing referral directory, actions, guidance, and local persistence preserved`);
 }
 
 
@@ -1588,6 +1587,129 @@ renderSettings=function(){
 };
 window.addEventListener('load',()=>{
   renderClinicalTerminology();
+  renderReferrals();
   applyHomePrefs();
   renderHomePreferenceSettings();
 });
+
+/* =========================================================
+   v1.6.0-dev3 Medical Referral Manager
+   ========================================================= */
+const REFERRALS_KEY='meClinicalReferrals';
+let clinicalToolOpener=null;
+
+function openClinicalTool(id){
+  const overlay=document.getElementById(id);if(!overlay)return;
+  clinicalToolOpener=document.activeElement;
+  overlay.classList.remove('hidden');document.body.classList.add('clinical-tool-open');
+  renderReferrals();
+  requestAnimationFrame(()=>overlay.querySelector('.clinical-tool-panel')?.focus());
+}
+function closeClinicalTool(id){
+  const overlay=document.getElementById(id);if(!overlay)return;
+  overlay.classList.add('hidden');document.body.classList.remove('clinical-tool-open');
+  clinicalToolOpener?.focus?.();clinicalToolOpener=null;
+}
+function closeClinicalToolFromBackdrop(event){
+  if(event.target===event.currentTarget)closeClinicalTool(event.currentTarget.id);
+}
+document.addEventListener('keydown',event=>{
+  if(event.key!=='Escape')return;
+  const openPanel=document.querySelector('.clinical-tool-overlay:not(.hidden)');
+  if(openPanel)closeClinicalTool(openPanel.id);
+});
+
+function getReferrals(){
+  try{
+    const items=JSON.parse(localStorage.getItem(REFERRALS_KEY)||'[]');
+    return Array.isArray(items)?items:[];
+  }catch(e){return [];}
+}
+function setReferrals(items){localStorage.setItem(REFERRALS_KEY,JSON.stringify(items));}
+function normalizeWebsite(value){
+  const website=String(value||'').trim();
+  if(!website)return '';
+  const candidate=/^https?:\/\//i.test(website)?website:'https://'+website;
+  try{const url=new URL(candidate);return /^https?:$/.test(url.protocol)?url.href:'';}catch(e){return '';}
+}
+function referralPhoneHref(phone){return 'tel:'+String(phone||'').replace(/[^\d+*#,;]/g,'');}
+function syncReferralDestination(prefix){
+  const select=document.getElementById(prefix+'MedDestination');
+  const snapshot=document.getElementById(prefix+'MedDestinationName');
+  if(!snapshot)return;
+  const referral=getReferrals().find(item=>item.id===select?.value);
+  snapshot.value=referral?.name||'';
+}
+function refreshReferralSelectors(){
+  document.querySelectorAll('select[id$="MedDestination"]').forEach(select=>{
+    const prefix=select.id.slice(0,-'MedDestination'.length);
+    const selectedId=select.value;
+    const snapshot=document.getElementById(prefix+'MedDestinationName');
+    const items=getReferrals();
+    const selected=items.find(item=>item.id===selectedId);
+    const orphanOption=selectedId&&!selected&&snapshot?.value?`<option value="${escapeHtml(selectedId)}">${escapeHtml(snapshot.value)} — saved with appointment</option>`:'';
+    select.innerHTML=`<option value="">Other / Not Specified</option>${items.map(item=>`<option value="${escapeHtml(item.id)}">${escapeHtml(item.name)} — ${escapeHtml(item.type)}</option>`).join('')}${orphanOption}`;
+    select.value=selectedId;
+    if(selected&&snapshot)snapshot.value=selected.name;
+  });
+}
+function saveReferral(event){
+  event.preventDefault();
+  const id=document.getElementById('referralEditId').value;
+  const name=document.getElementById('referralName').value.trim();
+  if(!name)return;
+  const item={
+    id:id||('ref_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)),
+    name,
+    type:document.getElementById('referralType').value,
+    address:document.getElementById('referralAddress').value.trim(),
+    phone:document.getElementById('referralPhone').value.trim(),
+    website:document.getElementById('referralWebsite').value.trim(),
+    notes:document.getElementById('referralNotes').value.trim()
+  };
+  const items=getReferrals();
+  const index=items.findIndex(entry=>entry.id===item.id);
+  if(index>=0)items[index]=item;else items.push(item);
+  setReferrals(items);
+  resetReferralForm();renderReferrals();refreshReferralSelectors();
+  toast(index>=0?'✓ Referral updated.':'✓ Referral added.');
+}
+function editReferral(id){
+  const item=getReferrals().find(entry=>entry.id===id);if(!item)return;
+  document.getElementById('referralEditId').value=item.id;
+  document.getElementById('referralName').value=item.name;
+  document.getElementById('referralType').value=item.type;
+  document.getElementById('referralAddress').value=item.address||'';
+  document.getElementById('referralPhone').value=item.phone||'';
+  document.getElementById('referralWebsite').value=item.website||'';
+  document.getElementById('referralNotes').value=item.notes||'';
+  document.getElementById('referralSaveButton').textContent='Update Referral';
+  document.getElementById('referralCancelButton').classList.remove('hidden');
+  document.getElementById('referralName').focus();
+  document.getElementById('medicalReferralsSection').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function resetReferralForm(){
+  const form=document.getElementById('referralForm');if(!form)return;
+  form.reset();document.getElementById('referralEditId').value='';
+  document.getElementById('referralSaveButton').textContent='Add Referral';
+  document.getElementById('referralCancelButton').classList.add('hidden');
+}
+function deleteReferral(id){
+  const item=getReferrals().find(entry=>entry.id===id);if(!item||!confirm(`Delete ${item.name} from Medical Referrals?`))return;
+  setReferrals(getReferrals().filter(entry=>entry.id!==id));
+  if(document.getElementById('referralEditId')?.value===id)resetReferralForm();
+  renderReferrals();refreshReferralSelectors();toast('Referral deleted.');
+}
+function renderReferrals(){
+  const box=document.getElementById('referralList');if(!box)return;
+  const q=(document.getElementById('referralSearch')?.value||'').trim().toLowerCase();
+  const items=getReferrals().filter(item=>[item.name,item.type,item.address,item.phone,item.website,item.notes].join(' ').toLowerCase().includes(q));
+  if(!items.length){box.innerHTML=`<div class="referral-empty muted">${q?'No matching referrals.':'No referrals saved yet.'}</div>`;return;}
+  box.innerHTML=items.sort((a,b)=>a.name.localeCompare(b.name)).map(item=>{
+    const website=normalizeWebsite(item.website);
+    const call=item.phone?`<a class="referral-link" href="${escapeHtml(referralPhoneHref(item.phone))}">Call</a>`:'';
+    const directions=item.address?`<a class="referral-link" href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(item.address)}" target="_blank" rel="noopener noreferrer">Directions</a>`:'';
+    const web=website?`<a class="referral-link" href="${escapeHtml(website)}" target="_blank" rel="noopener noreferrer">Website</a>`:'';
+    return `<article class="referral-card"><div class="referral-card-head"><div><h4>${escapeHtml(item.name)}</h4><span class="badge">${escapeHtml(item.type)}</span></div></div>${item.address?`<div class="referral-detail">${escapeHtml(item.address)}</div>`:''}${item.phone?`<div class="referral-detail">${escapeHtml(item.phone)}</div>`:''}${item.website?`<div class="referral-detail">${escapeHtml(item.website)}</div>`:''}${item.notes?`<div class="referral-detail muted">${escapeHtml(item.notes)}</div>`:''}<div class="referral-actions">${call}${directions}${web}<button type="button" class="tiny secondary" onclick="editReferral('${escapeHtml(item.id)}')">Edit</button><button type="button" class="tiny danger-outline" onclick="deleteReferral('${escapeHtml(item.id)}')">Delete</button></div></article>`;
+  }).join('');
+}

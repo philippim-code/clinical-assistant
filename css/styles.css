@@ -370,3 +370,26 @@ html[data-appearance="dark"] .outcome-note,html[data-appearance="dark"] .outcome
 .term-card span{color:var(--text,#1f2933)}
 .home-toggle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:6px 14px}
 #output:not([readonly]){border-width:2px}
+
+/* ===== v1.6.0-dev3 Medical Referral Manager ===== */
+.tool-launch-card{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 22px}
+.tool-launch-card+.clinical-tool-overlay+.section{margin-top:24px}
+.tool-launch-content{display:flex;align-items:center;gap:15px;min-width:0}.tool-launch-content h3{margin:0 0 4px}.tool-launch-content p{margin:0}
+.tool-launch-icon{display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;border-radius:13px;background:var(--soft-theme,#eaf7f8);color:var(--accent,var(--teal));font-size:23px;font-weight:bold}
+.tool-launch-action{flex:0 0 auto;min-width:92px;margin:0}
+.clinical-tool-overlay{position:fixed;inset:0;z-index:1200;display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,36px);background:rgba(8,30,34,.58);backdrop-filter:blur(3px)}
+.clinical-tool-overlay.hidden{display:none}
+.clinical-tool-panel{--tool-panel-padding:clamp(18px,3vw,30px);width:min(1120px,100%);max-height:min(88vh,900px);overflow:auto;padding:var(--tool-panel-padding);border:1px solid var(--line-theme,var(--border));border-radius:18px;background:var(--surface,#fff);color:var(--text,#17282b);box-shadow:0 24px 70px rgba(0,0,0,.28)}
+.clinical-tool-panel-head{position:sticky;top:calc(-1 * var(--tool-panel-padding));z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;margin:calc(-1 * var(--tool-panel-padding)) calc(-1 * var(--tool-panel-padding)) 16px;padding:18px var(--tool-panel-padding);border-bottom:1px solid var(--line-theme,var(--border));background:var(--surface,#fff)}
+.clinical-tool-panel-head h3{margin:2px 0 0}.tool-panel-eyebrow{color:var(--accent,var(--teal));font-size:11px;font-weight:bold;letter-spacing:.12em;text-transform:uppercase}.clinical-tool-close{margin:0;min-width:76px}
+body.clinical-tool-open{overflow:hidden}
+.referral-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,1fr);gap:22px;align-items:start}
+.referral-form{padding:14px;border:1px solid var(--line-theme,var(--border));border-radius:12px;background:var(--soft-theme,#f7fbfc)}
+.referral-form textarea{height:86px;min-height:86px}.referral-list{display:grid;gap:10px;margin-top:12px;max-height:610px;overflow:auto}
+.referral-card{padding:14px;border:1px solid var(--line-theme,var(--border));border-radius:12px;background:var(--surface,#fff)}
+.referral-card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.referral-card h4{margin:0;color:var(--accent,var(--teal))}
+.referral-detail{margin-top:7px;white-space:pre-wrap;overflow-wrap:anywhere}.referral-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.referral-actions button,.referral-actions a{margin:0}
+.referral-link{display:inline-flex;align-items:center;text-decoration:none;padding:7px 10px;border-radius:9px;background:var(--teal);color:#fff;font-weight:bold;font-size:13px}
+.referral-link:hover{background:var(--teal-dark)}.referral-empty{padding:16px;text-align:center;border:1px dashed var(--border);border-radius:10px}.referral-considerations{margin-top:18px}
+@media(max-width:850px){.referral-layout{grid-template-columns:1fr}.referral-list{max-height:none}}
+@media(max-width:520px){.tool-launch-card{align-items:stretch;flex-direction:column}.tool-launch-action{width:100%}.clinical-tool-overlay{align-items:stretch;padding:0}.clinical-tool-panel{max-height:none;height:100%;border:0;border-radius:0;padding:16px}.clinical-tool-panel-head{top:-16px;margin:-16px -16px 14px;padding:14px 16px}.referral-card-head{flex-direction:column}.referral-actions>*{flex:1 1 120px;justify-content:center;text-align:center;min-height:40px}}

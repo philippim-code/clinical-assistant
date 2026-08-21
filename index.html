@@ -61,6 +61,28 @@
 <p class="muted">PTA guide: No Loss (&lt;25 dB), Mild (26–40 dB), Moderate (41–55 dB), Moderate to Severe (56–69 dB), Severe to Profound (70–95 dB), Unaidable (&gt;95 dB).</p>
 <div class="clinical-learning-box"><h4>How to Calculate PTA</h4><p>Add the hearing thresholds at <strong>500 Hz, 1000 Hz, and 2000 Hz</strong> for one ear, then divide the total by 3.</p><div class="formula-box">(500 Hz + 1000 Hz + 2000 Hz) ÷ 3 = PTA</div><p class="muted">Calculate each ear separately. Use the measured thresholds from the audiogram.</p></div>
 </div>
+<article class="section tool-launch-card" aria-labelledby="medicalReferralsCardTitle">
+  <div class="tool-launch-content"><div class="tool-launch-icon" aria-hidden="true">✚</div><div><h3 id="medicalReferralsCardTitle">Medical Referrals</h3><p class="muted">Save referral offices and access referral guidance.</p></div></div>
+  <button type="button" class="primary tool-launch-action" onclick="openClinicalTool('medicalReferralsPanel')" aria-haspopup="dialog">Open</button>
+</article>
+<div class="clinical-tool-overlay hidden" id="medicalReferralsPanel" role="dialog" aria-modal="true" aria-labelledby="medicalReferralsTitle" onclick="closeClinicalToolFromBackdrop(event)">
+<div class="clinical-tool-panel" id="medicalReferralsSection" tabindex="-1">
+<div class="clinical-tool-panel-head"><div><span class="tool-panel-eyebrow">Clinical Tool</span><h3 id="medicalReferralsTitle">Medical Referrals</h3></div><button type="button" class="secondary clinical-tool-close" onclick="closeClinicalTool('medicalReferralsPanel')" aria-label="Close Medical Referrals">Close</button></div>
+<p class="muted">Create a reusable provider directory stored only in this browser. Do not include patient-identifying information.</p>
+<div class="referral-layout">
+<form id="referralForm" class="referral-form" onsubmit="saveReferral(event)">
+<input type="hidden" id="referralEditId">
+<div class="grid-2"><div><label class="inline-label" for="referralName">Name</label><input type="text" id="referralName" required placeholder="Provider or clinic name"></div><div><label class="inline-label" for="referralType">Type</label><select id="referralType" required><option value="ENT">ENT</option><option value="Urgent Care/Walk-In">Urgent Care/Walk-In</option><option value="PCP">PCP</option><option value="Audiology/Other">Audiology/Other</option></select></div></div>
+<label class="inline-label" for="referralAddress">Address</label><input type="text" id="referralAddress" placeholder="Street, city, state, ZIP">
+<div class="grid-2"><div><label class="inline-label" for="referralPhone">Phone</label><input type="text" id="referralPhone" inputmode="tel" placeholder="(555) 555-5555"></div><div><label class="inline-label" for="referralWebsite">Website</label><input type="text" id="referralWebsite" inputmode="url" placeholder="example.com"></div></div>
+<label class="inline-label" for="referralNotes">Notes</label><textarea id="referralNotes" placeholder="Office hours, scheduling details, or other non-patient information"></textarea>
+<button class="primary" type="submit" id="referralSaveButton">Add Referral</button><button class="secondary hidden" type="button" id="referralCancelButton" onclick="resetReferralForm()">Cancel Edit</button>
+</form>
+<div><label class="inline-label" for="referralSearch">Find a referral</label><input type="text" id="referralSearch" placeholder="Search name, type, address, or notes..." oninput="renderReferrals()"><div id="referralList" class="referral-list"></div></div>
+</div>
+<div class="clinical-learning-box referral-considerations"><h4>Referral Considerations</h4><p class="muted">Common findings that may warrant medical evaluation can include sudden or rapidly changing hearing, unilateral or asymmetric findings, ear pain, drainage, visible abnormalities, excessive or impacted cerumen, dizziness, tinnitus concerns, or an air-bone gap. Follow applicable scope-of-practice requirements, company policy, and referral standards.</p><p class="muted"><strong>Informational only:</strong> Clinical Assistant does not determine whether a patient requires referral. Use professional judgment and document only what was observed and recommended.</p></div>
+</div>
+</div>
 <div class="section"><h3>Clinical Terminology</h3>
 <p class="muted">Quick-reference terminology for clinical workflow and studying.</p>
 <input type="text" id="terminologySearch" placeholder="Search terminology..." oninput="renderClinicalTerminology()">
@@ -157,12 +179,13 @@ Ran feedback test"></textarea></div></div><button class="primary" onclick="saveS
   </div>
 
   <div class="section" id="aboutWhatsNew">
-    <div class="about-section-head"><div><div class="about-icon">🚀</div><h3>What's New in v1.3.9</h3></div><span class="badge">August 15, 2026</span></div>
+    <div class="about-section-head"><div><div class="about-icon">🚀</div><h3>What's New in v1.6.0-dev4</h3></div><span class="badge">August 21, 2026</span></div>
     <ul class="about-list changelog-list">
-      <li><strong>Fixed Edit Saved Outcome</strong> so clicking Edit reliably opens Sycle Notes and restores the saved appointment workflow.</li>
-      <li><strong>Editing now updates the existing Saved Outcome</strong> instead of creating a duplicate when the corrected outcome is saved.</li>
-      <li><strong>Added safer edit recovery</strong> so a restore error returns to Saved Outcomes without changing or deleting the stored note.</li>
-      <li><strong>Preserved all v1.3.6 features</strong>, including the About tab and corrected Contact Developer email formatting.</li>
+      <li><strong>Added Medical Referrals</strong>, a reusable locally stored provider directory with call, directions, and website shortcuts.</li>
+      <li><strong>Connected referrals to HAE and Annual Retest</strong> while keeping the existing referral reasons and optional destination behavior.</li>
+      <li><strong>Preserved referral destinations</strong> through draft autosave, Saved Outcomes, reopening, editing, and note generation.</li>
+      <li><strong>Added informational referral considerations</strong> without automated clinical referral decisions.</li>
+      <li><strong>Refined Clinical Tools</strong> with the PTA Calculator first and a compact Medical Referrals card that opens the complete manager in a responsive panel.</li>
     </ul>
   </div>
 
