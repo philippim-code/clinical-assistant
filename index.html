@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Clinical Assistant</title>
 <meta name="theme-color" content="#008c95" />
 <meta name="application-name" content="Miracle-Ear Clinical Assistant" />
@@ -15,11 +15,9 @@
 <link rel="apple-touch-icon" sizes="512x512" href="./clinical-assistant-icon-v2.png">
 <link rel="manifest" href="manifest.json" />
 <link rel="stylesheet" href="styles.css" />
-
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Clinical Assistant">
-<meta name="theme-color" content="#ffffff">
 </head>
 <body>
 <div id="splash" class="splash"><div class="splash-card"><img src="logo.png" class="splash-logo" alt="Miracle-Ear Logo"><div class="splash-title">Miracle-Ear</div><div class="splash-subtitle">Clinical Assistant <span data-app-version></span></div></div></div>
@@ -29,6 +27,7 @@
 <div class="appbar">
   <div class="appbar-left"><span class="status-dot"></span><span class="app-title-group"><span class="appbar-title">Miracle-Ear Clinical Assistant</span><span class="appbar-version">Version <span data-app-version></span></span></span><span id="autosaveStatus" class="autosave-status">Draft autosave ready.</span></div>
   <div class="appbar-actions">
+    <button type="button" class="tiny sycle-shortcut" onclick="openSycle()">Open Sycle ↗</button>
     <button type="button" class="tiny ghost" onclick="showHelp()">Help</button>
   </div>
 </div>
@@ -57,15 +56,22 @@
 </div>
 <div id="notes" class="tab-panel"><h3>Select Appointment Type</h3><div class="appt-grid"><div class="appt-card" onclick="loadAppointment('hae',this)">HAE</div><div class="appt-card" onclick="loadAppointment('aftercare',this)">Aftercare</div><div class="appt-card" onclick="loadAppointment('delivery',this)">Delivery</div><div class="appt-card" onclick="loadAppointment('retest',this)">Annual Retest</div></div><div class="section active-patient-panel"><h3>Current Patient / Quick Label</h3><div class="grid-2"><div><label class="inline-label">Patient label <span class="muted">(initials, first name, or appointment time)</span></label><input type="text" id="currentPatientLabel" placeholder="ex. 10:30 AM - J.S."></div><div><label class="inline-label">Optional reminder/status</label><input type="text" id="currentPatientReminder" placeholder="ex. Needs closeout, waiting on payment"></div></div><p class="muted">Used when saving to Saved Outcomes. Keep identifiers minimal if possible. Keep identifiers minimal if possible.</p></div><div class="layout"><div class="section" id="workflow"><h3>Workflow</h3><p>Select an appointment type above.</p></div><div><div class="section"><h3>Additional Details</h3><textarea id="details" placeholder="Add any extra details here..."></textarea></div><div class="section"><h3>Generated Note</h3><textarea id="output" readonly placeholder="Click Generate Note when finished..."></textarea><button class="success" onclick="generateNote()">✓ Generate & Copy Note</button><button class="primary" onclick="saveOutcome()">💾 Save Outcome</button><button class="danger-outline" onclick="clearAll()">Clear</button><div class="muted" id="copyStatus"></div></div></div></div></div>
 
-<div id="outcomes" class="tab-panel"><div class="section"><h3>Saved Outcomes</h3><p class="muted">Saved outcomes stay on this computer/browser using local storage. Use initials, first name, appointment time, or another minimal identifier if possible.</p><div class="grid-2"><div><label class="inline-label">Search Saved Outcomes</label><input type="text" id="outcomeSearch" placeholder="Search patient label, appointment type, reminder, or note..." oninput="renderOutcomes()"></div><div class="toolbar-actions"><button class="info" onclick="exportTodaysOutcomes()">Export Saved Outcomes</button><button class="success-outline" onclick="markAllOutcomesComplete()">Mark All Complete</button><button class="danger-outline" onclick="clearCompletedOutcomes()">Clear Completed</button><button class="danger-outline" onclick="clearAllOutcomes()">Clear All</button></div></div><div id="outcomeSummary" class="result-box">No saved outcomes yet.</div><div id="outcomeList" style="margin-top:14px;"><p>No saved outcomes yet.</p></div></div></div>
+<div id="outcomes" class="tab-panel"><div class="section"><h3>Saved Outcomes</h3><p class="muted">Saved outcomes stay on this computer/browser using local storage. Use initials, first name, appointment time, or another minimal identifier if possible.</p><div class="grid-2 outcomes-toolbar-grid"><div class="outcomes-search"><label class="inline-label">Search Saved Outcomes</label><input type="text" id="outcomeSearch" placeholder="Search patient label, appointment type, reminder, or note..." oninput="renderOutcomes()"></div><div class="toolbar-actions outcomes-actions"><button class="info" onclick="exportTodaysOutcomes()">Export Saved Outcomes</button><button class="success-outline" onclick="markAllOutcomesComplete()">Mark All Complete</button><button class="danger-outline" onclick="clearCompletedOutcomes()">Clear Completed</button></div></div><div id="outcomeSummary" class="result-box">No saved outcomes yet.</div><div id="outcomeList" style="margin-top:14px;"><p>No saved outcomes yet.</p></div></div></div>
 <div id="tools" class="tab-panel"><div class="section"><h3>PTA Severity Calculator</h3><div class="grid-2"><div><label class="inline-label">Right Ear PTA</label><input type="number" id="toolRightPTA" placeholder="ex. 45" oninput="updateStandalonePTA()"></div><div><label class="inline-label">Left Ear PTA</label><input type="number" id="toolLeftPTA" placeholder="ex. 40" oninput="updateStandalonePTA()"></div></div><div class="result-box" id="toolPTAResult">Enter PTA values to see severity.</div><p class="muted">PTA guide: No Loss (&lt;25 dB), Mild (26–40 dB), Moderate (41–55 dB), Moderate to Severe (56–69 dB), Severe to Profound (70–95 dB), Unaidable (&gt;95 dB).</p></div></div>
-<div id="references" class="tab-panel"><div class="section"><h3>Quick Reference</h3><p>This tab is ready for future tools like product lookup, receiver/dome guide, consumer guide prompts, financing reference, and counseling reminders.</p></div><div class="section"><h3>Version Notes</h3><ul class="item-list"><li>1.0 RC standardizes the permanent App/Data/Backups folder structure, removes the desktop shortcut creator, and keeps the launcher/folder path stable for future updates. Earlier prototype milestones added Saved Outcomes, Generate & Copy Note, autosaved drafts, keyboard shortcuts, and workflow refinements.</li><li>v7.2 removes default selections, adds patient concern sections, and streamlines wrap-up items.</li><li>My Essentials now lives under purchase/trade-up outcomes.</li><li>Top-level checkbox clutter reduced for HAE and Retest workflows.</li><li>COU formatting remains built into HAE and Annual Retest 3+ workflows.</li></ul></div></div>
+<div id="references" class="tab-panel"><div class="section"><h3>Quick Reference</h3><p>This tab is ready for future tools like product lookup, receiver/dome guide, consumer guide prompts, financing reference, and counseling reminders.</p></div></div>
 
-<div id="settings" class="tab-panel"><div class="section"><h3>Settings</h3><p class="muted">These settings are saved on this computer/browser. They are meant to keep the app easy to customize without editing code.</p><div class="grid-2"><div><label class="inline-label">Financing Companies <span class="muted">one per line</span></label><textarea id="settingsFinance" placeholder="PatientFi
+<div id="settings" class="tab-panel"><div class="section"><h3>Settings</h3><p class="muted">These settings are saved on this computer/browser. They are meant to keep the app easy to customize without editing code.</p>
+<div class="settings-group"><h4>Appearance & Experience</h4>
+<div class="grid-3">
+<div><label class="inline-label" for="appearanceMode">Appearance</label><select id="appearanceMode" onchange="previewPersonalization()"><option value="light">Light</option><option value="dark">Dark</option><option value="system">System</option></select></div>
+<div><label class="inline-label" for="colorTheme">Color Theme</label><select id="colorTheme" onchange="previewPersonalization()"><option value="clinical">Clinical Teal</option><option value="sycle">Sycle</option></select></div>
+<div><label class="inline-label" for="defaultLanding">Default Landing Page</label><select id="defaultLanding"><option value="home">Home</option><option value="notes">Sycle Notes</option><option value="outcomes">Saved Outcomes</option></select></div>
+</div>
+<p class="muted settings-hint">Appearance and theme preview immediately. Choose Save Settings to keep your selections.</p></div><div class="grid-2"><div><label class="inline-label">Financing Companies <span class="muted">one per line</span></label><textarea id="settingsFinance" placeholder="PatientFi
 Powerpay
 Paymonthly/Care Credit
 HFD"></textarea></div><div><label class="inline-label">Common Programming Presets <span class="muted">one per line</span></label><textarea id="settingsAdjustments" placeholder="Increased speech 1 click AU
-Ran feedback test"></textarea></div></div><button class="primary" onclick="saveSettings()">Save Settings</button><button class="danger-outline" onclick="resetSettings()">Reset Defaults</button><div class="result-box" id="settingsStatus">Settings ready.</div></div><div class="section"><h3>Portable App Notes</h3><ul class="item-list"><li>The app is designed to run from OneDrive or a shared folder without installation.</li><li>Saved Outcomes and draft autosave are stored in the browser on this computer.</li><li>Use Export Saved Outcomes before switching computers or clearing browser data.</li><li>If the app looks plain, extract the ZIP first and keep index.html next to the css, js, and assets folders.</li></ul></div></div>
+Ran feedback test"></textarea></div></div><button class="primary" onclick="saveSettings()">Save Settings</button><button class="danger-outline" onclick="resetSettings()">Reset Defaults</button><div class="result-box" id="settingsStatus">Settings ready.</div></div></div>
 <div id="about" class="tab-panel">
   <div class="about-hero section">
     <div class="about-brand">
@@ -160,7 +166,7 @@ Ran feedback test"></textarea></div></div><button class="primary" onclick="saveS
 <script src="app.js"></script>
 <script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(console.warn));
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js'));
 }
 </script>
 </body>
