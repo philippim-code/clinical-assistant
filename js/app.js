@@ -319,7 +319,6 @@ function expandRestoredUI(){
 function saveDraftEntry(){saveDraftNow('Unfinished appointment autosaved.')}
 function saveOutcome(){
   if(!currentAppointment){alert('Select an appointment type first.');return;}
-  if(!document.getElementById('output').value.trim())generateNote();
   const note=document.getElementById('output').value.trim();
   if(!note){alert('Generate a note before saving an outcome.');return;}
   let label=(document.getElementById('currentPatientLabel')?.value||'').trim();
