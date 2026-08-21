@@ -373,6 +373,7 @@ html[data-appearance="dark"] .outcome-note,html[data-appearance="dark"] .outcome
 
 /* ===== v1.6.0-dev3 Medical Referral Manager ===== */
 .tool-launch-card{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 22px}
+.tool-launch-card+.clinical-tool-overlay+.section{margin-top:24px}
 .tool-launch-content{display:flex;align-items:center;gap:15px;min-width:0}.tool-launch-content h3{margin:0 0 4px}.tool-launch-content p{margin:0}
 .tool-launch-icon{display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;border-radius:13px;background:var(--soft-theme,#eaf7f8);color:var(--accent,var(--teal));font-size:23px;font-weight:bold}
 .tool-launch-action{flex:0 0 auto;min-width:92px;margin:0}
