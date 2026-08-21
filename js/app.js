@@ -256,7 +256,7 @@ function activateTabByIndex(index){const btn=document.querySelectorAll('.tab-btn
 
 window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('splash')?.classList.add('hidden'),650);restoreDraft();renderOutcomes();});
 document.addEventListener('input',e=>{if(e.target.id!=='output'){markNoteAsNotGenerated();saveDraftDebounced();}});
-document.addEventListener('change',e=>{markNoteAsNotGenerated();saveDraftDebounced();});
+document.addEventListener('change',e=>{if(e.target.id!=='output'){markNoteAsNotGenerated();saveDraftDebounced();}});
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();generateNote();toast('✓ Note generated.');saveDraftNow('Draft autosaved.');}
   if(e.ctrlKey&&e.key.toLowerCase()==='s'){e.preventDefault();saveOutcome();}
