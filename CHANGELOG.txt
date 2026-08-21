@@ -1,8 +1,8 @@
-Miracle-Ear Clinical Assistant v1.3.2
-July 29, 2026
+Miracle-Ear Clinical Assistant v1.6.0-dev3
+August 21, 2026
 
-- Restored the original Miracle-Ear logo on the splash screen and page header.
-- Replaced the prior favicon with a simplified, thick-stroke ear icon.
-- Added favicon sizes optimized for 16, 24, 32, 48, and 64 pixels.
-- Updated the browser tab title to "Clinical Assistant".
-- Preserved all existing workflows, layout, saved outcomes, and autosave behavior.
+- Added a locally stored Medical Referrals directory with add, edit, delete, search, call, directions, and website actions.
+- Added an optional Referred To selector to the HAE and Annual Retest Med Referral workflows.
+- Referral destinations are included concisely in generated notes and persist with drafts and Saved Outcomes.
+- Added informational Referral Considerations without automatic clinical decision-making.
+- Preserved existing appointment workflows, manually edited notes, autosave, responsive behavior, and local-only storage.
