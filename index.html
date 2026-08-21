@@ -55,7 +55,19 @@
 
 <div id="outcomes" class="tab-panel"><div class="section"><h3>Saved Outcomes</h3><p class="muted">Saved outcomes stay on this computer/browser using local storage. Use initials, first name, appointment time, or another minimal identifier if possible.</p><div class="grid-2 outcomes-toolbar-grid"><div class="outcomes-search"><label class="inline-label">Search Saved Outcomes</label><input type="text" id="outcomeSearch" placeholder="Search patient label, appointment type, reminder, or note..." oninput="renderOutcomes()"></div><div class="toolbar-actions outcomes-actions"><button class="info" onclick="exportTodaysOutcomes()">Export Saved Outcomes</button><button class="success-outline" onclick="markAllOutcomesComplete()">Mark All Complete</button><button class="danger-outline" onclick="clearCompletedOutcomes()">Clear Completed</button></div></div><div id="outcomeSummary" class="result-box">No saved outcomes yet.</div><div id="outcomeList" style="margin-top:14px;"><p>No saved outcomes yet.</p></div></div></div>
 <div id="tools" class="tab-panel">
-<div class="section" id="medicalReferralsSection"><h3>Medical Referrals</h3>
+<div class="section"><h3>PTA Severity Calculator</h3>
+<div class="grid-2"><div><label class="inline-label">Right Ear PTA</label><input type="number" id="toolRightPTA" placeholder="ex. 45" oninput="updateStandalonePTA()"></div><div><label class="inline-label">Left Ear PTA</label><input type="number" id="toolLeftPTA" placeholder="ex. 40" oninput="updateStandalonePTA()"></div></div>
+<div class="result-box" id="toolPTAResult">Enter PTA values to see severity.</div>
+<p class="muted">PTA guide: No Loss (&lt;25 dB), Mild (26–40 dB), Moderate (41–55 dB), Moderate to Severe (56–69 dB), Severe to Profound (70–95 dB), Unaidable (&gt;95 dB).</p>
+<div class="clinical-learning-box"><h4>How to Calculate PTA</h4><p>Add the hearing thresholds at <strong>500 Hz, 1000 Hz, and 2000 Hz</strong> for one ear, then divide the total by 3.</p><div class="formula-box">(500 Hz + 1000 Hz + 2000 Hz) ÷ 3 = PTA</div><p class="muted">Calculate each ear separately. Use the measured thresholds from the audiogram.</p></div>
+</div>
+<article class="section tool-launch-card" aria-labelledby="medicalReferralsCardTitle">
+  <div class="tool-launch-content"><div class="tool-launch-icon" aria-hidden="true">✚</div><div><h3 id="medicalReferralsCardTitle">Medical Referrals</h3><p class="muted">Save referral offices and access referral guidance.</p></div></div>
+  <button type="button" class="primary tool-launch-action" onclick="openClinicalTool('medicalReferralsPanel')" aria-haspopup="dialog">Open</button>
+</article>
+<div class="clinical-tool-overlay hidden" id="medicalReferralsPanel" role="dialog" aria-modal="true" aria-labelledby="medicalReferralsTitle" onclick="closeClinicalToolFromBackdrop(event)">
+<div class="clinical-tool-panel" id="medicalReferralsSection" tabindex="-1">
+<div class="clinical-tool-panel-head"><div><span class="tool-panel-eyebrow">Clinical Tool</span><h3 id="medicalReferralsTitle">Medical Referrals</h3></div><button type="button" class="secondary clinical-tool-close" onclick="closeClinicalTool('medicalReferralsPanel')" aria-label="Close Medical Referrals">Close</button></div>
 <p class="muted">Create a reusable provider directory stored only in this browser. Do not include patient-identifying information.</p>
 <div class="referral-layout">
 <form id="referralForm" class="referral-form" onsubmit="saveReferral(event)">
@@ -70,11 +82,6 @@
 </div>
 <div class="clinical-learning-box referral-considerations"><h4>Referral Considerations</h4><p class="muted">Common findings that may warrant medical evaluation can include sudden or rapidly changing hearing, unilateral or asymmetric findings, ear pain, drainage, visible abnormalities, excessive or impacted cerumen, dizziness, tinnitus concerns, or an air-bone gap. Follow applicable scope-of-practice requirements, company policy, and referral standards.</p><p class="muted"><strong>Informational only:</strong> Clinical Assistant does not determine whether a patient requires referral. Use professional judgment and document only what was observed and recommended.</p></div>
 </div>
-<div class="section"><h3>PTA Severity Calculator</h3>
-<div class="grid-2"><div><label class="inline-label">Right Ear PTA</label><input type="number" id="toolRightPTA" placeholder="ex. 45" oninput="updateStandalonePTA()"></div><div><label class="inline-label">Left Ear PTA</label><input type="number" id="toolLeftPTA" placeholder="ex. 40" oninput="updateStandalonePTA()"></div></div>
-<div class="result-box" id="toolPTAResult">Enter PTA values to see severity.</div>
-<p class="muted">PTA guide: No Loss (&lt;25 dB), Mild (26–40 dB), Moderate (41–55 dB), Moderate to Severe (56–69 dB), Severe to Profound (70–95 dB), Unaidable (&gt;95 dB).</p>
-<div class="clinical-learning-box"><h4>How to Calculate PTA</h4><p>Add the hearing thresholds at <strong>500 Hz, 1000 Hz, and 2000 Hz</strong> for one ear, then divide the total by 3.</p><div class="formula-box">(500 Hz + 1000 Hz + 2000 Hz) ÷ 3 = PTA</div><p class="muted">Calculate each ear separately. Use the measured thresholds from the audiogram.</p></div>
 </div>
 <div class="section"><h3>Clinical Terminology</h3>
 <p class="muted">Quick-reference terminology for clinical workflow and studying.</p>
@@ -172,12 +179,13 @@ Ran feedback test"></textarea></div></div><button class="primary" onclick="saveS
   </div>
 
   <div class="section" id="aboutWhatsNew">
-    <div class="about-section-head"><div><div class="about-icon">🚀</div><h3>What's New in v1.6.0-dev3</h3></div><span class="badge">August 21, 2026</span></div>
+    <div class="about-section-head"><div><div class="about-icon">🚀</div><h3>What's New in v1.6.0-dev4</h3></div><span class="badge">August 21, 2026</span></div>
     <ul class="about-list changelog-list">
       <li><strong>Added Medical Referrals</strong>, a reusable locally stored provider directory with call, directions, and website shortcuts.</li>
       <li><strong>Connected referrals to HAE and Annual Retest</strong> while keeping the existing referral reasons and optional destination behavior.</li>
       <li><strong>Preserved referral destinations</strong> through draft autosave, Saved Outcomes, reopening, editing, and note generation.</li>
       <li><strong>Added informational referral considerations</strong> without automated clinical referral decisions.</li>
+      <li><strong>Refined Clinical Tools</strong> with the PTA Calculator first and a compact Medical Referrals card that opens the complete manager in a responsive panel.</li>
     </ul>
   </div>
 
