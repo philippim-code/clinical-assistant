@@ -1,0 +1,10 @@
+Miracle-Ear Clinical Assistant v1.7.0
+Released August 22, 2026
+
+Stable release promoted from the tested development build.
+
+Highlights:
+- Concise Sycle note generation retained with automatic patient-reported attribution where appropriate.
+- Manual edits to Saved Outcomes are preserved when reopening for editing.
+- Appearance & Home settings and Clinical Terminology are available on demand.
+- Duplicate identifier reminder and About-card spacing issues fixed.
