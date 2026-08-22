@@ -1,4 +1,13 @@
-Miracle-Ear Clinical Assistant v1.6.0-dev4
+Miracle-Ear Clinical Assistant v1.7.0-dev1
+
+v1.7.0-dev1
+August 21, 2026
+
+- Added Smart Note Generation to organize selected clinical facts into clearer, more natural Sycle-ready sentences.
+- Added context-aware wording for evaluation, hearing findings, demonstrations, treatment outcomes, service, fitting, and counseling.
+- Combined related counseling and maintenance items to reduce repetitive, mechanical phrasing.
+- Preserved documentation safety: only selected or entered information is used, and manually edited Generated Notes remain authoritative when saving.
+- Kept Additional Details as user-entered documentation without inferring missing clinical information.
 
 v1.6.0-dev4
 - Kept the PTA Calculator first and immediately visible in Clinical Tools.
