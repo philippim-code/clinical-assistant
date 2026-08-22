@@ -1,5 +1,5 @@
 /* =========================================================
-   Miracle-Ear Clinical Assistant v1.7.0
+   Miracle-Ear Clinical Assistant v1.7.1
    Concise note + quality-of-life patch layer
 
    Keeps the established concise Sycle note style. The only contextual
@@ -9,7 +9,7 @@
 (function(){
   'use strict';
 
-  const PATCH_VERSION='1.7.0';
+  const PATCH_VERSION='1.7.1';
 
   function cleanText(value){return String(value||'').replace(/\s+/g,' ').trim();}
   function concernPrefix(){
@@ -193,6 +193,7 @@
     if(heading)heading.textContent="What's New in v"+PATCH_VERSION;
     const list=document.querySelector('#aboutWhatsNew .changelog-list');
     if(list)list.innerHTML=[
+      '<li><strong>Added a mobile-friendly Open Sycle launcher</strong> that keeps navigation in the current app/browser view and allows returning with the Back control.</li>',
       '<li><strong>Returned Generated Notes to the concise Sycle style</strong> while keeping automatic patient-reported wording for documented concerns when appropriate.</li>',
       '<li><strong>Protected manual Saved Outcome edits</strong> so reopening an outcome restores the Generated Note exactly as it was saved.</li>',
       '<li><strong>Collapsed infrequently used settings</strong> by combining Appearance & Experience with Home Dashboard in an on-demand panel.</li>',
@@ -211,91 +212,11 @@
   }
 
   window.showVersionInfo=function(){
-    alert(`Miracle-Ear Clinical Assistant\n\nVersion ${PATCH_VERSION}\n\nWhat's new:\n• Concise Sycle note style restored\n• Patient-reported concern wording retained\n• Saved Outcome manual edits protected when reopening\n• Appearance/Home settings moved into an on-demand panel\n• Clinical Terminology moved into an on-demand panel\n• Minor spacing and duplicate-text fixes`);
+    alert(`Miracle-Ear Clinical Assistant\n\nVersion ${PATCH_VERSION}\n\nWhat's new:\n• Open Sycle works in the current app/browser view\n• Concise Sycle note style retained\n• Patient-reported concern wording retained\n• Saved Outcome manual edits protected when reopening\n• Appearance/Home settings moved into an on-demand panel\n• Clinical Terminology moved into an on-demand panel\n• Minor spacing and duplicate-text fixes`);
   };
   window.checkForUpdates=function(){
     alert(`Update check\n\nCurrent version: ${PATCH_VERSION}\n\nThis portable/browser version cannot automatically download updates yet. Replace the App folder when a new version is released.`);
   };
-
-  /* =========================================================
-     DEVELOPMENT-ONLY: Sycle in-app embed compatibility test
-     ========================================================= */
-  const SYCLE_URL='https://www.mymiracle-ear.com/freecvs/schedule_hm.php';
-
-  function addSycleEmbedStyles(){
-    if(document.getElementById('sycleEmbedTestStyles'))return;
-    const style=document.createElement('style');
-    style.id='sycleEmbedTestStyles';
-    style.textContent=`
-      .appbar-actions{display:flex!important;}
-      .sycle-embed-overlay{position:fixed;inset:0;z-index:10000;background:var(--bg,#f5f7fa);display:flex;flex-direction:column;}
-      .sycle-embed-overlay.hidden{display:none!important;}
-      .sycle-embed-bar{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card,#fff);border-bottom:1px solid rgba(0,0,0,.12);flex:0 0 auto;}
-      .sycle-embed-title{min-width:0;flex:1;}
-      .sycle-embed-title strong{display:block;line-height:1.2;}
-      .sycle-embed-title span{display:block;font-size:12px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-      .sycle-embed-frame{border:0;width:100%;height:100%;flex:1 1 auto;background:#fff;}
-      .sycle-test-badge{display:inline-block;margin-left:8px;padding:2px 7px;border-radius:999px;font-size:11px;font-weight:700;background:#fff3cd;color:#664d03;vertical-align:middle;}
-      @media(max-width:600px){
-        .appbar-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;width:100%;}
-        .appbar-actions button{width:100%;margin:0!important;min-height:44px;}
-        .sycle-embed-bar{gap:6px;padding:8px}
-        .sycle-embed-bar button{padding:8px 10px}
-        .sycle-embed-title span{display:none;}
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  function buildSycleEmbedViewer(){
-    if(document.getElementById('sycleEmbedOverlay'))return;
-    addSycleEmbedStyles();
-    const overlay=document.createElement('div');
-    overlay.id='sycleEmbedOverlay';
-    overlay.className='sycle-embed-overlay hidden';
-    overlay.innerHTML=`
-      <div class="sycle-embed-bar">
-        <button type="button" class="secondary" id="sycleEmbedClose">← Clinical Assistant</button>
-        <div class="sycle-embed-title"><strong>Sycle <span class="sycle-test-badge">EMBED TEST</span></strong><span>Testing whether Amplifon/Sycle permits in-app display</span></div>
-        <button type="button" class="secondary" id="sycleEmbedReload">Refresh</button>
-        <button type="button" class="secondary" id="sycleEmbedExternal">External</button>
-      </div>
-      <iframe id="sycleEmbedFrame" class="sycle-embed-frame" title="Sycle" referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
-    document.body.appendChild(overlay);
-    document.getElementById('sycleEmbedClose').addEventListener('click',closeSycleEmbed);
-    document.getElementById('sycleEmbedReload').addEventListener('click',()=>{
-      const frame=document.getElementById('sycleEmbedFrame');
-      frame.src='about:blank';
-      setTimeout(()=>{frame.src=SYCLE_URL;},50);
-    });
-    document.getElementById('sycleEmbedExternal').addEventListener('click',()=>window.open(SYCLE_URL,'_blank','noopener,noreferrer'));
-  }
-
-  function openSycleEmbed(){
-    buildSycleEmbedViewer();
-    const overlay=document.getElementById('sycleEmbedOverlay');
-    const frame=document.getElementById('sycleEmbedFrame');
-    overlay.classList.remove('hidden');
-    document.body.style.overflow='hidden';
-    if(!frame.src||frame.src==='about:blank')frame.src=SYCLE_URL;
-  }
-
-  function closeSycleEmbed(){
-    const overlay=document.getElementById('sycleEmbedOverlay');
-    if(overlay)overlay.classList.add('hidden');
-    document.body.style.overflow='';
-  }
-
-  function enableSycleEmbedTest(){
-    buildSycleEmbedViewer();
-    window.openSycle=openSycleEmbed;
-    document.querySelectorAll('button').forEach(button=>{
-      if(button.textContent.trim().startsWith('Open Sycle')){
-        button.title='Development test: opens Sycle inside Clinical Assistant';
-        if(!button.querySelector('.sycle-test-badge'))button.insertAdjacentHTML('beforeend',' <span class="sycle-test-badge">TEST</span>');
-      }
-    });
-  }
 
   function initPatch(){
     applyVersion();
@@ -305,7 +226,6 @@
     fixAboutSpacing();
     collapseAppearanceAndHomeSettings();
     collapseClinicalTerminology();
-    enableSycleEmbedTest();
   }
 
   if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',initPatch);
