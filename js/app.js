@@ -1,4 +1,4 @@
-/* Miracle-Ear Clinical Assistant development loader — v1.7.0-dev2 */
+/* Miracle-Ear Clinical Assistant stable loader — v1.7.0 */
 (function(){
   function applyLayoutFixes(){
     const style=document.createElement('style');
