@@ -1,243 +1,33 @@
 /* =========================================================
-   Miracle-Ear Clinical Assistant v1.7.0-dev1
-   Smart Note Generation layer
+   Miracle-Ear Clinical Assistant v1.7.0-dev2
+   Concise note + quality-of-life patch layer
 
-   Safety rule: this layer only reorganizes and rewrites facts already
-   produced by the existing structured workflow. It does not infer or add
-   unselected clinical findings, testing, services, counseling, or outcomes.
+   Keeps the established concise Sycle note style. The only contextual
+   wording added automatically is patient attribution for a documented
+   concern/reported difficulty when the user did not already enter one.
    ========================================================= */
 (function(){
   'use strict';
 
-  const SMART_NOTE_VERSION='1.7.0-dev1';
+  const PATCH_VERSION='1.7.0-dev2';
 
   function cleanText(value){return String(value||'').replace(/\s+/g,' ').trim();}
-  function keyText(value){return cleanText(value).toLowerCase();}
-  function ensureSentence(value){
-    let text=cleanText(value);
-    if(!text)return'';
-    text=fixAcronyms(text);
-    text=text.charAt(0).toUpperCase()+text.slice(1);
-    if(!/[.!?]$/.test(text))text+='.';
-    return text;
-  }
-  function lowerSentenceFragment(value){
-    const text=fixAcronyms(cleanText(value));
-    if(!text)return'';
-    const protectedStart=/^(AU|AD|AS|AC|BC|SRT|WR|UCL|MCL|PTA|COU|NOAH|FDA|HFD|RIC|BTE|ITE|ITC|CIC|CROS|BiCROS|MEPO|MEPO2|AVG)\b/;
-    return protectedStart.test(text)?text:text.charAt(0).toLowerCase()+text.slice(1);
-  }
-  function unique(items){
-    const seen=new Set();
-    return items.filter(item=>{const k=keyText(item);if(!k||seen.has(k))return false;seen.add(k);return true;});
-  }
-
   function concernPrefix(){
     if(currentAppointment==='hae')return'hae';
     if(currentAppointment==='aftercare')return'ac';
     if(currentAppointment==='retest'||currentAppointment==='retestUnder'||currentAppointment==='retestOver')return'rt';
     return'';
   }
-  function concernSentence(){
-    const prefix=concernPrefix();
-    if(!prefix||!checked('sec_'+prefix+'Concern'))return'';
-    const raw=cleanText(val(prefix+'ConcernText'));
-    if(!raw)return'';
-    const alreadyAttributed=/^(patient|pt\.?|wife|husband|spouse|daughter|son|family|caregiver|parent|mother|father|reports?\b|states?\b|denies?\b|concerned\b)/i.test(raw);
-    return ensureSentence(alreadyAttributed?raw:'Patient reports '+lowerSentenceFragment(raw));
+  function attributedConcern(raw){
+    const text=cleanText(raw);
+    if(!text)return'';
+    const alreadyAttributed=/^(patient|pt\.?|wife|husband|spouse|daughter|son|family|caregiver|parent|mother|father)\b/i.test(text);
+    const alreadyReporting=/^(reports?|reported|states?|stated|denies?|denied|complains?|complained)\b/i.test(text);
+    if(alreadyAttributed)return fixAcronyms(text);
+    if(alreadyReporting)return fixAcronyms('Patient '+text.charAt(0).toLowerCase()+text.slice(1));
+    return fixAcronyms('Patient reports '+text.charAt(0).toLowerCase()+text.slice(1));
   }
-
-  function isHearingFinding(text){
-    const k=keyText(text);
-    return k.includes('hearing loss')||k.startsWith('normal hearing')||k==='no hearing loss identified';
-  }
-  function categoryFor(text){
-    const k=keyText(text);
-    if(!k)return'other';
-    if(k==='patient satisfied')return'satisfied';
-    if(k.startsWith('otoscopy')||k.startsWith('patient denies all fda')||k.startsWith('tested ac + bc')||isHearingFinding(text)||k.startsWith('med referral')||k.startsWith('med referred')||k.startsWith('medical referral'))return'evaluation';
-    if(k.startsWith('cleaned both hearing aids')||k.includes('vacuumed microphones')||k.includes('listening check performed')||k.includes('dry chamber')||k.startsWith('replaced ')||k==='replaced items'||k.startsWith('connected to computer'))return'service';
-    if(k.startsWith('demoed new tech')||k.startsWith('cou completed')||k.includes('improvement in clarity and understanding'))return'demonstration';
-    if(k.startsWith('delivered new hearing aids')||k.endsWith(' complete')||k.endsWith(' completed')||k.startsWith('first fit')||k.startsWith('fit ')||k.includes(' receivers ')||k.includes(' receiver using '))return'fitting';
-    if(k.startsWith('counseled on')||k.startsWith('discussed hearing conservation')||k.startsWith('advised to return')||k.startsWith('cleaning set for')||k.startsWith('put demos in ears while cleaning'))return'counseling';
-    if(k.startsWith('hearing aids recommended')||k.startsWith('hearing aids are not recommended')||k.startsWith('test results indicate')||k.startsWith('purchased ')||k.startsWith('traded up to ')||k.startsWith('accepted a 3-day')||k.startsWith('did not purchase')||k.startsWith('did not trade in')||k.startsWith('recommended better treatment')||k.startsWith('went over warranty'))return'treatment';
-    if(k.startsWith('financing complete')||k.includes('my essentials'))return'admin';
-    return'other';
-  }
-
-  function rewriteMedicalReferral(text){
-    let out=cleanText(text);
-    out=out.replace(/^Med referred due to /i,'Medical referral recommended due to ');
-    out=out.replace(/^Med referral recommended/i,'Medical referral recommended');
-    return ensureSentence(out);
-  }
-
-  function evaluationSentences(parts){
-    const remaining=[...parts];
-    const out=[];
-    const take=(predicate)=>{const index=remaining.findIndex(predicate);return index>=0?remaining.splice(index,1)[0]:'';};
-
-    const oto=take(p=>keyText(p).startsWith('otoscopy'));
-    if(oto)out.push(ensureSentence(oto));
-
-    const fda=take(p=>keyText(p).startsWith('patient denies all fda'));
-    if(fda)out.push(ensureSentence(fda));
-
-    const testing=take(p=>keyText(p).startsWith('tested ac + bc'));
-    const finding=take(p=>isHearingFinding(p));
-    if(testing&&finding&&keyText(finding)!=='hearing loss type/laterality not selected'){
-      out.push(ensureSentence('AC and BC testing was completed and entered into NOAH, with results documented as '+lowerSentenceFragment(finding)));
-    }else{
-      if(testing)out.push('AC and BC testing was completed and entered into NOAH.');
-      if(finding)out.push(ensureSentence(finding));
-    }
-
-    remaining.forEach(part=>{
-      const k=keyText(part);
-      if(k.startsWith('med referral')||k.startsWith('med referred')||k.startsWith('medical referral'))out.push(rewriteMedicalReferral(part));
-      else out.push(ensureSentence(part));
-    });
-    return out;
-  }
-
-  function maintenanceSentence(text){
-    const k=keyText(text);
-    const actions=[];
-    if(k.includes('cleaned both hearing aids'))actions.push('hearing aids cleaned');
-    if(k.includes('vacuumed microphones'))actions.push('microphones vacuumed');
-    if(k.includes('listening check performed'))actions.push('listening check performed');
-    if(k.includes('placed hearing aids in the dry chamber'))actions.push('hearing aids placed in the dry chamber');
-    if(!actions.length)return ensureSentence(text);
-    return ensureSentence('Maintenance completed: '+formatList(actions));
-  }
-
-  function serviceSentences(parts){
-    return parts.map(part=>{
-      const k=keyText(part);
-      if(k.includes('cleaned both hearing aids')||k.includes('vacuumed microphones')||k.includes('listening check performed')||k.includes('dry chamber'))return maintenanceSentence(part);
-      if(k.startsWith('connected to computer')){
-        let out=cleanText(part)
-          .replace(/^Connected to computer/i,'Hearing aids connected to computer')
-          .replace(/\bAVG WT\b/g,'average wear time')
-          .replace(/\bupdated firmware\b/gi,'firmware updated');
-        return ensureSentence(out);
-      }
-      return ensureSentence(part);
-    });
-  }
-
-  function demonstrationSentences(parts){
-    return parts.map(part=>{
-      const k=keyText(part);
-      if(k==='demoed new tech')return'New technology was demonstrated.';
-      if(k==='significant improvement in clarity and understanding')return'Significant improvement in clarity and understanding was observed.';
-      return ensureSentence(part);
-    });
-  }
-
-  function treatmentSentences(parts){
-    return parts.map(part=>{
-      const k=keyText(part);
-      if(k==='hearing aids recommended as treatment')return'Hearing aids were recommended as treatment.';
-      if(k==='recommended better treatment')return'Better treatment was recommended.';
-      if(k==='went over warranty / trade-in discussion')return'Warranty and trade-in options were reviewed.';
-      if(k.startsWith('purchased '))return ensureSentence('Patient '+lowerSentenceFragment(part));
-      if(k.startsWith('traded up to '))return ensureSentence('Patient '+lowerSentenceFragment(part));
-      if(k.startsWith('accepted a 3-day'))return ensureSentence('Patient '+lowerSentenceFragment(part));
-      if(k.startsWith('did not purchase'))return ensureSentence('Patient '+lowerSentenceFragment(part));
-      if(k.startsWith('did not trade in'))return ensureSentence('Patient '+lowerSentenceFragment(part));
-      return ensureSentence(part);
-    });
-  }
-
-  function counselingTopicsFromPart(part){
-    const k=keyText(part);
-    const topics=[];
-    const known=[
-      ['insertion and removal','insertion and removal'],
-      ['charger use','charger use'],
-      ['set realistic expectations','realistic expectations'],
-      ['realistic expectations','realistic expectations'],
-      ['importance of daily full-time wear','importance of daily full-time wear'],
-      ['test results','test results'],
-      ['cleaning','cleaning']
-    ];
-    if(k.startsWith('counseled on'))known.forEach(([needle,label])=>{if(k.includes(needle))topics.push(label);});
-    if(k.startsWith('discussed hearing conservation'))topics.push('hearing conservation');
-    return unique(topics);
-  }
-
-  function counselingSentences(parts){
-    let topics=[];
-    const other=[];
-    parts.forEach(part=>{const parsed=counselingTopicsFromPart(part);if(parsed.length)topics.push(...parsed);else other.push(part);});
-    topics=unique(topics);
-    const out=[];
-    if(topics.length)out.push(ensureSentence('Counseling included '+formatList(topics)));
-    other.forEach(part=>out.push(ensureSentence(part)));
-    return out;
-  }
-
-  function fittingSentences(parts){
-    return parts.map(part=>{
-      let text=cleanText(part);
-      if(/^Delivered new hearing aids$/i.test(text))return'New hearing aids were delivered.';
-      if(/ complete$/i.test(text))text=text.replace(/ complete$/i,' completed');
-      return ensureSentence(text);
-    });
-  }
-
-  function adminSentences(parts){return parts.map(ensureSentence);}
-  function otherSentences(parts){return parts.map(ensureSentence);}
-
-  function groupOrder(){
-    if(currentAppointment==='hae')return['evaluation','demonstration','treatment','counseling','service','fitting','admin','other'];
-    if(currentAppointment==='aftercare')return['evaluation','service','counseling','demonstration','treatment','fitting','admin','other'];
-    if(currentAppointment==='delivery')return['evaluation','fitting','counseling','admin','service','demonstration','treatment','other'];
-    return['service','evaluation','demonstration','treatment','counseling','fitting','admin','other'];
-  }
-
-  function composeSmartNote(parts){
-    const groups={evaluation:[],service:[],demonstration:[],fitting:[],treatment:[],counseling:[],admin:[],other:[]};
-    let satisfied=false;
-    const concern=concernSentence();
-    const concernKey=keyText(concernText(concernPrefix()));
-    const hasNormalLimitsStatement=parts.some(part=>keyText(part).startsWith('test results indicate hearing within normal limits'));
-
-    parts.filter(Boolean).forEach(part=>{
-      const k=keyText(part);
-      if(k==='patient satisfied'){satisfied=true;return;}
-      if(concernKey&&k===concernKey)return;
-      if(hasNormalLimitsStatement&&k==='no hearing loss identified')return;
-      const category=categoryFor(part);
-      (groups[category]||groups.other).push(part);
-    });
-
-    const sentences=[];
-    if(concern)sentences.push(concern);
-
-    groupOrder().forEach(category=>{
-      const items=groups[category];
-      if(!items.length)return;
-      let groupSentences=[];
-      if(category==='evaluation')groupSentences=evaluationSentences(items);
-      else if(category==='service')groupSentences=serviceSentences(items);
-      else if(category==='demonstration')groupSentences=demonstrationSentences(items);
-      else if(category==='treatment')groupSentences=treatmentSentences(items);
-      else if(category==='counseling')groupSentences=counselingSentences(items);
-      else if(category==='fitting')groupSentences=fittingSentences(items);
-      else if(category==='admin')groupSentences=adminSentences(items);
-      else groupSentences=otherSentences(items);
-      sentences.push(...groupSentences.filter(Boolean));
-    });
-
-    const details=cleanText(val('details'));
-    if(details)sentences.push(ensureSentence(details));
-    if(satisfied)sentences.push('Patient satisfied.');
-    return unique(sentences).join(' ');
-  }
-
-  function getCurrentStructuredParts(){
+  function getStructuredParts(){
     let arr=[];
     if(currentAppointment==='hae')arr=generateHae();
     if(currentAppointment==='aftercare')arr=generateAftercare();
@@ -248,58 +38,184 @@
     return arr;
   }
 
+  // Restore the concise pre-Smart-Note format while keeping useful patient
+  // attribution at the beginning of HAE, Aftercare, and Retest concerns.
   window.generateNote=function(){
-    const arr=getCurrentStructuredParts();
+    let arr=getStructuredParts();
     if(arr===null)return;
-    const note=composeSmartNote(Array.isArray(arr)?arr:[]);
-    document.getElementById('output').value=note;
-    document.getElementById('copyStatus').textContent='';
+    arr=Array.isArray(arr)?arr.filter(Boolean):[];
+
+    const prefix=concernPrefix();
+    if(prefix&&checked('sec_'+prefix+'Concern')){
+      const raw=cleanText(val(prefix+'ConcernText'));
+      if(raw){
+        const rawKey=raw.toLowerCase();
+        const index=arr.findIndex(item=>cleanText(item).toLowerCase()===rawKey);
+        const attributed=attributedConcern(raw);
+        if(index>=0)arr[index]=attributed;
+        else arr.unshift(attributed);
+      }
+    }
+
+    const hasPatientSatisfied=arr.some(x=>cleanText(x).toLowerCase()==='patient satisfied');
+    arr=arr.filter(x=>cleanText(x).toLowerCase()!=='patient satisfied');
+
+    let note='';
+    if(arr.length){
+      const normalized=[capFirst(arr[0]),...arr.slice(1).map(normalizeFragmentAfterComma)];
+      note=sentenceText(normalized.join(', '));
+    }
+
+    const details=val('details');
+    if(details)note+=(note?' ':'')+sentenceText(details);
+    if(hasPatientSatisfied)note+=(note?' ':'')+'Patient satisfied.';
+
+    const output=document.getElementById('output');
+    if(output)output.value=note;
+    const copyStatus=document.getElementById('copyStatus');
+    if(copyStatus)copyStatus.textContent='';
     if(note)copyNote(true);
   };
 
   const baseCollectDraftState=window.collectDraftState;
   if(typeof baseCollectDraftState==='function'){
-    window.collectDraftState=function(){const state=baseCollectDraftState();if(state)state.version=SMART_NOTE_VERSION;return state;};
+    window.collectDraftState=function(){
+      const state=baseCollectDraftState();
+      if(state)state.version=PATCH_VERSION;
+      return state;
+    };
   }
 
-  function applySmartNoteVersion(){
-    document.querySelectorAll('[data-app-version]').forEach(el=>{el.textContent=SMART_NOTE_VERSION;});
+  // Saved Outcome edit protection: restoring HAE state can fire a change
+  // handler after the note is populated. Re-apply the exact saved note after
+  // the restore completes so manual edits are never discarded.
+  const baseEditOutcome=window.editOutcome;
+  if(typeof baseEditOutcome==='function'){
+    window.editOutcome=function(id){
+      const item=getSavedOutcomes().find(x=>x.id===id);
+      const exactSavedNote=item&&item.note&&item.note!=='(Draft saved before note was generated.)'?item.note:'';
+      baseEditOutcome(id);
+      if(!item||editingOutcomeId!==item.id)return;
+      const restoreExactNote=()=>{
+        const output=document.getElementById('output');
+        if(output)output.value=exactSavedNote||item.state?.generatedNote||'';
+      };
+      restoreExactNote();
+      requestAnimationFrame(restoreExactNote);
+    };
+  }
+
+  function fixDuplicateIdentifierText(){
+    const panel=document.querySelector('.active-patient-panel');
+    if(!panel)return;
+    const note=[...panel.querySelectorAll('p.muted')].find(p=>p.textContent.includes('Used when saving to Saved Outcomes'));
+    if(note)note.textContent='Used when saving to Saved Outcomes. Keep identifiers minimal if possible.';
+  }
+
+  function fixAboutSpacing(){
+    const aboutGrid=document.querySelector('#about .about-grid');
+    if(aboutGrid)aboutGrid.style.marginTop='16px';
+  }
+
+  function createToolLauncher(title,description,panelId,icon){
+    const launcher=document.createElement('article');
+    launcher.className='section tool-launch-card';
+    launcher.innerHTML=`<div class="tool-launch-content"><div class="tool-launch-icon" aria-hidden="true">${icon}</div><div><h3>${title}</h3><p class="muted">${description}</p></div></div><button type="button" class="primary tool-launch-action" aria-haspopup="dialog">Open</button>`;
+    launcher.querySelector('button').addEventListener('click',()=>openClinicalTool(panelId));
+    return launcher;
+  }
+
+  function createOverlay(panelId,title,contentNodes,eyebrow='Tool'){
+    const overlay=document.createElement('div');
+    overlay.className='clinical-tool-overlay hidden';
+    overlay.id=panelId;
+    overlay.setAttribute('role','dialog');
+    overlay.setAttribute('aria-modal','true');
+    overlay.addEventListener('click',closeClinicalToolFromBackdrop);
+
+    const panel=document.createElement('div');
+    panel.className='clinical-tool-panel';
+    panel.tabIndex=-1;
+    const head=document.createElement('div');
+    head.className='clinical-tool-panel-head';
+    head.innerHTML=`<div><span class="tool-panel-eyebrow">${eyebrow}</span><h3>${title}</h3></div><button type="button" class="secondary clinical-tool-close">Close</button>`;
+    head.querySelector('button').addEventListener('click',()=>closeClinicalTool(panelId));
+    panel.appendChild(head);
+    contentNodes.forEach(node=>panel.appendChild(node));
+    overlay.appendChild(panel);
+    return overlay;
+  }
+
+  function collapseAppearanceAndHomeSettings(){
+    const settings=document.getElementById('settings');
+    if(!settings||document.getElementById('appearanceHomeSettingsPanel'))return;
+    const groups=[...settings.querySelectorAll('.settings-group')];
+    const appearance=groups.find(g=>g.querySelector('h4')?.textContent.trim()==='Appearance & Experience');
+    const home=groups.find(g=>g.querySelector('h4')?.textContent.trim()==='Home Dashboard');
+    if(!appearance||!home)return;
+
+    const launcher=createToolLauncher('Appearance & Home','Appearance, color theme, landing page, and Home Dashboard visibility.','appearanceHomeSettingsPanel','⚙️');
+    appearance.parentNode.insertBefore(launcher,appearance);
+    const overlay=createOverlay('appearanceHomeSettingsPanel','Appearance & Home',[appearance,home],'Settings');
+    settings.appendChild(overlay);
+  }
+
+  function collapseClinicalTerminology(){
+    const tools=document.getElementById('tools');
+    if(!tools||document.getElementById('clinicalTerminologyPanel'))return;
+    const section=[...tools.querySelectorAll(':scope > .section')].find(s=>s.querySelector('h3')?.textContent.trim()==='Clinical Terminology');
+    if(!section)return;
+
+    const launcher=createToolLauncher('Clinical Terminology','Quick-reference terminology for clinical workflow and studying.','clinicalTerminologyPanel','📚');
+    tools.insertBefore(launcher,section);
+    const overlay=createOverlay('clinicalTerminologyPanel','Clinical Terminology',[section],'Clinical Tool');
+    tools.appendChild(overlay);
+  }
+
+  function removeSmartNoteIndicator(){document.getElementById('smartNoteIndicator')?.remove();}
+
+  function applyVersion(){
+    document.querySelectorAll('[data-app-version]').forEach(el=>{el.textContent=PATCH_VERSION;});
+    const aboutVersion=document.getElementById('aboutVersion');
+    if(aboutVersion)aboutVersion.textContent=PATCH_VERSION;
     const heading=document.querySelector('#aboutWhatsNew h3');
-    if(heading)heading.textContent="What's New in v"+SMART_NOTE_VERSION;
+    if(heading)heading.textContent="What's New in v"+PATCH_VERSION;
     const list=document.querySelector('#aboutWhatsNew .changelog-list');
     if(list)list.innerHTML=[
-      '<li><strong>Added Smart Note Generation</strong> to organize selected clinical facts into clearer, more natural Sycle-ready sentences.</li>',
-      '<li><strong>Improved context-aware wording</strong> for testing, hearing findings, demonstrations, treatment outcomes, service, fitting, and counseling.</li>',
-      '<li><strong>Combined related counseling and maintenance items</strong> to reduce repetitive, mechanical note phrasing.</li>',
-      '<li><strong>Preserved documentation safety</strong>: only selected or entered information is used, and manual edits remain authoritative when saving.</li>',
-      '<li><strong>Kept Additional Details intact</strong> as user-entered documentation rather than inferring missing clinical information.</li>'
+      '<li><strong>Returned Generated Notes to the concise Sycle style</strong> while keeping automatic patient-reported wording for documented concerns when appropriate.</li>',
+      '<li><strong>Protected manual Saved Outcome edits</strong> so reopening an outcome restores the Generated Note exactly as it was saved.</li>',
+      '<li><strong>Collapsed infrequently used settings</strong> by combining Appearance & Experience with Home Dashboard in an on-demand panel.</li>',
+      '<li><strong>Made Clinical Terminology on-demand</strong> instead of keeping the full reference expanded by default.</li>',
+      '<li><strong>Fixed minor interface issues</strong>, including the repeated identifier reminder and About-card spacing.</li>'
     ].join('');
   }
 
-  window.showVersionInfo=function(){
-    alert(`Miracle-Ear Clinical Assistant\n\nVersion ${SMART_NOTE_VERSION}\n\nWhat's new:\n• Smart Note Generation with context-aware sentence organization\n• Cleaner treatment, service, fitting, and counseling wording\n• Related documentation combined to reduce repetition\n• No unselected clinical facts are added\n• Manually edited Generated Notes remain authoritative`);
-  };
-  window.checkForUpdates=function(){
-    alert(`Update check\n\nCurrent version: ${SMART_NOTE_VERSION}\n\nThis portable/browser version cannot automatically download updates yet. Replace the App folder when a new version is released.`);
-  };
-
-  function addSmartNoteIndicator(){
-    const output=document.getElementById('output');
-    if(!output||document.getElementById('smartNoteIndicator'))return;
-    const note=output.parentElement?.querySelector('p.muted');
-    if(note){
-      const indicator=document.createElement('div');
-      indicator.id='smartNoteIndicator';
-      indicator.className='muted';
-      indicator.style.margin='-4px 0 10px';
-      indicator.style.fontSize='12px';
-      indicator.textContent='Smart Note Generation • Uses only selected or entered information.';
-      note.insertAdjacentElement('afterend',indicator);
-    }
+  const baseRenderAbout=window.renderAbout;
+  if(typeof baseRenderAbout==='function'){
+    window.renderAbout=function(){
+      baseRenderAbout();
+      applyVersion();
+      fixAboutSpacing();
+    };
   }
 
-  function initSmartNotes(){applySmartNoteVersion();addSmartNoteIndicator();}
-  if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',initSmartNotes);
-  else initSmartNotes();
-  window.addEventListener('load',initSmartNotes);
+  window.showVersionInfo=function(){
+    alert(`Miracle-Ear Clinical Assistant\n\nVersion ${PATCH_VERSION}\n\nWhat's new:\n• Concise Sycle note style restored\n• Patient-reported concern wording retained\n• Saved Outcome manual edits protected when reopening\n• Appearance/Home settings moved into an on-demand panel\n• Clinical Terminology moved into an on-demand panel\n• Minor spacing and duplicate-text fixes`);
+  };
+  window.checkForUpdates=function(){
+    alert(`Update check\n\nCurrent version: ${PATCH_VERSION}\n\nThis portable/browser version cannot automatically download updates yet. Replace the App folder when a new version is released.`);
+  };
+
+  function initPatch(){
+    applyVersion();
+    removeSmartNoteIndicator();
+    fixDuplicateIdentifierText();
+    fixAboutSpacing();
+    collapseAppearanceAndHomeSettings();
+    collapseClinicalTerminology();
+  }
+
+  if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',initPatch);
+  else initPatch();
+  window.addEventListener('load',initPatch);
 })();
