@@ -1,6 +1,6 @@
-Miracle-Ear Clinical Assistant v1.7.0-dev2
+Miracle-Ear Clinical Assistant v1.7.0
 
-v1.7.0-dev2
+v1.7.0
 August 22, 2026
 
 - Returned Generated Notes to the previous concise Sycle style while retaining automatic patient-reported/patient-stated attribution for documented concerns when appropriate.
