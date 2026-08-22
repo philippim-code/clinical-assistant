@@ -227,6 +227,7 @@
     const style=document.createElement('style');
     style.id='sycleEmbedTestStyles';
     style.textContent=`
+      .appbar-actions{display:flex!important;}
       .sycle-embed-overlay{position:fixed;inset:0;z-index:10000;background:var(--bg,#f5f7fa);display:flex;flex-direction:column;}
       .sycle-embed-overlay.hidden{display:none!important;}
       .sycle-embed-bar{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card,#fff);border-bottom:1px solid rgba(0,0,0,.12);flex:0 0 auto;}
@@ -235,7 +236,13 @@
       .sycle-embed-title span{display:block;font-size:12px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
       .sycle-embed-frame{border:0;width:100%;height:100%;flex:1 1 auto;background:#fff;}
       .sycle-test-badge{display:inline-block;margin-left:8px;padding:2px 7px;border-radius:999px;font-size:11px;font-weight:700;background:#fff3cd;color:#664d03;vertical-align:middle;}
-      @media(max-width:600px){.sycle-embed-bar{gap:6px;padding:8px}.sycle-embed-bar button{padding:8px 10px}.sycle-embed-title span{display:none;}}
+      @media(max-width:600px){
+        .appbar-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;width:100%;}
+        .appbar-actions button{width:100%;margin:0!important;min-height:44px;}
+        .sycle-embed-bar{gap:6px;padding:8px}
+        .sycle-embed-bar button{padding:8px 10px}
+        .sycle-embed-title span{display:none;}
+      }
     `;
     document.head.appendChild(style);
   }
@@ -283,7 +290,7 @@
     buildSycleEmbedViewer();
     window.openSycle=openSycleEmbed;
     document.querySelectorAll('button').forEach(button=>{
-      if(button.textContent.trim()==='Open Sycle'){
+      if(button.textContent.trim().startsWith('Open Sycle')){
         button.title='Development test: opens Sycle inside Clinical Assistant';
         if(!button.querySelector('.sycle-test-badge'))button.insertAdjacentHTML('beforeend',' <span class="sycle-test-badge">TEST</span>');
       }
