@@ -1,4 +1,12 @@
-Miracle-Ear Clinical Assistant v1.7.0
+Miracle-Ear Clinical Assistant v1.7.1
+
+v1.7.1
+August 22, 2026
+
+- Restored the Open Sycle shortcut and made it available on portrait mobile layouts as well as larger screens.
+- Open Sycle now navigates to Sycle in the current app/browser view instead of opening a separate tab or window; use the browser Back control to return to Clinical Assistant.
+- Removed the development-only Sycle iframe/embed test, TEST badge, test viewer, and related experimental code after device validation.
+- Bumped the app cache for a clean v1.7.1 rollout.
 
 v1.7.0
 August 22, 2026
