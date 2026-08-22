@@ -35,9 +35,17 @@
     };
   }
 
+  function installSycleLaunchLast(){
+    /* The legacy v1.7.0 patch still runs its old embed-test initializer on
+       DOMContentLoaded/window load. Queue this after the current event has
+       completely finished so our production-like launcher always wins. */
+    setTimeout(installSycleLaunch,0);
+    setTimeout(installSycleLaunch,100);
+  }
+
   function ready(){
     applyLayoutFixes();
-    installSycleLaunch();
+    installSycleLaunchLast();
   }
 
   function loadSequentially(){
@@ -58,11 +66,11 @@
 
   if(document.readyState==='loading'){
     document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script>');
-    document.addEventListener('DOMContentLoaded',installSycleLaunch,{once:true});
-    /* smart-notes.js still contains the earlier embed-test load hook. Run
-       after it on window load so the final UI/function is always production-like. */
-    window.addEventListener('load',installSycleLaunch,{once:true});
+    document.addEventListener('DOMContentLoaded',installSycleLaunchLast,{once:true});
+    window.addEventListener('load',installSycleLaunchLast,{once:true});
+    window.addEventListener('pageshow',installSycleLaunchLast);
   }else{
     loadSequentially();
+    installSycleLaunchLast();
   }
 })();
