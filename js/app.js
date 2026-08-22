@@ -23,7 +23,10 @@
 
   function installSycleLaunch(){
     const button=document.querySelector('.sycle-shortcut');
-    if(button) button.textContent='Open Sycle';
+    if(button){
+      button.textContent='Open Sycle';
+      button.removeAttribute('title');
+    }
 
     /* Navigate in the current browser/app view rather than creating a new
        tab/window. The browser Back control returns to Clinical Assistant. */
@@ -56,6 +59,9 @@
   if(document.readyState==='loading'){
     document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script>');
     document.addEventListener('DOMContentLoaded',installSycleLaunch,{once:true});
+    /* smart-notes.js still contains the earlier embed-test load hook. Run
+       after it on window load so the final UI/function is always production-like. */
+    window.addEventListener('load',installSycleLaunch,{once:true});
   }else{
     loadSequentially();
   }
