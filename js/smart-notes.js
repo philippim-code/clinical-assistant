@@ -117,6 +117,22 @@
     if(aboutGrid)aboutGrid.style.marginTop='16px';
   }
 
+  function fixDashboardVersion(){
+    const cards=document.querySelectorAll('#dashboardCards .dashboard-card');
+    const versionCard=[...cards].find(card=>card.querySelector('.label')?.textContent.trim()==='Current Version');
+    const number=versionCard?.querySelector('.number');
+    if(number)number.textContent=PATCH_VERSION;
+  }
+
+  const baseRenderDashboard=window.renderDashboard;
+  if(typeof baseRenderDashboard==='function'){
+    window.renderDashboard=function(){
+      const result=baseRenderDashboard();
+      fixDashboardVersion();
+      return result;
+    };
+  }
+
   function createToolLauncher(title,description,panelId,icon){
     const launcher=document.createElement('article');
     launcher.className='section tool-launch-card';
@@ -208,6 +224,7 @@
 
   function initPatch(){
     applyVersion();
+    fixDashboardVersion();
     removeSmartNoteIndicator();
     fixDuplicateIdentifierText();
     fixAboutSpacing();
