@@ -1,5 +1,5 @@
 /* =========================================================
-   Miracle-Ear Clinical Assistant v1.7.0
+   Miracle-Ear Clinical Assistant v1.7.1
    Concise note + quality-of-life patch layer
 
    Keeps the established concise Sycle note style. The only contextual
@@ -9,7 +9,7 @@
 (function(){
   'use strict';
 
-  const PATCH_VERSION='1.7.0';
+  const PATCH_VERSION='1.7.1';
 
   function cleanText(value){return String(value||'').replace(/\s+/g,' ').trim();}
   function concernPrefix(){
@@ -38,8 +38,6 @@
     return arr;
   }
 
-  // Restore the concise pre-Smart-Note format while keeping useful patient
-  // attribution at the beginning of HAE, Aftercare, and Retest concerns.
   window.generateNote=function(){
     let arr=getStructuredParts();
     if(arr===null)return;
@@ -86,9 +84,6 @@
     };
   }
 
-  // Saved Outcome edit protection: restoring HAE state can fire a change
-  // handler after the note is populated. Re-apply the exact saved note after
-  // the restore completes so manual edits are never discarded.
   const baseEditOutcome=window.editOutcome;
   if(typeof baseEditOutcome==='function'){
     window.editOutcome=function(id){
@@ -198,6 +193,7 @@
     if(heading)heading.textContent="What's New in v"+PATCH_VERSION;
     const list=document.querySelector('#aboutWhatsNew .changelog-list');
     if(list)list.innerHTML=[
+      '<li><strong>Added a mobile-friendly Open Sycle launcher</strong> that keeps navigation in the current app/browser view and allows returning with the Back control.</li>',
       '<li><strong>Returned Generated Notes to the concise Sycle style</strong> while keeping automatic patient-reported wording for documented concerns when appropriate.</li>',
       '<li><strong>Protected manual Saved Outcome edits</strong> so reopening an outcome restores the Generated Note exactly as it was saved.</li>',
       '<li><strong>Collapsed infrequently used settings</strong> by combining Appearance & Experience with Home Dashboard in an on-demand panel.</li>',
@@ -216,7 +212,7 @@
   }
 
   window.showVersionInfo=function(){
-    alert(`Miracle-Ear Clinical Assistant\n\nVersion ${PATCH_VERSION}\n\nWhat's new:\n• Concise Sycle note style restored\n• Patient-reported concern wording retained\n• Saved Outcome manual edits protected when reopening\n• Appearance/Home settings moved into an on-demand panel\n• Clinical Terminology moved into an on-demand panel\n• Minor spacing and duplicate-text fixes`);
+    alert(`Miracle-Ear Clinical Assistant\n\nVersion ${PATCH_VERSION}\n\nWhat's new:\n• Open Sycle works in the current app/browser view\n• Concise Sycle note style retained\n• Patient-reported concern wording retained\n• Saved Outcome manual edits protected when reopening\n• Appearance/Home settings moved into an on-demand panel\n• Clinical Terminology moved into an on-demand panel\n• Minor spacing and duplicate-text fixes`);
   };
   window.checkForUpdates=function(){
     alert(`Update check\n\nCurrent version: ${PATCH_VERSION}\n\nThis portable/browser version cannot automatically download updates yet. Replace the App folder when a new version is released.`);
