@@ -54,7 +54,7 @@
   applyLayoutFixes();
 
   if(document.readyState==='loading'){
-    document.write('<script src="js/app-core.js"><\\/script><script src="js/smart-notes.js"><\\/script>');
+    document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script>');
     document.addEventListener('DOMContentLoaded',installSycleLaunch,{once:true});
   }else{
     loadSequentially();
