@@ -1,4 +1,23 @@
-Miracle-Ear Clinical Assistant v1.6.0-dev4
+Miracle-Ear Clinical Assistant v1.7.0
+
+v1.7.0
+August 22, 2026
+
+- Returned Generated Notes to the previous concise Sycle style while retaining automatic patient-reported/patient-stated attribution for documented concerns when appropriate.
+- Fixed Saved Outcome editing so the exact saved Generated Note, including manual edits, is restored when reopening an outcome.
+- Combined Appearance & Experience and Home Dashboard into one on-demand settings panel that remains closed by default.
+- Made Clinical Terminology an on-demand Clinical Tools panel instead of keeping it expanded by default.
+- Removed the duplicated "Keep identifiers minimal if possible" reminder in Sycle Notes.
+- Added the missing spacing between Data & Privacy and the following About cards.
+
+v1.7.0-dev1
+August 21, 2026
+
+- Added Smart Note Generation to organize selected clinical facts into clearer, more natural Sycle-ready sentences.
+- Added context-aware wording for evaluation, hearing findings, demonstrations, treatment outcomes, service, fitting, and counseling.
+- Combined related counseling and maintenance items to reduce repetitive, mechanical phrasing.
+- Preserved documentation safety: only selected or entered information is used, and manually edited Generated Notes remain authoritative when saving.
+- Kept Additional Details as user-entered documentation without inferring missing clinical information.
 
 v1.6.0-dev4
 - Kept the PTA Calculator first and immediately visible in Clinical Tools.
