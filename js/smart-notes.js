@@ -1,11 +1,11 @@
 /* =========================================================
-   Miracle-Ear Clinical Assistant v1.7.2-dev1
+   Miracle-Ear Clinical Assistant v1.7.2-dev2
    Concise note + quality-of-life patch layer
    ========================================================= */
 (function(){
   'use strict';
 
-  const PATCH_VERSION='1.7.2-dev1';
+  const PATCH_VERSION='1.7.2-dev2';
 
   function cleanText(value){return String(value||'').replace(/\s+/g,' ').trim();}
   function concernPrefix(){
@@ -84,7 +84,14 @@
     `;document.head.appendChild(style);
   }
   function savedOutcomesNavButton(){return [...document.querySelectorAll('.tab-btn')].find(b=>/Saved Outcomes/i.test(b.textContent));}
-  function pendingOutcomeCount(){try{return getSavedOutcomes().filter(item=>item.status!=='completed').length;}catch(e){return 0;}}
+  function outcomeIsCompleted(item){
+    if(!item)return false;
+    if(item.completed===true||item.isCompleted===true||item.done===true)return true;
+    if(item.pending===false)return true;
+    const status=cleanText(item.status).toLowerCase();
+    return ['completed','complete','closed','done'].includes(status);
+  }
+  function pendingOutcomeCount(){try{return getSavedOutcomes().filter(item=>!outcomeIsCompleted(item)).length;}catch(e){return 0;}}
   function updatePendingOutcomeBadge(){
     installBadgeStyles();const button=savedOutcomesNavButton();if(!button)return;
     button.classList.add('saved-outcomes-nav-badge-host');let badge=button.querySelector('.pending-outcome-nav-badge');const count=pendingOutcomeCount();
@@ -95,12 +102,26 @@
   const baseRenderOutcomes=window.renderOutcomes;
   if(typeof baseRenderOutcomes==='function')window.renderOutcomes=function(){const result=baseRenderOutcomes();updatePendingOutcomeBadge();return result;};
 
-  function applyVersion(){document.querySelectorAll('[data-app-version]').forEach(el=>{el.textContent=PATCH_VERSION;});const aboutVersion=document.getElementById('aboutVersion');if(aboutVersion)aboutVersion.textContent=PATCH_VERSION;const heading=document.querySelector('#aboutWhatsNew h3');if(heading)heading.textContent="What's New in v"+PATCH_VERSION;const list=document.querySelector('#aboutWhatsNew .changelog-list');if(list)list.innerHTML=['<li><strong>Added a Pending Saved Outcomes badge</strong> to the Saved Outcomes navigation tab. It updates from the actual saved data and disappears when nothing is pending.</li>','<li><strong>Open Sycle</strong> remains available in the current app/browser view.</li>','<li><strong>Concise Sycle note style</strong> and Saved Outcome edit protection remain unchanged.</li>'].join('');}
+  function installOutcomeBadgeRefresh(){
+    if(document.documentElement.dataset.outcomeBadgeRefreshInstalled)return;
+    document.documentElement.dataset.outcomeBadgeRefreshInstalled='1';
+    document.addEventListener('click',function(event){
+      const button=event.target.closest('button');
+      if(!button)return;
+      const text=cleanText(button.textContent).toLowerCase();
+      if(text.includes('complete')||text.includes('delete')||text.includes('save outcome')){
+        setTimeout(updatePendingOutcomeBadge,0);
+        setTimeout(updatePendingOutcomeBadge,100);
+      }
+    },true);
+  }
+
+  function applyVersion(){document.querySelectorAll('[data-app-version]').forEach(el=>{el.textContent=PATCH_VERSION;});const aboutVersion=document.getElementById('aboutVersion');if(aboutVersion)aboutVersion.textContent=PATCH_VERSION;const heading=document.querySelector('#aboutWhatsNew h3');if(heading)heading.textContent="What's New in v"+PATCH_VERSION;const list=document.querySelector('#aboutWhatsNew .changelog-list');if(list)list.innerHTML=['<li><strong>Added a Pending Saved Outcomes badge</strong> to the Saved Outcomes navigation tab. It now disappears immediately when the last pending outcome is marked complete.</li>','<li><strong>Open Sycle</strong> remains available in the current app/browser view.</li>','<li><strong>Concise Sycle note style</strong> and Saved Outcome edit protection remain unchanged.</li>'].join('');}
   const baseRenderAbout=window.renderAbout;if(typeof baseRenderAbout==='function')window.renderAbout=function(){baseRenderAbout();applyVersion();fixAboutSpacing();};
-  window.showVersionInfo=function(){alert(`Miracle-Ear Clinical Assistant\n\nVersion ${PATCH_VERSION}\n\nWhat's new:\n• Pending Saved Outcomes notification badge\n• Badge disappears automatically at zero pending outcomes\n• Existing v1.7.1 behavior retained`);};
+  window.showVersionInfo=function(){alert(`Miracle-Ear Clinical Assistant\n\nVersion ${PATCH_VERSION}\n\nWhat's new:\n• Pending Saved Outcomes notification badge\n• Badge updates immediately when outcomes are completed\n• Existing v1.7.1 behavior retained`);};
   window.checkForUpdates=function(){alert(`Update check\n\nCurrent version: ${PATCH_VERSION}\n\nThis portable/browser version cannot automatically download updates yet. Replace the App folder when a new version is released.`);};
 
-  function initPatch(){applyVersion();fixDashboardVersion();removeSmartNoteIndicator();fixDuplicateIdentifierText();fixAboutSpacing();collapseAppearanceAndHomeSettings();collapseClinicalTerminology();updatePendingOutcomeBadge();}
+  function initPatch(){applyVersion();fixDashboardVersion();removeSmartNoteIndicator();fixDuplicateIdentifierText();fixAboutSpacing();collapseAppearanceAndHomeSettings();collapseClinicalTerminology();installOutcomeBadgeRefresh();updatePendingOutcomeBadge();}
   if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',initPatch);else initPatch();
   window.addEventListener('load',initPatch);window.addEventListener('pageshow',updatePendingOutcomeBadge);window.addEventListener('storage',updatePendingOutcomeBadge);
 })();
