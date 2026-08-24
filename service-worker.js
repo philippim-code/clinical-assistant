@@ -1,10 +1,11 @@
-const CACHE_NAME='clinical-assistant-v1.7.2';
+const CACHE_NAME='clinical-assistant-v1.8.0-dev1';
 const APP_ASSETS=[
   './index.html',
   './css/styles.css',
   './js/app.js',
   './js/app-core.js',
   './js/smart-notes.js',
+  './js/ai-assistant.js',
   './manifest.json',
   './clinical-assistant-icon-v2.png',
   './icon-192.png',
