@@ -1,5 +1,6 @@
 // Vercel serverless endpoint for Miracle-Ear Clinical Assistant AI Writing Assistant.
 // OPENAI_API_KEY must be stored as a server-side environment variable. Never place it in browser code.
+// Preview deployment trigger: 2026-08-24.
 
 const OPENAI_URL='https://api.openai.com/v1/responses';
 const MODEL=process.env.OPENAI_MODEL||'gpt-5.6-luna';
