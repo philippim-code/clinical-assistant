@@ -1,4 +1,4 @@
-/* Miracle-Ear Clinical Assistant v1.8.0-dev1 loader */
+/* Miracle-Ear Clinical Assistant v1.8.0-dev2 loader */
 (function(){
   const SYCLE_URL='https://www.mymiracle-ear.com/freecvs/schedule_hm.php';
 
@@ -23,23 +23,18 @@
       button.textContent='Open Sycle';
       button.removeAttribute('title');
     }
-    window.openSycle=function(){
-      window.location.assign(SYCLE_URL);
-    };
+    window.openSycle=function(){window.location.assign(SYCLE_URL);};
   }
 
-  function ready(){
-    applyLayoutFixes();
-    installSycleLaunch();
-  }
+  function ready(){applyLayoutFixes();installSycleLaunch();}
 
-  function loadAiAssistant(){
-    if(document.querySelector('script[data-ai-assistant-loader]'))return;
-    const ai=document.createElement('script');
-    ai.src='js/ai-assistant.js';
-    ai.async=false;
-    ai.dataset.aiAssistantLoader='1';
-    document.body.appendChild(ai);
+  function loadReferences(){
+    if(document.querySelector('script[data-references-loader]'))return;
+    const ref=document.createElement('script');
+    ref.src='js/references.js';
+    ref.async=false;
+    ref.dataset.referencesLoader='1';
+    document.body.appendChild(ref);
   }
 
   function loadSequentially(){
@@ -50,7 +45,7 @@
       const patch=document.createElement('script');
       patch.src='js/smart-notes.js';
       patch.async=false;
-      patch.onload=function(){ready();loadAiAssistant();};
+      patch.onload=function(){ready();loadReferences();};
       document.body.appendChild(patch);
     };
     document.body.appendChild(core);
@@ -59,7 +54,7 @@
   applyLayoutFixes();
 
   if(document.readyState==='loading'){
-    document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script><script src="js/ai-assistant.js"><\/script>');
+    document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script><script src="js/references.js"><\/script>');
     document.addEventListener('DOMContentLoaded',ready,{once:true});
   }else{
     loadSequentially();
