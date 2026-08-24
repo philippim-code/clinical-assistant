@@ -1,4 +1,4 @@
-/* Miracle-Ear Clinical Assistant v1.7.1 loader */
+/* Miracle-Ear Clinical Assistant v1.8.0-dev1 loader */
 (function(){
   const SYCLE_URL='https://www.mymiracle-ear.com/freecvs/schedule_hm.php';
 
@@ -33,6 +33,15 @@
     installSycleLaunch();
   }
 
+  function loadAiAssistant(){
+    if(document.querySelector('script[data-ai-assistant-loader]'))return;
+    const ai=document.createElement('script');
+    ai.src='js/ai-assistant.js';
+    ai.async=false;
+    ai.dataset.aiAssistantLoader='1';
+    document.body.appendChild(ai);
+  }
+
   function loadSequentially(){
     const core=document.createElement('script');
     core.src='js/app-core.js';
@@ -41,7 +50,7 @@
       const patch=document.createElement('script');
       patch.src='js/smart-notes.js';
       patch.async=false;
-      patch.onload=ready;
+      patch.onload=function(){ready();loadAiAssistant();};
       document.body.appendChild(patch);
     };
     document.body.appendChild(core);
@@ -50,7 +59,7 @@
   applyLayoutFixes();
 
   if(document.readyState==='loading'){
-    document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script>');
+    document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script><script src="js/ai-assistant.js"><\/script>');
     document.addEventListener('DOMContentLoaded',ready,{once:true});
   }else{
     loadSequentially();
