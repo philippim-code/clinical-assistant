@@ -1,11 +1,11 @@
 /* =========================================================
-   Miracle-Ear Clinical Assistant v1.7.2-dev2
+   Miracle-Ear Clinical Assistant v1.7.2
    Concise note + quality-of-life patch layer
    ========================================================= */
 (function(){
   'use strict';
 
-  const PATCH_VERSION='1.7.2-dev2';
+  const PATCH_VERSION='1.7.2';
 
   function cleanText(value){return String(value||'').replace(/\s+/g,' ').trim();}
   function concernPrefix(){
