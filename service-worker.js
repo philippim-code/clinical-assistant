@@ -1,4 +1,4 @@
-const CACHE_NAME='clinical-assistant-v1.7.1';
+const CACHE_NAME='clinical-assistant-v1.7.2';
 const APP_ASSETS=[
   './index.html',
   './css/styles.css',
