@@ -1,4 +1,13 @@
-Miracle-Ear Clinical Assistant v1.7.1
+Miracle-Ear Clinical Assistant v1.7.2
+
+v1.7.2
+August 23, 2026
+
+- Added a notification badge to the Saved Outcomes navigation tab showing the current number of pending outcomes.
+- The pending badge updates from Saved Outcomes data and disappears immediately when the final pending outcome is marked complete.
+- Badge updates also follow newly saved pending outcomes, deletions, and bulk completion actions.
+- Preserved the existing v1.7.1 Open Sycle behavior, concise note generation, and Saved Outcome edit protection.
+- Bumped the app cache for a clean v1.7.2 rollout.
 
 v1.7.1
 August 22, 2026
