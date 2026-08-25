@@ -1,48 +1,49 @@
-/* Miracle-Ear Clinical Assistant v1.8.0-dev6 — exact Spark manufacturer imagery */
+/* Miracle-Ear Clinical Assistant v1.8.0-dev7 — exact Spark manufacturer imagery */
 (function(){
   'use strict';
 
+  const ASSET_VERSION='dev7';
   const BASE='assets/spark/catalog/';
+  const asset=path=>`${path}?v=${ASSET_VERSION}`;
   const FAMILY={
     standard:{
-      'sand-beige':BASE+'hearing-aids/standard-sand-beige.png',
-      'sandalwood':BASE+'hearing-aids/standard-sandalwood.png',
-      'silver-gray':BASE+'hearing-aids/standard-silver-gray.png',
-      'velvet-black':BASE+'hearing-aids/standard-velvet-black.png'
+      'sand-beige':asset(BASE+'hearing-aids/standard-sand-beige.png'),
+      'sandalwood':asset(BASE+'hearing-aids/standard-sandalwood.png'),
+      'silver-gray':asset(BASE+'hearing-aids/standard-silver-gray.png'),
+      'velvet-black':asset(BASE+'hearing-aids/standard-velvet-black.png')
     },
     ai:{
-      'sand-beige':BASE+'hearing-aids/ai-sand-beige.png',
-      'sandalwood':BASE+'hearing-aids/ai-sandalwood.png',
-      'silver-gray':BASE+'hearing-aids/ai-silver-gray.png',
-      'velvet-black':BASE+'hearing-aids/ai-velvet-black.png'
+      'sand-beige':asset(BASE+'hearing-aids/ai-sand-beige.png'),
+      'sandalwood':asset(BASE+'hearing-aids/ai-sandalwood.png'),
+      'silver-gray':asset(BASE+'hearing-aids/ai-silver-gray.png'),
+      'velvet-black':asset(BASE+'hearing-aids/ai-velvet-black.png')
     }
   };
-  const SILVER_FALLBACK={standard:'assets/spark/standard-silver-gray.svg?v=dev6',ai:'assets/spark/ai-silver-gray.svg?v=dev6'};
   const DOME={
-    'open-S':BASE+'domes/open-s.png','open-M':BASE+'domes/open-m.png','open-L':BASE+'domes/open-l.png',
-    'vented-S':BASE+'domes/vented-s.png','vented-M':BASE+'domes/vented-m.png','vented-L':BASE+'domes/vented-l.png',
-    'power-S':BASE+'domes/power-s.png','power-M':BASE+'domes/power-m.png','power-L':BASE+'domes/power-l.png',
-    'cap-One Size':BASE+'domes/cap.png'
+    'open-S':asset(BASE+'domes/open-s.png'),'open-M':asset(BASE+'domes/open-m.png'),'open-L':asset(BASE+'domes/open-l.png'),
+    'vented-S':asset(BASE+'domes/vented-s.png'),'vented-M':asset(BASE+'domes/vented-m.png'),'vented-L':asset(BASE+'domes/vented-l.png'),
+    'power-S':asset(BASE+'domes/power-s.png'),'power-M':asset(BASE+'domes/power-m.png'),'power-L':asset(BASE+'domes/power-l.png'),
+    'cap-One Size':asset(BASE+'domes/cap.png')
   };
-  const RETENTION={S:BASE+'retention/retention-s.png',M:BASE+'retention/retention-m.png',L:BASE+'retention/retention-l.png'};
-  const ACCESSORY={'MECHARGE Charger':BASE+'accessories/mecharge-charger.png','CeruStop':BASE+'accessories/cerustop.png'};
+  const RETENTION={S:asset(BASE+'retention/retention-s.png'),M:asset(BASE+'retention/retention-m.png'),L:asset(BASE+'retention/retention-l.png')};
+  const ACCESSORY={'MECHARGE Charger':asset(BASE+'accessories/mecharge-charger.png'),'CeruStop':asset(BASE+'accessories/cerustop.png')};
 
-  function receiverSrc(side,length,power){return BASE+`receivers/${side}-${length}-${power}.png`;}
+  function receiverSrc(side,length,power){return asset(BASE+`receivers/${side}-${length}-${power}.png`);}
 
   function installStyles(){
     if(document.getElementById('reference-image-styles'))return;
     const style=document.createElement('style');
     style.id='reference-image-styles';
     style.textContent=`
-      .ref-catalog-image{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 8px 10px rgba(24,52,58,.10))}
-      .ref-image-slot.ref-has-catalog-image{border-style:solid;border-color:#d9e6e8;background:linear-gradient(180deg,#fff,#f8fbfc);padding:8px;overflow:hidden}
+      .ref-catalog-image{width:100%;height:100%;object-fit:contain;display:block;filter:none!important}
+      .ref-image-slot.ref-has-catalog-image{border-style:solid;border-color:#d9e6e8;background:#fff;padding:8px;overflow:hidden}
       .ref-product-card .ref-image-slot.ref-has-catalog-image,.ref-family-card .ref-image-slot.ref-has-catalog-image{height:210px}
       .ref-model-hero .ref-image-slot.ref-has-catalog-image{height:285px;background:#fff}
       .ref-component-preview .ref-image-slot.ref-has-catalog-image,.ref-accessory-card .ref-image-slot.ref-has-catalog-image{height:220px;background:#fff}
       .ref-retention-preview{margin-top:14px;max-width:430px}
       .ref-color-card{position:relative;overflow:hidden;padding:8px 8px 10px!important}
-      .ref-color-card .ref-color-chip{height:88px!important;border:0!important;background:linear-gradient(180deg,#fff,#f7fafb)!important;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:7px!important}
-      .ref-color-product{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 4px 5px rgba(24,52,58,.08))}
+      .ref-color-card .ref-color-chip{height:88px!important;border:0!important;background:#fff!important;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:7px!important}
+      .ref-color-product{width:100%;height:100%;object-fit:contain;display:block;filter:none!important}
       .ref-color-card.active .ref-color-chip{box-shadow:inset 0 0 0 2px rgba(0,140,149,.18)}
       .ref-color-card.active:after{content:'✓';position:absolute;right:10px;top:9px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--teal);color:#fff;font-size:12px;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.14)}
       @media(max-width:760px){
@@ -55,16 +56,20 @@
     document.head.appendChild(style);
   }
 
-  function setImage(slot,src,alt,fallback=''){
-    if(!slot||slot.dataset.catalogImage===src)return;
+  function setImage(slot,src,alt){
+    if(!slot||!src||slot.dataset.catalogImage===src)return;
     const original=slot.innerHTML;
     slot.dataset.catalogImage=src;
     slot.classList.add('ref-has-catalog-image');
     const img=document.createElement('img');
-    img.className='ref-catalog-image';img.src=src;img.alt=alt;
+    img.className='ref-catalog-image';
+    img.src=src;
+    img.alt=alt;
+    img.decoding='async';
     img.onerror=()=>{
-      if(fallback&&img.src!==new URL(fallback,document.baseURI).href){img.src=fallback;return;}
-      slot.classList.remove('ref-has-catalog-image');slot.innerHTML=original;slot.dataset.catalogImage='';
+      slot.classList.remove('ref-has-catalog-image');
+      slot.innerHTML=original;
+      slot.dataset.catalogImage='';
     };
     slot.replaceChildren(img);
   }
@@ -74,9 +79,15 @@
       const id=card.dataset.color||'silver-gray';
       const chip=card.querySelector('.ref-color-chip');if(!chip)return;
       const src=FAMILY[family]?.[id];if(!src)return;
+      if(chip.dataset.catalogImage===src)return;
       const original=chip.innerHTML;
-      const img=document.createElement('img');img.className='ref-color-product';img.src=src;img.alt=card.querySelector('strong')?.textContent||'Spark color';
-      img.onerror=()=>{chip.innerHTML=original;chip.style.background='';};
+      chip.dataset.catalogImage=src;
+      const img=document.createElement('img');
+      img.className='ref-color-product';
+      img.src=src;
+      img.alt=card.querySelector('strong')?.textContent||'Spark color';
+      img.decoding='async';
+      img.onerror=()=>{chip.innerHTML=original;chip.dataset.catalogImage='';};
       chip.replaceChildren(img);
     });
   }
@@ -87,9 +98,9 @@
   function patch(){
     const root=document.getElementById('references');if(!root)return;
 
-    setImage(root.querySelector('.ref-product-card[data-ref-product="spark"] .ref-image-slot'),FAMILY.standard['silver-gray'],'Miracle-Ear Spark MEMINI E RIC in Silver Gray',SILVER_FALLBACK.standard);
-    setImage(root.querySelector('.ref-family-card[data-family="standard"] .ref-image-slot'),FAMILY.standard['silver-gray'],'Miracle-Ear Spark MEMINI E RIC in Silver Gray',SILVER_FALLBACK.standard);
-    setImage(root.querySelector('.ref-family-card[data-family="ai"] .ref-image-slot'),FAMILY.ai['silver-gray'],'Miracle-Ear Spark MEMINI E AI RIC in Silver Gray',SILVER_FALLBACK.ai);
+    setImage(root.querySelector('.ref-product-card[data-ref-product="spark"] .ref-image-slot'),FAMILY.standard['silver-gray'],'Miracle-Ear Spark MEMINI E RIC in Silver Gray');
+    setImage(root.querySelector('.ref-family-card[data-family="standard"] .ref-image-slot'),FAMILY.standard['silver-gray'],'Miracle-Ear Spark MEMINI E RIC in Silver Gray');
+    setImage(root.querySelector('.ref-family-card[data-family="ai"] .ref-image-slot'),FAMILY.ai['silver-gray'],'Miracle-Ear Spark MEMINI E AI RIC in Silver Gray');
 
     const hero=root.querySelector('.ref-model-hero');
     if(hero){
@@ -97,7 +108,7 @@
       const family=model.includes(' AI')?'ai':'standard';
       const color=activeDataset(root,'.ref-color-card','color','silver-gray');
       const colorName=root.querySelector('.ref-color-card.active strong')?.textContent||'Silver Gray';
-      setImage(hero.querySelector('.ref-image-slot'),FAMILY[family][color],`Miracle-Ear ${family==='ai'?'Spark MEMINI E AI RIC':'Spark MEMINI E RIC'} in ${colorName}`,color==='silver-gray'?SILVER_FALLBACK[family]:'');
+      setImage(hero.querySelector('.ref-image-slot'),FAMILY[family][color],`Miracle-Ear ${family==='ai'?'Spark MEMINI E AI RIC':'Spark MEMINI E RIC'} in ${colorName}`);
       patchColorCards(root,family);
     }
 
