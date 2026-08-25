@@ -1,10 +1,10 @@
-/* Miracle-Ear Clinical Assistant v1.8.0-dev3 — Spark catalog imagery */
+/* Miracle-Ear Clinical Assistant v1.8.0-dev4 — Spark catalog imagery */
 (function(){
   'use strict';
 
   const IMG={
-    standard:'assets/spark/standard-silver-gray.svg',
-    ai:'assets/spark/ai-silver-gray.svg'
+    standard:'assets/spark/standard-silver-gray.svg?v=dev4',
+    ai:'assets/spark/ai-silver-gray.svg?v=dev4'
   };
 
   function installStyles(){
