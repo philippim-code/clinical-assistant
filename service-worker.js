@@ -1,14 +1,12 @@
-const CACHE_NAME='clinical-assistant-v1.8.0-dev3';
+const CACHE_NAME='clinical-assistant-v1.8.0-dev11';
 const APP_ASSETS=[
   './index.html',
   './css/styles.css',
-  './js/app.js',
-  './js/app-core.js',
-  './js/smart-notes.js',
-  './js/references.js',
-  './js/reference-images.js',
-  './assets/spark/standard-silver-gray.svg',
-  './assets/spark/ai-silver-gray.svg',
+  './js/app-core.js?v=dev11',
+  './js/smart-notes.js?v=dev11',
+  './js/references.js?v=dev11',
+  './js/reference-images.js?v=dev11',
+  './js/app-enhancements.js?v=dev11',
   './manifest.json',
   './clinical-assistant-icon-v2.png',
   './icon-192.png',
@@ -33,6 +31,28 @@ const APP_ASSETS=[
   './assets/icon-192.png',
   './assets/icon-512.png'
 ];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(APP_ASSETS)));self.skipWaiting();});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))));self.clients.claim();});
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE_NAME).then(c=>c.put(e.request,copy));return r;}).catch(()=>caches.match(e.request).then(r=>r||caches.match('./index.html'))));});
+
+self.addEventListener('install',event=>{
+  event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_ASSETS)));
+  self.skipWaiting();
+});
+
+self.addEventListener('activate',event=>{
+  event.waitUntil(
+    caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE_NAME).map(key=>caches.delete(key))))
+      .then(()=>self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch',event=>{
+  if(event.request.method!=='GET')return;
+  event.respondWith(
+    fetch(event.request,{cache:'no-store'}).then(response=>{
+      if(response&&response.ok){
+        const copy=response.clone();
+        caches.open(CACHE_NAME).then(cache=>cache.put(event.request,copy));
+      }
+      return response;
+    }).catch(()=>caches.match(event.request).then(cached=>cached||caches.match('./index.html')))
+  );
+});
