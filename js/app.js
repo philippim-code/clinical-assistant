@@ -1,8 +1,13 @@
-/* Miracle-Ear Clinical Assistant v1.8.0-dev6 loader */
+/* Miracle-Ear Clinical Assistant v1.8.0-dev7 loader */
 (function(){
   const SYCLE_URL='https://www.mymiracle-ear.com/freecvs/schedule_hm.php';
-  const APP_VERSION='1.8.0-dev6';
-  let bilateralReceiver=false;
+  const APP_VERSION='1.8.0-dev7';
+  let receiverMode='right';
+  let receiverSyncing=false;
+  const receiverSelections={
+    left:{power:'M',length:'0'},
+    right:{power:'M',length:'0'}
+  };
 
   function applyLayoutFixes(){
     const old=document.getElementById('app-layout-fixes');
@@ -12,8 +17,7 @@
     style.textContent=`
       #aboutData + .about-grid{margin-top:24px;}
 
-      /* Keep one visual container per Spark component. The outer component/item card
-         provides the structure; catalog images no longer sit inside a second bordered card. */
+      /* Keep one visual container per Spark component. */
       .ref-component-preview .ref-image-slot.ref-has-catalog-image,
       .ref-accessory-card .ref-image-slot.ref-has-catalog-image,
       .ref-retention-preview .ref-image-slot.ref-has-catalog-image{
@@ -24,7 +28,7 @@
         box-shadow:none!important;
       }
 
-      /* Retention locks are more useful as a visual three-up selector than a single preview. */
+      /* Retention locks: simple three-up visual selector. */
       .ref-retention-gallery-ready > .ref-choice-row,
       .ref-retention-gallery-ready > .ref-selection-summary,
       .ref-retention-gallery-ready > .ref-retention-preview{display:none!important;}
@@ -36,11 +40,13 @@
       .ref-retention-card img{display:block;width:100%;height:190px;object-fit:contain;filter:none!important;}
       .ref-retention-card strong{display:block;margin-top:7px;text-align:center;font-size:13px;}
 
-      /* Bilateral receiver selection uses the same receiver power and length for both ears. */
-      .ref-bilateral-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;height:220px;align-items:center;}
+      /* Bilateral receiver preview. Each ear can now keep its own power + length. */
+      .ref-bilateral-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;height:230px;align-items:center;overflow:hidden;margin:0 0 10px;}
       .ref-bilateral-preview img{width:100%;height:100%;min-width:0;object-fit:contain;display:block;filter:none!important;}
       .ref-component-preview.ref-bilateral-ready .ref-image-slot{display:none!important;}
       .ref-component-preview:not(.ref-bilateral-ready) .ref-bilateral-preview{display:none!important;}
+      .ref-component-preview.ref-bilateral-ready .ref-selection-summary{position:static!important;inset:auto!important;transform:none!important;margin:0!important;z-index:2!important;clear:both!important;}
+      .ref-component-preview.ref-bilateral-ready{overflow:hidden;}
 
       @media(max-width:600px){
         .appbar-actions{display:flex!important;width:100%!important;gap:8px!important;flex-wrap:nowrap!important;}
@@ -49,7 +55,7 @@
         .ref-retention-card{padding:8px 6px!important;}
         .ref-retention-card img{height:125px;}
         .ref-retention-card strong{font-size:12px;}
-        .ref-bilateral-preview{height:190px;gap:6px;}
+        .ref-bilateral-preview{height:190px;gap:8px;margin-bottom:8px;}
       }
     `;
     document.head.appendChild(style);
@@ -78,7 +84,7 @@
       gallery=document.createElement('div');
       gallery.className='ref-retention-gallery';
       gallery.setAttribute('aria-label','Retention lock size');
-      gallery.innerHTML=['S','M','L'].map(size=>`<button type="button" class="ref-retention-card" data-retention-card="${size}" aria-label="Select ${names[size]} retention lock"><img src="assets/spark/catalog/retention-locks/${files[size]}?v=dev9" alt="${names[size]} Spark retention lock" decoding="async" loading="eager"><strong>${names[size]} (${size})</strong></button>`).join('');
+      gallery.innerHTML=['S','M','L'].map(size=>`<button type="button" class="ref-retention-card" data-retention-card="${size}" aria-label="Select ${names[size]} retention lock"><img src="assets/spark/catalog/retention-locks/${files[size]}?v=dev10" alt="${names[size]} Spark retention lock" decoding="async" loading="eager"><strong>${names[size]} (${size})</strong></button>`).join('');
       section.appendChild(gallery);
       gallery.querySelectorAll('[data-retention-card]').forEach(card=>card.addEventListener('click',()=>{
         const target=section.querySelector(`[data-retention="${card.dataset.retentionCard}"]`);
@@ -95,13 +101,84 @@
   }
 
   function receiverAsset(side,length,power){
-    return `assets/spark/catalog/receivers/${side}-${length}-${power}.png?v=dev9`;
+    return `assets/spark/catalog/receivers/${side}-${length}-${power}.png?v=dev10`;
+  }
+
+  function receiverEarLabel(ear){
+    const selection=receiverSelections[ear];
+    return `${selection.length}${selection.power} ${ear==='left'?'Left (Blue)':'Right (Red)'}`;
+  }
+
+  function receiverConfigurationLabel(){
+    return `${receiverEarLabel('left')} + ${receiverEarLabel('right')}`;
+  }
+
+  function currentReceiverButtons(section){
+    return {
+      power:section.querySelector('[data-receiver-power].active')?.dataset.receiverPower||'M',
+      length:section.querySelector('[data-receiver-length].active')?.dataset.receiverLength||'0'
+    };
+  }
+
+  function clickReceiverChoice(section,selector,value){
+    const button=section.querySelector(`${selector}="${value}"]`);
+    if(button&&!button.classList.contains('active'))button.click();
+  }
+
+  function restoreReceiverEar(section,ear){
+    if(receiverSyncing)return;
+    const desired=receiverSelections[ear];
+    receiverSyncing=true;
+    try{
+      clickReceiverChoice(section,'[data-receiver-power',desired.power);
+      clickReceiverChoice(section,'[data-receiver-length',desired.length);
+    }finally{
+      receiverSyncing=false;
+    }
+  }
+
+  function updateReceiverConfigText(){
+    const config=document.querySelector('#references .ref-config-value');
+    if(!config)return;
+    const bilateral=receiverConfigurationLabel();
+    const receiverPattern=/\b(?:00|0|1|2|3)(?:S|M|P)\s+(?:Left \(Blue\)|Right \(Red\)|Both \(Blue \+ Red\))(?:\s*\+\s*(?:00|0|1|2|3)(?:S|M|P)\s+(?:Left \(Blue\)|Right \(Red\)))?/;
+    if(receiverPattern.test(config.textContent)){
+      const updated=config.textContent.replace(receiverPattern,bilateral);
+      if(updated!==config.textContent)config.textContent=updated;
+    }
+  }
+
+  function renderReceiverPreview(section){
+    const preview=section.querySelector('.ref-component-preview');
+    if(!preview)return;
+    const summary=preview.querySelector('.ref-selection-summary strong');
+    let dual=preview.querySelector('.ref-bilateral-preview');
+    if(!dual){
+      dual=document.createElement('div');
+      dual.className='ref-bilateral-preview';
+      const slot=preview.querySelector('.ref-image-slot');
+      if(slot)slot.insertAdjacentElement('afterend',dual);else preview.prepend(dual);
+    }
+
+    const left=receiverSelections.left;
+    const right=receiverSelections.right;
+    const receiverKey=`${left.length}-${left.power}|${right.length}-${right.power}`;
+    if(dual.dataset.receiverKey!==receiverKey){
+      dual.dataset.receiverKey=receiverKey;
+      dual.innerHTML=`<img src="${receiverAsset('L',left.length,left.power)}" alt="${receiverEarLabel('left')} Spark receiver" decoding="async" loading="eager"><img src="${receiverAsset('R',right.length,right.power)}" alt="${receiverEarLabel('right')} Spark receiver" decoding="async" loading="eager">`;
+    }
+
+    const both=receiverMode==='both';
+    preview.classList.toggle('ref-bilateral-ready',both);
+    if(summary&&both)summary.textContent=receiverConfigurationLabel();
+    updateReceiverConfigText();
   }
 
   function installBilateralReceiver(){
     const section=referenceSection('Receivers');
     if(!section)return;
-    const sideRow=section.querySelector('[data-receiver-side]')?.parentElement;
+    const firstSide=section.querySelector('[data-receiver-side]');
+    const sideRow=firstSide?.parentElement;
     if(!sideRow)return;
 
     let both=sideRow.querySelector('[data-receiver-both]');
@@ -112,7 +189,14 @@
       both.dataset.receiverBoth='true';
       both.textContent='🔵🔴 Both';
       both.addEventListener('click',()=>{
-        bilateralReceiver=true;
+        if(receiverSyncing)return;
+        const activeSide=sideRow.querySelector('[data-receiver-side].active')?.dataset.receiverSide;
+        if(activeSide==='left'||activeSide==='right'){
+          const current=currentReceiverButtons(section);
+          receiverSelections[activeSide]={...current};
+        }
+        receiverMode='both';
+        sideRow.querySelectorAll('[data-receiver-side]').forEach(button=>button.classList.remove('active'));
         installBilateralReceiver();
       });
       sideRow.appendChild(both);
@@ -120,43 +204,52 @@
 
     const originalSides=[...sideRow.querySelectorAll('[data-receiver-side]')];
     originalSides.forEach(button=>{
-      if(button.dataset.bilateralListener==='1')return;
-      button.dataset.bilateralListener='1';
-      button.addEventListener('click',()=>{bilateralReceiver=false;});
+      if(button.dataset.independentReceiverListener==='1')return;
+      button.dataset.independentReceiverListener='1';
+      button.addEventListener('click',()=>{
+        if(receiverSyncing)return;
+        const ear=button.dataset.receiverSide;
+        if(ear!=='left'&&ear!=='right')return;
+        receiverMode=ear;
+        queueMicrotask(()=>{
+          restoreReceiverEar(section,ear);
+          installBilateralReceiver();
+        });
+      });
     });
 
-    both.classList.toggle('active',bilateralReceiver);
-    both.setAttribute('aria-pressed',bilateralReceiver?'true':'false');
-    if(bilateralReceiver)originalSides.forEach(button=>button.classList.remove('active'));
+    section.querySelectorAll('[data-receiver-power],[data-receiver-length]').forEach(button=>{
+      if(button.dataset.independentReceiverValueListener==='1')return;
+      button.dataset.independentReceiverValueListener='1';
+      button.addEventListener('click',()=>{
+        if(receiverSyncing)return;
+        queueMicrotask(()=>{
+          const current=currentReceiverButtons(section);
+          if(receiverMode==='both'){
+            receiverSelections.left={...current};
+            receiverSelections.right={...current};
+          }else if(receiverMode==='left'||receiverMode==='right'){
+            receiverSelections[receiverMode]={...current};
+          }
+          installBilateralReceiver();
+        });
+      });
+    });
 
-    const preview=section.querySelector('.ref-component-preview');
-    const summary=preview?.querySelector('.ref-selection-summary strong');
-    const power=section.querySelector('[data-receiver-power].active')?.dataset.receiverPower||'M';
-    const length=section.querySelector('[data-receiver-length].active')?.dataset.receiverLength||'0';
-
-    if(preview){
-      let dual=preview.querySelector('.ref-bilateral-preview');
-      if(!dual){
-        dual=document.createElement('div');
-        dual.className='ref-bilateral-preview';
-        const slot=preview.querySelector('.ref-image-slot');
-        if(slot)slot.insertAdjacentElement('afterend',dual);else preview.prepend(dual);
-      }
-      const receiverKey=`${length}-${power}`;
-      if(dual.dataset.receiverKey!==receiverKey){
-        dual.dataset.receiverKey=receiverKey;
-        dual.innerHTML=`<img src="${receiverAsset('L',length,power)}" alt="${length}${power} left blue Spark receiver" decoding="async" loading="eager"><img src="${receiverAsset('R',length,power)}" alt="${length}${power} right red Spark receiver" decoding="async" loading="eager">`;
-      }
-      preview.classList.toggle('ref-bilateral-ready',bilateralReceiver);
-      const bilateralLabel=`${length}${power} Both (Blue + Red)`;
-      if(summary&&bilateralReceiver&&summary.textContent!==bilateralLabel)summary.textContent=bilateralLabel;
+    /* On first load, inherit the reference UI's current right-ear selection. */
+    if(section.dataset.independentReceiverInitialized!=='1'){
+      section.dataset.independentReceiverInitialized='1';
+      const current=currentReceiverButtons(section);
+      const activeSide=originalSides.find(button=>button.classList.contains('active'))?.dataset.receiverSide||'right';
+      receiverSelections[activeSide]={...current};
+      receiverMode=activeSide;
     }
 
-    const config=document.querySelector('#references .ref-config-value');
-    if(config&&bilateralReceiver){
-      const updated=config.textContent.replace(/\b(?:00|0|1|2|3)(?:S|M|P)\s+(?:Left \(Blue\)|Right \(Red\))/,`${length}${power} Both (Blue + Red)`);
-      if(updated!==config.textContent)config.textContent=updated;
-    }
+    both.classList.toggle('active',receiverMode==='both');
+    both.setAttribute('aria-pressed',receiverMode==='both'?'true':'false');
+    if(receiverMode==='both')originalSides.forEach(button=>button.classList.remove('active'));
+
+    renderReceiverPreview(section);
   }
 
   function installReferenceEnhancements(){
@@ -207,7 +300,7 @@
   function loadReferenceImages(){
     if(document.querySelector('script[data-reference-images-loader]'))return;
     const images=document.createElement('script');
-    images.src='js/reference-images.js?v=dev6';
+    images.src='js/reference-images.js?v=dev7';
     images.async=false;
     images.dataset.referenceImagesLoader='1';
     images.onload=function(){applyDisplayVersion();installReferenceEnhancementGuard();};
@@ -217,7 +310,7 @@
   function loadReferences(){
     if(document.querySelector('script[data-references-loader]'))return;
     const ref=document.createElement('script');
-    ref.src='js/references.js?v=dev6';
+    ref.src='js/references.js?v=dev7';
     ref.async=false;
     ref.dataset.referencesLoader='1';
     ref.onload=function(){loadReferenceImages();applyDisplayVersion();installReferenceEnhancementGuard();};
@@ -241,7 +334,7 @@
   applyLayoutFixes();
 
   if(document.readyState==='loading'){
-    document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script><script src="js/references.js?v=dev6"><\/script><script src="js/reference-images.js?v=dev6"><\/script>');
+    document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script><script src="js/references.js?v=dev7"><\/script><script src="js/reference-images.js?v=dev7"><\/script>');
     document.addEventListener('DOMContentLoaded',ready,{once:true});
   }else{
     loadSequentially();
