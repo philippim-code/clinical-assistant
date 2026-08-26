@@ -1,4 +1,4 @@
-/* Miracle-Ear Clinical Assistant v1.8.0-dev9 — exact Spark manufacturer imagery */
+/* Miracle-Ear Clinical Assistant v1.8.0-dev10 — instant Spark manufacturer imagery */
 (function(){
   'use strict';
 
@@ -50,6 +50,48 @@
     return asset(BASE+`receivers/${side}-${length}-${power}.png`);
   }
 
+  /* Keep decoded images alive in memory so selector changes can reuse them instantly. */
+  const imageCache=new Map();
+
+  function preload(src,priority='low'){
+    if(!src)return Promise.resolve(null);
+    if(imageCache.has(src))return imageCache.get(src).promise;
+    const img=new Image();
+    img.decoding='async';
+    try{img.fetchPriority=priority;}catch(e){}
+    const promise=new Promise(resolve=>{
+      const done=()=>{
+        if(typeof img.decode==='function')img.decode().catch(()=>{}).finally(()=>resolve(img));
+        else resolve(img);
+      };
+      if(img.complete&&img.naturalWidth)done();
+      else{
+        img.onload=done;
+        img.onerror=()=>resolve(null);
+      }
+    });
+    imageCache.set(src,{img,promise});
+    img.src=src;
+    return promise;
+  }
+
+  function allSparkAssets(){
+    const urls=[];
+    Object.values(FAMILY).forEach(family=>urls.push(...Object.values(family)));
+    urls.push(...Object.values(DOME),...Object.values(RETENTION),...Object.values(ACCESSORY));
+    ['L','R'].forEach(side=>['00','0','1','2','3'].forEach(length=>['S','M','P'].forEach(power=>urls.push(receiverSrc(side,length,power)))));
+    return [...new Set(urls)];
+  }
+
+  function preloadSparkLibrary(){
+    /* Current/default visuals first, then warm the entire Spark library in the background. */
+    [FAMILY.standard['silver-gray'],FAMILY.ai['silver-gray'],receiverSrc('R','0','M'),DOME['vented-S'],RETENTION.M,ACCESSORY['MECHARGE Charger'],ACCESSORY.CeruStop]
+      .forEach(src=>preload(src,'high'));
+    const warm=()=>allSparkAssets().forEach(src=>preload(src));
+    if('requestIdleCallback' in window)requestIdleCallback(warm,{timeout:500});
+    else setTimeout(warm,0);
+  }
+
   function installStyles(){
     if(document.getElementById('reference-image-styles'))return;
     const style=document.createElement('style');
@@ -79,23 +121,46 @@
     document.head.appendChild(style);
   }
 
+  function catalogImg(src,alt,className='ref-catalog-image'){
+    const img=document.createElement('img');
+    img.className=className;
+    img.alt=alt;
+    img.decoding='async';
+    img.loading='eager';
+    try{img.fetchPriority='high';}catch(e){}
+    img.src=src;
+    return img;
+  }
+
   function setImage(slot,src,alt){
     if(!slot||!src||slot.dataset.catalogImage===src)return;
     const original=slot.innerHTML;
     slot.dataset.catalogImage=src;
-    slot.classList.add('ref-has-catalog-image');
-    const img=document.createElement('img');
-    img.className='ref-catalog-image';
-    img.src=src;
-    img.alt=alt;
-    img.decoding='async';
-    img.onerror=()=>{
-      slot.classList.remove('ref-has-catalog-image');
-      slot.innerHTML=original;
-      slot.dataset.catalogImage=src;
-      slot.dataset.catalogImageFailed='1';
+    const cached=imageCache.get(src)?.img;
+
+    const commit=()=>{
+      if(!slot.isConnected||slot.dataset.catalogImage!==src)return;
+      const img=catalogImg(src,alt);
+      img.onerror=()=>{
+        if(slot.dataset.catalogImage!==src)return;
+        slot.classList.remove('ref-has-catalog-image');
+        slot.innerHTML=original;
+        slot.dataset.catalogImageFailed='1';
+      };
+      slot.classList.add('ref-has-catalog-image');
+      slot.replaceChildren(img);
     };
-    slot.replaceChildren(img);
+
+    /* If already decoded, swap synchronously. Otherwise keep the existing visual until ready. */
+    if(cached&&cached.complete&&cached.naturalWidth){commit();return;}
+    preload(src,'high').then(img=>{
+      if(img&&img.naturalWidth)commit();
+      else if(slot.isConnected&&slot.dataset.catalogImage===src){
+        slot.classList.remove('ref-has-catalog-image');
+        slot.innerHTML=original;
+        slot.dataset.catalogImageFailed='1';
+      }
+    });
   }
 
   function patchColorCards(root,family){
@@ -107,13 +172,16 @@
       if(!src||chip.dataset.catalogImage===src)return;
       const original=chip.innerHTML;
       chip.dataset.catalogImage=src;
-      const img=document.createElement('img');
-      img.className='ref-color-product';
-      img.src=src;
-      img.alt=card.querySelector('strong')?.textContent||'Spark color';
-      img.decoding='async';
-      img.onerror=()=>{chip.innerHTML=original;chip.dataset.catalogImage=src;};
-      chip.replaceChildren(img);
+      const alt=card.querySelector('strong')?.textContent||'Spark color';
+      const commit=()=>{
+        if(!chip.isConnected||chip.dataset.catalogImage!==src)return;
+        const img=catalogImg(src,alt,'ref-color-product');
+        img.onerror=()=>{if(chip.dataset.catalogImage===src)chip.innerHTML=original;};
+        chip.replaceChildren(img);
+      };
+      const cached=imageCache.get(src)?.img;
+      if(cached&&cached.complete&&cached.naturalWidth)commit();
+      else preload(src,'high').then(img=>{if(img&&img.naturalWidth)commit();});
     });
   }
 
@@ -182,14 +250,18 @@
 
   function start(){
     installStyles();
+    preloadSparkLibrary();
     patch();
     const root=document.getElementById('references');
     if(!root)return;
-    let queued=false;
+
+    /* MutationObserver callbacks run before the next paint. Patch immediately instead of waiting a frame,
+       so a rebuilt selector view receives its cached image before Safari can display the placeholder. */
+    let patching=false;
     new MutationObserver(()=>{
-      if(queued)return;
-      queued=true;
-      requestAnimationFrame(()=>{queued=false;patch();});
+      if(patching)return;
+      patching=true;
+      try{patch();}finally{patching=false;}
     }).observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
   }
 
