@@ -1,7 +1,7 @@
-/* Miracle-Ear Clinical Assistant v1.8.0-dev7 loader */
+/* Miracle-Ear Clinical Assistant v1.8.0-dev8 loader */
 (function(){
   const SYCLE_URL='https://www.mymiracle-ear.com/freecvs/schedule_hm.php';
-  const APP_VERSION='1.8.0-dev7';
+  const APP_VERSION='1.8.0-dev8';
   let receiverMode='right';
   let receiverSyncing=false;
   let receiverInitialized=false;
@@ -34,11 +34,11 @@
     const section=referenceSection('Retention Locks');if(!section)return;
     const originalButtons=[...section.querySelectorAll('[data-retention]')];if(originalButtons.length!==3)return;section.classList.add('ref-retention-gallery-ready');
     let gallery=section.querySelector('.ref-retention-gallery');
-    if(!gallery){const names={S:'Small',M:'Medium',L:'Large'},files={S:'IMG_2176.png',M:'IMG_2177.png',L:'IMG_2178.png'};gallery=document.createElement('div');gallery.className='ref-retention-gallery';gallery.setAttribute('aria-label','Retention lock size');gallery.innerHTML=['S','M','L'].map(size=>`<button type="button" class="ref-retention-card" data-retention-card="${size}" aria-label="Select ${names[size]} retention lock"><img src="assets/spark/catalog/retention-locks/${files[size]}?v=dev10" alt="${names[size]} Spark retention lock" decoding="async" loading="eager"><strong>${names[size]} (${size})</strong></button>`).join('');section.appendChild(gallery);gallery.querySelectorAll('[data-retention-card]').forEach(card=>card.addEventListener('click',()=>{const target=section.querySelector(`[data-retention="${card.dataset.retentionCard}"]`);if(target)target.click();}));}
+    if(!gallery){const names={S:'Small',M:'Medium',L:'Large'},files={S:'IMG_2176.png',M:'IMG_2177.png',L:'IMG_2178.png'};gallery=document.createElement('div');gallery.className='ref-retention-gallery';gallery.setAttribute('aria-label','Retention lock size');gallery.innerHTML=['S','M','L'].map(size=>`<button type="button" class="ref-retention-card" data-retention-card="${size}" aria-label="Select ${names[size]} retention lock"><img src="assets/spark/catalog/retention-locks/${files[size]}?v=dev11" alt="${names[size]} Spark retention lock" decoding="async" loading="eager"><strong>${names[size]} (${size})</strong></button>`).join('');section.appendChild(gallery);gallery.querySelectorAll('[data-retention-card]').forEach(card=>card.addEventListener('click',()=>{const target=section.querySelector(`[data-retention="${card.dataset.retentionCard}"]`);if(target)target.click();}));}
     const selected=originalButtons.find(button=>button.classList.contains('active'))?.dataset.retention||'M';gallery.querySelectorAll('[data-retention-card]').forEach(card=>{const active=card.dataset.retentionCard===selected;card.classList.toggle('active',active);card.setAttribute('aria-pressed',active?'true':'false');});
   }
 
-  function receiverAsset(side,length,power){return `assets/spark/catalog/receivers/${side}-${length}-${power}.png?v=dev10`;}
+  function receiverAsset(side,length,power){return `assets/spark/catalog/receivers/${side}-${length}-${power}.png?v=dev11`;}
   function receiverEarLabel(ear){const s=receiverSelections[ear];return `${s.length}${s.power} ${ear==='left'?'Left (Blue)':'Right (Red)'}`;}
   function receiverConfigurationLabel(){return `${receiverEarLabel('left')} + ${receiverEarLabel('right')}`;}
   function currentReceiverButtons(section){return {power:section?.querySelector('[data-receiver-power].active')?.dataset.receiverPower||'M',length:section?.querySelector('[data-receiver-length].active')?.dataset.receiverLength||'0'};}
@@ -60,7 +60,9 @@
     if(!dual){dual=document.createElement('div');dual.className='ref-bilateral-preview';const slot=preview.querySelector('.ref-image-slot');if(slot)slot.insertAdjacentElement('afterend',dual);else preview.prepend(dual);}
     const left=receiverSelections.left,right=receiverSelections.right,key=`${left.length}-${left.power}|${right.length}-${right.power}`;
     if(dual.dataset.receiverKey!==key){dual.dataset.receiverKey=key;dual.innerHTML=`<img src="${receiverAsset('L',left.length,left.power)}" alt="${receiverEarLabel('left')} Spark receiver" decoding="async" loading="eager"><img src="${receiverAsset('R',right.length,right.power)}" alt="${receiverEarLabel('right')} Spark receiver" decoding="async" loading="eager">`;}
-    const both=receiverMode==='both';preview.classList.toggle('ref-bilateral-ready',both);if(summary&&both)summary.textContent=receiverConfigurationLabel();updateReceiverConfigText();
+    const both=receiverMode==='both';preview.classList.toggle('ref-bilateral-ready',both);
+    const bilateralLabel=receiverConfigurationLabel();if(summary&&both&&summary.textContent!==bilateralLabel)summary.textContent=bilateralLabel;
+    updateReceiverConfigText();
   }
 
   function installBilateralReceiver(){
@@ -87,11 +89,11 @@
   function applyDisplayVersion(){document.querySelectorAll('[data-app-version]').forEach(el=>setText(el,APP_VERSION));setText(document.getElementById('aboutVersion'),APP_VERSION);const heading=document.querySelector('#aboutWhatsNew h3');if(heading)setText(heading,"What's New in v"+APP_VERSION);const cards=document.querySelectorAll('#dashboardCards .dashboard-card');const versionCard=[...cards].find(card=>card.querySelector('.label')?.textContent.trim()==='Current Version');if(versionCard)setText(versionCard.querySelector('.number'),APP_VERSION);}
   function installVersionGuard(){applyDisplayVersion();if(!document.body||document.body.dataset.versionGuardInstalled==='1')return;document.body.dataset.versionGuardInstalled='1';new MutationObserver(()=>applyDisplayVersion()).observe(document.body,{childList:true,subtree:true});}
   function ready(){applyLayoutFixes();installSycleLaunch();installVersionGuard();installReferenceEnhancementGuard();}
-  function loadReferenceImages(){if(document.querySelector('script[data-reference-images-loader]'))return;const images=document.createElement('script');images.src='js/reference-images.js?v=dev7';images.async=false;images.dataset.referenceImagesLoader='1';images.onload=function(){applyDisplayVersion();installReferenceEnhancementGuard();};document.body.appendChild(images);}
-  function loadReferences(){if(document.querySelector('script[data-references-loader]'))return;const ref=document.createElement('script');ref.src='js/references.js?v=dev7';ref.async=false;ref.dataset.referencesLoader='1';ref.onload=function(){loadReferenceImages();applyDisplayVersion();installReferenceEnhancementGuard();};document.body.appendChild(ref);}
+  function loadReferenceImages(){if(document.querySelector('script[data-reference-images-loader]'))return;const images=document.createElement('script');images.src='js/reference-images.js?v=dev8';images.async=false;images.dataset.referenceImagesLoader='1';images.onload=function(){applyDisplayVersion();installReferenceEnhancementGuard();};document.body.appendChild(images);}
+  function loadReferences(){if(document.querySelector('script[data-references-loader]'))return;const ref=document.createElement('script');ref.src='js/references.js?v=dev8';ref.async=false;ref.dataset.referencesLoader='1';ref.onload=function(){loadReferenceImages();applyDisplayVersion();installReferenceEnhancementGuard();};document.body.appendChild(ref);}
   function loadSequentially(){const core=document.createElement('script');core.src='js/app-core.js';core.async=false;core.onload=function(){const patch=document.createElement('script');patch.src='js/smart-notes.js';patch.async=false;patch.onload=function(){ready();loadReferences();};document.body.appendChild(patch);};document.body.appendChild(core);}
 
   applyLayoutFixes();
-  if(document.readyState==='loading'){document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script><script src="js/references.js?v=dev7"><\/script><script src="js/reference-images.js?v=dev7"><\/script>');document.addEventListener('DOMContentLoaded',ready,{once:true});}else{loadSequentially();}
+  if(document.readyState==='loading'){document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script><script src="js/references.js?v=dev8"><\/script><script src="js/reference-images.js?v=dev8"><\/script>');document.addEventListener('DOMContentLoaded',ready,{once:true});}else{loadSequentially();}
   window.addEventListener('pageshow',function(){installSycleLaunch();applyDisplayVersion();installReferenceEnhancementGuard();});
 })();
