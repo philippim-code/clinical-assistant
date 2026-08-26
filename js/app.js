@@ -1,7 +1,8 @@
-/* Miracle-Ear Clinical Assistant v1.8.0-dev5 loader */
+/* Miracle-Ear Clinical Assistant v1.8.0-dev6 loader */
 (function(){
   const SYCLE_URL='https://www.mymiracle-ear.com/freecvs/schedule_hm.php';
-  const APP_VERSION='1.8.0-dev5';
+  const APP_VERSION='1.8.0-dev6';
+  let bilateralReceiver=false;
 
   function applyLayoutFixes(){
     const old=document.getElementById('app-layout-fixes');
@@ -35,6 +36,12 @@
       .ref-retention-card img{display:block;width:100%;height:190px;object-fit:contain;filter:none!important;}
       .ref-retention-card strong{display:block;margin-top:7px;text-align:center;font-size:13px;}
 
+      /* Bilateral receiver selection uses the same receiver power and length for both ears. */
+      .ref-bilateral-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;height:220px;align-items:center;}
+      .ref-bilateral-preview img{width:100%;height:100%;min-width:0;object-fit:contain;display:block;filter:none!important;}
+      .ref-component-preview.ref-bilateral-ready .ref-image-slot{display:none!important;}
+      .ref-component-preview:not(.ref-bilateral-ready) .ref-bilateral-preview{display:none!important;}
+
       @media(max-width:600px){
         .appbar-actions{display:flex!important;width:100%!important;gap:8px!important;flex-wrap:nowrap!important;}
         .appbar-actions button{display:block!important;flex:1 1 0!important;margin:0!important;min-width:0!important;min-height:44px!important;}
@@ -42,15 +49,22 @@
         .ref-retention-card{padding:8px 6px!important;}
         .ref-retention-card img{height:125px;}
         .ref-retention-card strong{font-size:12px;}
+        .ref-bilateral-preview{height:190px;gap:6px;}
       }
     `;
     document.head.appendChild(style);
   }
 
+  function referenceSection(title){
+    const root=document.getElementById('references');
+    if(!root)return null;
+    return [...root.querySelectorAll('.ref-section')].find(el=>el.querySelector('h4')?.textContent.trim()===title)||null;
+  }
+
   function installRetentionGallery(){
     const root=document.getElementById('references');
     if(!root)return;
-    const section=[...root.querySelectorAll('.ref-section')].find(el=>el.querySelector('h4')?.textContent.trim()==='Retention Locks');
+    const section=referenceSection('Retention Locks');
     if(!section)return;
 
     const originalButtons=[...section.querySelectorAll('[data-retention]')];
@@ -80,16 +94,80 @@
     });
   }
 
-  function installRetentionGalleryGuard(){
+  function receiverAsset(side,length,power){
+    return `assets/spark/catalog/receivers/${side}-${length}-${power}.png?v=dev9`;
+  }
+
+  function installBilateralReceiver(){
+    const section=referenceSection('Receivers');
+    if(!section)return;
+    const sideRow=section.querySelector('[data-receiver-side]')?.parentElement;
+    if(!sideRow)return;
+
+    let both=sideRow.querySelector('[data-receiver-both]');
+    if(!both){
+      both=document.createElement('button');
+      both.type='button';
+      both.className='ref-choice';
+      both.dataset.receiverBoth='true';
+      both.textContent='🔵🔴 Both';
+      both.addEventListener('click',()=>{
+        bilateralReceiver=true;
+        installBilateralReceiver();
+      });
+      sideRow.appendChild(both);
+    }
+
+    const originalSides=[...sideRow.querySelectorAll('[data-receiver-side]')];
+    originalSides.forEach(button=>{
+      if(button.dataset.bilateralListener==='1')return;
+      button.dataset.bilateralListener='1';
+      button.addEventListener('click',()=>{bilateralReceiver=false;});
+    });
+
+    both.classList.toggle('active',bilateralReceiver);
+    both.setAttribute('aria-pressed',bilateralReceiver?'true':'false');
+    originalSides.forEach(button=>button.classList.toggle('active',!bilateralReceiver&&button.classList.contains('active')));
+
+    const preview=section.querySelector('.ref-component-preview');
+    const summary=preview?.querySelector('.ref-selection-summary strong');
+    const power=section.querySelector('[data-receiver-power].active')?.dataset.receiverPower||'M';
+    const length=section.querySelector('[data-receiver-length].active')?.dataset.receiverLength||'0';
+
+    if(preview){
+      let dual=preview.querySelector('.ref-bilateral-preview');
+      if(!dual){
+        dual=document.createElement('div');
+        dual.className='ref-bilateral-preview';
+        const slot=preview.querySelector('.ref-image-slot');
+        if(slot)slot.insertAdjacentElement('afterend',dual);else preview.prepend(dual);
+      }
+      dual.innerHTML=`<img src="${receiverAsset('L',length,power)}" alt="${length}${power} left blue Spark receiver" decoding="async" loading="eager"><img src="${receiverAsset('R',length,power)}" alt="${length}${power} right red Spark receiver" decoding="async" loading="eager">`;
+      preview.classList.toggle('ref-bilateral-ready',bilateralReceiver);
+      if(summary&&bilateralReceiver)summary.textContent=`${length}${power} Both (Blue + Red)`;
+    }
+
+    const config=document.querySelector('#references .ref-config-value');
+    if(config&&bilateralReceiver){
+      config.textContent=config.textContent.replace(/\b(?:00|0|1|2|3)(?:S|M|P)\s+(?:Left \(Blue\)|Right \(Red\))/,`${length}${power} Both (Blue + Red)`);
+    }
+  }
+
+  function installReferenceEnhancements(){
     installRetentionGallery();
+    installBilateralReceiver();
+  }
+
+  function installReferenceEnhancementGuard(){
+    installReferenceEnhancements();
     const root=document.getElementById('references');
-    if(!root||root.dataset.retentionGalleryGuard==='1')return;
-    root.dataset.retentionGalleryGuard='1';
+    if(!root||root.dataset.referenceEnhancementGuard==='1')return;
+    root.dataset.referenceEnhancementGuard='1';
     let queued=false;
     new MutationObserver(()=>{
       if(queued)return;
       queued=true;
-      queueMicrotask(()=>{queued=false;installRetentionGallery();});
+      queueMicrotask(()=>{queued=false;installReferenceEnhancements();});
     }).observe(root,{childList:true,subtree:true});
   }
 
@@ -118,25 +196,25 @@
     new MutationObserver(()=>applyDisplayVersion()).observe(document.body,{childList:true,subtree:true});
   }
 
-  function ready(){applyLayoutFixes();installSycleLaunch();installVersionGuard();installRetentionGalleryGuard();}
+  function ready(){applyLayoutFixes();installSycleLaunch();installVersionGuard();installReferenceEnhancementGuard();}
 
   function loadReferenceImages(){
     if(document.querySelector('script[data-reference-images-loader]'))return;
     const images=document.createElement('script');
-    images.src='js/reference-images.js?v=dev5';
+    images.src='js/reference-images.js?v=dev6';
     images.async=false;
     images.dataset.referenceImagesLoader='1';
-    images.onload=function(){applyDisplayVersion();installRetentionGalleryGuard();};
+    images.onload=function(){applyDisplayVersion();installReferenceEnhancementGuard();};
     document.body.appendChild(images);
   }
 
   function loadReferences(){
     if(document.querySelector('script[data-references-loader]'))return;
     const ref=document.createElement('script');
-    ref.src='js/references.js?v=dev5';
+    ref.src='js/references.js?v=dev6';
     ref.async=false;
     ref.dataset.referencesLoader='1';
-    ref.onload=function(){loadReferenceImages();applyDisplayVersion();installRetentionGalleryGuard();};
+    ref.onload=function(){loadReferenceImages();applyDisplayVersion();installReferenceEnhancementGuard();};
     document.body.appendChild(ref);
   }
 
@@ -157,11 +235,11 @@
   applyLayoutFixes();
 
   if(document.readyState==='loading'){
-    document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script><script src="js/references.js?v=dev5"><\/script><script src="js/reference-images.js?v=dev5"><\/script>');
+    document.write('<script src="js/app-core.js"><\/script><script src="js/smart-notes.js"><\/script><script src="js/references.js?v=dev6"><\/script><script src="js/reference-images.js?v=dev6"><\/script>');
     document.addEventListener('DOMContentLoaded',ready,{once:true});
   }else{
     loadSequentially();
   }
 
-  window.addEventListener('pageshow',function(){installSycleLaunch();applyDisplayVersion();installRetentionGalleryGuard();});
+  window.addEventListener('pageshow',function(){installSycleLaunch();applyDisplayVersion();installReferenceEnhancementGuard();});
 })();
