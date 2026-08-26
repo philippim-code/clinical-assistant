@@ -127,7 +127,7 @@
 
     both.classList.toggle('active',bilateralReceiver);
     both.setAttribute('aria-pressed',bilateralReceiver?'true':'false');
-    originalSides.forEach(button=>button.classList.toggle('active',!bilateralReceiver&&button.classList.contains('active')));
+    if(bilateralReceiver)originalSides.forEach(button=>button.classList.remove('active'));
 
     const preview=section.querySelector('.ref-component-preview');
     const summary=preview?.querySelector('.ref-selection-summary strong');
@@ -142,14 +142,20 @@
         const slot=preview.querySelector('.ref-image-slot');
         if(slot)slot.insertAdjacentElement('afterend',dual);else preview.prepend(dual);
       }
-      dual.innerHTML=`<img src="${receiverAsset('L',length,power)}" alt="${length}${power} left blue Spark receiver" decoding="async" loading="eager"><img src="${receiverAsset('R',length,power)}" alt="${length}${power} right red Spark receiver" decoding="async" loading="eager">`;
+      const receiverKey=`${length}-${power}`;
+      if(dual.dataset.receiverKey!==receiverKey){
+        dual.dataset.receiverKey=receiverKey;
+        dual.innerHTML=`<img src="${receiverAsset('L',length,power)}" alt="${length}${power} left blue Spark receiver" decoding="async" loading="eager"><img src="${receiverAsset('R',length,power)}" alt="${length}${power} right red Spark receiver" decoding="async" loading="eager">`;
+      }
       preview.classList.toggle('ref-bilateral-ready',bilateralReceiver);
-      if(summary&&bilateralReceiver)summary.textContent=`${length}${power} Both (Blue + Red)`;
+      const bilateralLabel=`${length}${power} Both (Blue + Red)`;
+      if(summary&&bilateralReceiver&&summary.textContent!==bilateralLabel)summary.textContent=bilateralLabel;
     }
 
     const config=document.querySelector('#references .ref-config-value');
     if(config&&bilateralReceiver){
-      config.textContent=config.textContent.replace(/\b(?:00|0|1|2|3)(?:S|M|P)\s+(?:Left \(Blue\)|Right \(Red\))/,`${length}${power} Both (Blue + Red)`);
+      const updated=config.textContent.replace(/\b(?:00|0|1|2|3)(?:S|M|P)\s+(?:Left \(Blue\)|Right \(Red\))/,`${length}${power} Both (Blue + Red)`);
+      if(updated!==config.textContent)config.textContent=updated;
     }
   }
 
