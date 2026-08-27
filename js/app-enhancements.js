@@ -5,17 +5,17 @@
   const solutionNames={5:'Premium',4:'Advanced',3:'Standard',2:'Essential'};
   const sparkFeatures={
     ai:{
-      5:['AutoSense OS premium','Adaptive Phonak Digital 3.0','Spheric speech clarity','SpeechSensor','Speech enhancer','Health functionalities','Dynamic noise cancellation','StereoZoom 2.0','Speech in car','SoundRecover2','SoundRelax','Tap control','Motion sensor hearing','WindBlock','RogerDirect','Water resistant'],
-      4:['AutoSense OS advanced','Adaptive Phonak Digital 3.0','Spheric speech clarity','SpeechSensor','Health functionalities','Dynamic noise cancellation','StereoZoom 2.0','Speech in car','SoundRecover2','SoundRelax','Tap control','Motion sensor hearing','WindBlock','RogerDirect','Water resistant']
+      5:['AutoSense OS','Adaptive Phonak Digital 3.0','Spheric speech clarity','SpeechSensor','Health functionalities','Dynamic noise cancellation','StereoZoom 2.0','Speech in car','SoundRecover2','SoundRelax','Tap control','Motion sensor hearing','WindBlock','RogerDirect','Water resistant','Speech enhancer'],
+      4:['AutoSense OS','Adaptive Phonak Digital 3.0','Spheric speech clarity','SpeechSensor','Health functionalities','Dynamic noise cancellation','StereoZoom 2.0','Speech in car','SoundRecover2','SoundRelax','Tap control','Motion sensor hearing','WindBlock','RogerDirect','Water resistant']
     },
     standard:{
-      5:['AutoSense OS premium','Adaptive Phonak Digital 3.0','SpeechSensor','Speech enhancer','Health functionalities','Dynamic noise cancellation','StereoZoom 2.0','Speech in car','SoundRecover2','SoundRelax','Tap control','Motion sensor hearing','WindBlock','RogerDirect','Water resistant'],
-      4:['AutoSense OS advanced','Adaptive Phonak Digital 3.0','Health functionalities','Dynamic noise cancellation','StereoZoom 2.0','Speech in car','SoundRecover2','SoundRelax','Tap control','Motion sensor hearing','WindBlock','RogerDirect','Water resistant'],
-      3:['AutoSense OS standard','Adaptive Phonak Digital 3.0','Health functionalities','Speech in car','SoundRecover2','SoundRelax','Motion sensor hearing','WindBlock','RogerDirect','Water resistant'],
-      2:['AutoSense OS essential','Adaptive Phonak Digital 3.0','Health functionalities','SoundRecover2','Real ear sound','WindBlock','RogerDirect','Water resistant']
+      5:['AutoSense OS','Adaptive Phonak Digital 3.0','Health functionalities','SoundRecover2','Real ear sound','WindBlock','RogerDirect','Water resistant','Speech in car','SoundRelax','Motion sensor hearing','Dynamic noise cancellation','StereoZoom 2.0','Tap control','SpeechSensor','Speech enhancer'],
+      4:['AutoSense OS','Adaptive Phonak Digital 3.0','Health functionalities','SoundRecover2','Real ear sound','WindBlock','RogerDirect','Water resistant','Speech in car','SoundRelax','Motion sensor hearing','Dynamic noise cancellation','StereoZoom 2.0','Tap control'],
+      3:['AutoSense OS','Adaptive Phonak Digital 3.0','Health functionalities','SoundRecover2','Real ear sound','WindBlock','RogerDirect','Water resistant','Speech in car','SoundRelax','Motion sensor hearing'],
+      2:['AutoSense OS','Adaptive Phonak Digital 3.0','Health functionalities','SoundRecover2','Real ear sound','WindBlock','RogerDirect','Water resistant']
     }
   };
-  const featureOrder=['AutoSense OS premium','AutoSense OS advanced','AutoSense OS standard','AutoSense OS essential','Adaptive Phonak Digital 3.0','Spheric speech clarity','SpeechSensor','Speech enhancer','Health functionalities','Dynamic noise cancellation','StereoZoom 2.0','Speech in car','SoundRecover2','SoundRelax','Tap control','Motion sensor hearing','Real ear sound','WindBlock','RogerDirect','Water resistant'];
+  const featureOrder=['AutoSense OS','Adaptive Phonak Digital 3.0','Spheric speech clarity','Health functionalities','SoundRecover2','Real ear sound','WindBlock','RogerDirect','Water resistant','Speech in car','SoundRelax','Motion sensor hearing','Dynamic noise cancellation','StereoZoom 2.0','Tap control','SpeechSensor','Speech enhancer'];
   let receiverMode='right',receiverSyncing=false,receiverInitialized=false;
   const receiverSelections={left:{power:'M',length:'0'},right:{power:'M',length:'0'}};
 
@@ -35,7 +35,7 @@
       .ref-component-preview.ref-bilateral-ready{display:flex;flex-direction:column;min-height:350px}
       .ref-feature-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}.ref-feature-head h4{margin-bottom:4px!important}.ref-feature-head p{margin:0}
       .ref-solution-badge{flex:0 0 auto;padding:6px 10px;border-radius:999px;background:var(--teal);color:#fff;font-size:11px;font-weight:850;white-space:nowrap}
-      .ref-feature-levels{margin:2px 0 14px}.ref-feature-legend{display:flex;align-items:center;gap:18px;margin:0 0 12px;color:var(--muted);font-size:12px;font-weight:700}.ref-feature-legend>span{display:flex;align-items:center;gap:6px}
+      .ref-feature-levels{margin:2px 0 14px}
       .ref-feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
       .ref-feature-item{display:flex;align-items:flex-start;gap:8px;padding:10px 11px;border:1px solid var(--border);border-radius:11px;background:#f8fbfc;color:var(--text);font-size:13px;font-weight:700;line-height:1.3;transition:background .18s ease,border-color .18s ease,color .18s ease,opacity .18s ease}
       .ref-feature-item.excluded{background:#f3f5f6;border-color:#e2e7e8;color:#8a9599;opacity:.72}

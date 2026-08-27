@@ -2,12 +2,12 @@
 (function(){
   'use strict';
 
-  const VERSION='1.8.0-dev14';
+  const VERSION='1.8.0-dev15';
   const RELEASE_NOTES=[
-    '<li><strong>Combined Spark treatment levels and features</strong> into one comparison panel.</li>',
-    '<li><strong>Kept the complete feature list visible</strong> while switching between treatment levels.</li>',
-    '<li><strong>Added clear availability states</strong> with teal checks for included features and muted empty indicators for unavailable features.</li>',
-    '<li><strong>Preserved the complete dev13 repair</strong>, including all tabs, Saved Outcomes, and responsive Spark loading.</li>'
+    '<li><strong>Simplified the Spark comparison panel</strong> by removing the redundant availability legend.</li>',
+    '<li><strong>Organized features in cumulative treatment order</strong> so included features always appear first.</li>',
+    '<li><strong>Kept every feature in a fixed position</strong> while higher levels turn additional features on.</li>',
+    '<li><strong>Consolidated AutoSense OS</strong> into one feature while retaining each level designation in the solution badge.</li>'
   ];
 
   window.CLINICAL_ASSISTANT_VERSION=VERSION;
