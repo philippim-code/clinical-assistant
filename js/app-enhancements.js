@@ -36,13 +36,13 @@
       .ref-feature-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}.ref-feature-head h4{margin-bottom:4px!important}.ref-feature-head p{margin:0}
       .ref-solution-badge{flex:0 0 auto;padding:6px 10px;border-radius:999px;background:var(--teal);color:#fff;font-size:11px;font-weight:850;white-space:nowrap}
       .ref-feature-levels{margin:2px 0 14px}
-      .ref-feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+      .ref-feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(6,auto);grid-auto-flow:column;gap:9px}
       .ref-feature-item{display:flex;align-items:flex-start;gap:8px;padding:10px 11px;border:1px solid var(--border);border-radius:11px;background:#f8fbfc;color:var(--text);font-size:13px;font-weight:700;line-height:1.3;transition:background .18s ease,border-color .18s ease,color .18s ease,opacity .18s ease}
       .ref-feature-item.excluded{background:#f3f5f6;border-color:#e2e7e8;color:#8a9599;opacity:.72}
       .ref-feature-check{display:grid;place-items:center;flex:0 0 19px;width:19px;height:19px;border-radius:50%;background:var(--teal-light);color:var(--teal-dark);font-size:11px;font-weight:900}
       .ref-feature-check.ref-feature-empty{box-sizing:border-box;background:transparent;border:1.5px solid #aeb8bb;color:transparent}
-      @media(max-width:800px){.ref-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-      @media(max-width:600px){.ref-feature-grid{grid-template-columns:1fr}.ref-feature-head{flex-direction:column}.ref-retention-card img{height:125px}.ref-bilateral-preview{height:220px;min-height:220px}.ref-bilateral-preview img{height:205px}}
+      @media(max-width:800px){.ref-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(8,auto)}}
+      @media(max-width:600px){.ref-feature-grid{grid-template-columns:1fr;grid-template-rows:repeat(16,auto)}.ref-feature-head{flex-direction:column}.ref-retention-card img{height:125px}.ref-bilateral-preview{height:220px;min-height:220px}.ref-bilateral-preview img{height:205px}}
     `;document.head.appendChild(style);
   }
   function setText(el,value){if(el&&el.textContent!==value)el.textContent=value}
