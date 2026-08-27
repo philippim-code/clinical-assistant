@@ -57,3 +57,8 @@ August 21, 2026
 - Referral destinations are included concisely in generated notes and persist with drafts and Saved Outcomes.
 - Added informational Referral Considerations without automatic clinical decision-making.
 - Preserved existing appointment workflows, manually edited notes, autosave, responsive behavior, and local-only storage.
+v1.8.0-dev13
+- Restored the complete tab markup expected by the preserved application core.
+- Fixed the Spark reference freeze by removing recursive mutation observers.
+- Changed Spark imagery to load on demand for iPad responsiveness.
+- Preserved existing local storage and Saved Outcomes data.

@@ -1,8 +1,8 @@
-/* Miracle-Ear Clinical Assistant v1.8.0-dev10 — instant Spark manufacturer imagery */
+/* Miracle-Ear Clinical Assistant — responsive Spark manufacturer imagery */
 (function(){
   'use strict';
 
-  const ASSET_VERSION='dev9';
+  const ASSET_VERSION='dev13';
   const BASE='assets/spark/catalog/';
   const asset=path=>`${path}?v=${ASSET_VERSION}`;
 
@@ -84,12 +84,9 @@
   }
 
   function preloadSparkLibrary(){
-    /* Current/default visuals first, then warm the entire Spark library in the background. */
+    /* Warm only initial visuals. Loading all catalog images at once can stall iPad browsers. */
     [FAMILY.standard['silver-gray'],FAMILY.ai['silver-gray'],receiverSrc('R','0','M'),DOME['vented-S'],RETENTION.M,ACCESSORY['MECHARGE Charger'],ACCESSORY.CeruStop]
       .forEach(src=>preload(src,'high'));
-    const warm=()=>allSparkAssets().forEach(src=>preload(src));
-    if('requestIdleCallback' in window)requestIdleCallback(warm,{timeout:500});
-    else setTimeout(warm,0);
   }
 
   function installStyles(){
@@ -255,14 +252,7 @@
     const root=document.getElementById('references');
     if(!root)return;
 
-    /* MutationObserver callbacks run before the next paint. Patch immediately instead of waiting a frame,
-       so a rebuilt selector view receives its cached image before Safari can display the placeholder. */
-    let patching=false;
-    new MutationObserver(()=>{
-      if(patching)return;
-      patching=true;
-      try{patch();}finally{patching=false;}
-    }).observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+    document.addEventListener('clinical-assistant:references-rendered',patch);
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});

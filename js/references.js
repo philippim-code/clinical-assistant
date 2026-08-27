@@ -129,6 +129,7 @@
   }
 
   function referencesRoot(){return document.getElementById('references');}
+  function notifyRendered(){document.dispatchEvent(new CustomEvent('clinical-assistant:references-rendered'));}
   function scrollReferencesTop(){const el=referencesRoot();if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
   function activeFamily(){return sparkData.families[state.family]||sparkData.families.standard;}
   function activeDome(){return sparkData.domes.find(d=>d.id===state.dome)||sparkData.domes[0];}
@@ -156,6 +157,7 @@
     root.querySelector('[data-ref-product="spark"]').addEventListener('click',renderSparkLanding);
     root.querySelector('[data-ref-product="genius"]').addEventListener('click',renderGeniusPlaceholder);
     root.querySelectorAll('[data-ref-product]').forEach(card=>card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}}));
+    notifyRendered();
   }
 
   function breadcrumb(items){return `<div class="ref-breadcrumbs">${items.map(item=>item.action?`<button type="button" data-ref-breadcrumb="${item.action}">${item.label}</button><span>›</span>`:`<strong>${item.label}</strong>`).join('')}</div>`;}
@@ -176,14 +178,14 @@
     wireBreadcrumbs(root);
     root.querySelector('#openSparkStore').addEventListener('click',()=>window.location.assign(SPARK_STORE_URL));
     root.querySelectorAll('[data-family]').forEach(card=>{card.addEventListener('click',()=>{state.family=card.dataset.family;state.level=sparkData.families[state.family].levels[0];renderSparkProduct();});card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}});});
-    scrollReferencesTop();
+    notifyRendered();scrollReferencesTop();
   }
 
   function renderGeniusPlaceholder(){
     state.view='genius';if(sectionObserver){sectionObserver.disconnect();sectionObserver=null;}
     const root=referencesRoot();if(!root)return;
     root.innerHTML=`<div class="ref-shell">${breadcrumb([{label:'References',action:'home'},{label:'Hearing Aids',action:'home'},{label:'Genius'}])}<div class="ref-page-head"><div><h3>Genius</h3><p class="muted">Genius will use the same polished product-reference structure established for Spark.</p></div><button type="button" class="secondary ref-back" data-ref-breadcrumb="home">← Hearing Aids</button></div><div class="ref-section">${placeholder('Genius','Product data and imagery have not been added yet.')}</div></div>`;
-    wireBreadcrumbs(root);scrollReferencesTop();
+    wireBreadcrumbs(root);notifyRendered();scrollReferencesTop();
   }
 
   function stickyNav(model){return `<nav class="ref-sticky-nav" aria-label="Spark reference sections"><div class="ref-sticky-links"><button type="button" class="ref-nav-link active" data-scroll-section="overview">Overview</button><button type="button" class="ref-nav-link" data-scroll-section="colors">Colors</button><button type="button" class="ref-nav-link" data-scroll-section="receivers">Receivers</button><button type="button" class="ref-nav-link" data-scroll-section="domes">Domes</button><button type="button" class="ref-nav-link" data-scroll-section="retention">Retention</button><button type="button" class="ref-nav-link" data-scroll-section="accessories">Accessories</button></div><div class="ref-nav-model" title="${model}">${model}</div></nav>`;}
@@ -225,6 +227,7 @@
     root.querySelectorAll('[data-dome]').forEach(b=>b.addEventListener('click',()=>{state.dome=b.dataset.dome;state.domeSize=activeDome().sizes[0];renderSparkProduct();}));
     root.querySelectorAll('[data-dome-size]').forEach(b=>b.addEventListener('click',()=>{state.domeSize=b.dataset.domeSize;renderSparkProduct();}));
     root.querySelectorAll('[data-retention]').forEach(b=>b.addEventListener('click',()=>{state.retention=b.dataset.retention;renderSparkProduct();}));
+    notifyRendered();
   }
 
   function applyVersion(){window.applyClinicalAssistantVersion();}

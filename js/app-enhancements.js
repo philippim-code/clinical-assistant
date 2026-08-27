@@ -76,7 +76,7 @@
     const links=root.querySelector('.ref-sticky-links');if(links&&!links.querySelector('[data-scroll-section="features"]')){const b=document.createElement('button');b.type='button';b.className='ref-nav-link';b.dataset.scrollSection='features';b.textContent='Features';b.addEventListener('click',()=>section.scrollIntoView({behavior:'smooth',block:'start'}));const colors=links.querySelector('[data-scroll-section="colors"]');colors?links.insertBefore(b,colors):links.appendChild(b)}
   }
   function enhanceReferences(){installRetentionGallery();installBilateralReceiver();installFeatures()}
-  function installReferenceObserver(){const root=document.getElementById('references');if(!root||root.dataset.dev11Observer)return;root.dataset.dev11Observer='1';let queued=false;new MutationObserver(()=>{if(queued)return;queued=true;queueMicrotask(()=>{queued=false;enhanceReferences()})}).observe(root,{childList:true,subtree:true})}
+  function installReferenceObserver(){if(document.documentElement.dataset.referenceEnhancementEvents)return;document.documentElement.dataset.referenceEnhancementEvents='1';document.addEventListener('clinical-assistant:references-rendered',enhanceReferences)}
   function init(){installStyles();installSycle();applyVersion();enhanceReferences();installReferenceObserver()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   window.addEventListener('load',init);window.addEventListener('pageshow',init);

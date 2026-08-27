@@ -2,12 +2,12 @@
 (function(){
   'use strict';
 
-  const VERSION='1.8.0-dev12';
+  const VERSION='1.8.0-dev13';
   const RELEASE_NOTES=[
-    '<li><strong>Fixed development version reporting</strong> so the current build can no longer be mislabeled as dev3 by an older feature module.</li>',
-    '<li><strong>Centralized release metadata</strong> so the header, Home Dashboard, About tab, Saved Outcomes, and update dialogs all use the same version.</li>',
-    '<li><strong>Preserved the complete dev11 feature set</strong>, including Spark references, bilateral receiver configuration, retention-lock previews, and solution-level features.</li>',
-    '<li><strong>Bumped the development cache</strong> so Vercel and installed browser copies request the corrected files.</li>'
+    '<li><strong>Restored every complete application tab</strong> after an incompatible compact shell caused blank and partial panels.</li>',
+    '<li><strong>Fixed the Spark freeze</strong> by replacing recursive DOM observers with explicit render notifications.</li>',
+    '<li><strong>Reduced iPad memory pressure</strong> by loading Spark catalog images only as they are needed.</li>',
+    '<li><strong>Preserved Saved Outcomes and local data</strong> without changing browser storage keys.</li>'
   ];
 
   window.CLINICAL_ASSISTANT_VERSION=VERSION;
