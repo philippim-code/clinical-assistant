@@ -1,7 +1,6 @@
-/* Miracle-Ear Clinical Assistant v1.8.0-dev11 post-load enhancements */
+/* Miracle-Ear Clinical Assistant post-load enhancements */
 (function(){
   'use strict';
-  const APP_VERSION='1.8.0-dev11';
   const SYCLE_URL='https://www.mymiracle-ear.com/freecvs/schedule_hm.php';
   const solutionNames={5:'Premium',4:'Advanced',3:'Standard',2:'Essential'};
   const sparkFeatures={
@@ -43,12 +42,7 @@
     `;document.head.appendChild(style);
   }
   function setText(el,value){if(el&&el.textContent!==value)el.textContent=value}
-  function applyVersion(){
-    document.querySelectorAll('[data-app-version]').forEach(el=>setText(el,APP_VERSION));
-    setText(document.getElementById('aboutVersion'),APP_VERSION);
-    const heading=document.querySelector('#aboutWhatsNew h3');if(heading)setText(heading,"What's New in v"+APP_VERSION);
-    const cards=document.querySelectorAll('#dashboardCards .dashboard-card');const card=[...cards].find(c=>c.querySelector('.label')?.textContent.trim()==='Current Version');if(card)setText(card.querySelector('.number'),APP_VERSION);
-  }
+  function applyVersion(){window.applyClinicalAssistantVersion();}
   function installSycle(){const b=document.querySelector('.sycle-shortcut');if(b){b.textContent='Open Sycle';b.removeAttribute('title')}window.openSycle=function(){window.location.assign(SYCLE_URL)}}
   function referenceSection(title){const root=document.getElementById('references');return root?[...root.querySelectorAll('.ref-section')].find(el=>el.querySelector('h4')?.textContent.trim()===title)||null:null}
   function installRetentionGallery(){

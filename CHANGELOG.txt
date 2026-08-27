@@ -1,4 +1,12 @@
-Miracle-Ear Clinical Assistant v1.7.2
+Miracle-Ear Clinical Assistant v1.8.0-dev12
+
+v1.8.0-dev12
+August 27, 2026
+
+- Fixed the development build being incorrectly labeled v1.8.0-dev3 after page load.
+- Centralized release metadata so every loaded module reports the same version.
+- Preserved the complete v1.8.0-dev11 feature set and all existing clinical workflows.
+- Bumped the app and service-worker cache keys for a clean Vercel preview rollout.
 
 v1.7.2
 August 23, 2026

@@ -1,8 +1,7 @@
-/* Miracle-Ear Clinical Assistant v1.8.0-dev3 — Spark reference UI refinement */
+/* Miracle-Ear Clinical Assistant Spark reference UI refinement */
 (function(){
   'use strict';
 
-  const REFERENCES_VERSION='1.8.0-dev3';
   const SPARK_STORE_URL='https://miracle-earspark.com/miracleearus/en/USD/elements/home?continue=';
 
   const sparkData={
@@ -228,14 +227,7 @@
     root.querySelectorAll('[data-retention]').forEach(b=>b.addEventListener('click',()=>{state.retention=b.dataset.retention;renderSparkProduct();}));
   }
 
-  function applyVersion(){
-    document.querySelectorAll('[data-app-version]').forEach(el=>el.textContent=REFERENCES_VERSION);
-    const aboutVersion=document.getElementById('aboutVersion');if(aboutVersion)aboutVersion.textContent=REFERENCES_VERSION;
-    const heading=document.querySelector('#aboutWhatsNew h3');if(heading)heading.textContent="What's New in v"+REFERENCES_VERSION;
-    const list=document.querySelector('#aboutWhatsNew .changelog-list');
-    if(list)list.innerHTML=['<li><strong>Refined the Spark reference experience</strong> with sticky section navigation and smoother long-page browsing.</li>','<li><strong>Upgraded the device overview</strong> with a stronger model identity card and live Current Configuration summary.</li>','<li><strong>Polished fitting-component presentation</strong> for colors, receivers, domes, retention locks, charger, and CeruStop.</li>','<li><strong>Removed development placeholder language</strong> from completed Spark reference areas.</li>','<li><strong>Treatment-level feature comparisons remain intentionally deferred</strong> until verified manufacturer information is available.</li>'].join('');
-    const cards=document.querySelectorAll('#dashboardCards .dashboard-card');const versionCard=[...cards].find(card=>card.querySelector('.label')?.textContent.trim()==='Current Version');const number=versionCard?.querySelector('.number');if(number)number.textContent=REFERENCES_VERSION;
-  }
+  function applyVersion(){window.applyClinicalAssistantVersion();}
 
   const previousRenderDashboard=window.renderDashboard;if(typeof previousRenderDashboard==='function')window.renderDashboard=function(){const result=previousRenderDashboard();applyVersion();return result;};
   const previousRenderAbout=window.renderAbout;if(typeof previousRenderAbout==='function')window.renderAbout=function(){const result=previousRenderAbout();applyVersion();return result;};

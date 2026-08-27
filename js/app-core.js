@@ -1,4 +1,4 @@
-const APP_VERSION='1.6.0-dev4';
+const APP_VERSION=window.CLINICAL_ASSISTANT_VERSION;
 let editingOutcomeId=null;
 let currentAppointment='';let replacedItems=[];
 const DEFAULT_SETTINGS={finance:['PatientFi','Powerpay','Paymonthly/Care Credit','HFD'],adjustments:['Increased speech 1 click AU','Ran feedback test']};

@@ -1,11 +1,11 @@
 /* =========================================================
-   Miracle-Ear Clinical Assistant v1.7.2
+   Miracle-Ear Clinical Assistant shared release patch layer
    Concise note + quality-of-life patch layer
    ========================================================= */
 (function(){
   'use strict';
 
-  const PATCH_VERSION='1.7.2';
+  const PATCH_VERSION=window.CLINICAL_ASSISTANT_VERSION;
 
   function cleanText(value){return String(value||'').replace(/\s+/g,' ').trim();}
   function concernPrefix(){
@@ -116,9 +116,9 @@
     },true);
   }
 
-  function applyVersion(){document.querySelectorAll('[data-app-version]').forEach(el=>{el.textContent=PATCH_VERSION;});const aboutVersion=document.getElementById('aboutVersion');if(aboutVersion)aboutVersion.textContent=PATCH_VERSION;const heading=document.querySelector('#aboutWhatsNew h3');if(heading)heading.textContent="What's New in v"+PATCH_VERSION;const list=document.querySelector('#aboutWhatsNew .changelog-list');if(list)list.innerHTML=['<li><strong>Added a Pending Saved Outcomes badge</strong> to the Saved Outcomes navigation tab. It now disappears immediately when the last pending outcome is marked complete.</li>','<li><strong>Open Sycle</strong> remains available in the current app/browser view.</li>','<li><strong>Concise Sycle note style</strong> and Saved Outcome edit protection remain unchanged.</li>'].join('');}
+  function applyVersion(){window.applyClinicalAssistantVersion();}
   const baseRenderAbout=window.renderAbout;if(typeof baseRenderAbout==='function')window.renderAbout=function(){baseRenderAbout();applyVersion();fixAboutSpacing();};
-  window.showVersionInfo=function(){alert(`Miracle-Ear Clinical Assistant\n\nVersion ${PATCH_VERSION}\n\nWhat's new:\n• Pending Saved Outcomes notification badge\n• Badge updates immediately when outcomes are completed\n• Existing v1.7.1 behavior retained`);};
+  window.showVersionInfo=function(){alert(`Miracle-Ear Clinical Assistant\n\nVersion ${PATCH_VERSION}\n\nWhat's new:\n• Fixed the stale dev3 version label\n• Centralized release version reporting\n• Preserved the complete dev11 feature set\n• Refreshed the development cache`);};
   window.checkForUpdates=function(){alert(`Update check\n\nCurrent version: ${PATCH_VERSION}\n\nThis portable/browser version cannot automatically download updates yet. Replace the App folder when a new version is released.`);};
 
   function initPatch(){applyVersion();fixDashboardVersion();removeSmartNoteIndicator();fixDuplicateIdentifierText();fixAboutSpacing();collapseAppearanceAndHomeSettings();collapseClinicalTerminology();installOutcomeBadgeRefresh();updatePendingOutcomeBadge();}
