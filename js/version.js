@@ -2,12 +2,12 @@
 (function(){
   'use strict';
 
-  const VERSION='1.8.0-dev13';
+  const VERSION='1.8.0-dev14';
   const RELEASE_NOTES=[
-    '<li><strong>Restored every complete application tab</strong> after an incompatible compact shell caused blank and partial panels.</li>',
-    '<li><strong>Fixed the Spark freeze</strong> by replacing recursive DOM observers with explicit render notifications.</li>',
-    '<li><strong>Reduced iPad memory pressure</strong> by loading Spark catalog images only as they are needed.</li>',
-    '<li><strong>Preserved Saved Outcomes and local data</strong> without changing browser storage keys.</li>'
+    '<li><strong>Combined Spark treatment levels and features</strong> into one comparison panel.</li>',
+    '<li><strong>Kept the complete feature list visible</strong> while switching between treatment levels.</li>',
+    '<li><strong>Added clear availability states</strong> with teal checks for included features and muted empty indicators for unavailable features.</li>',
+    '<li><strong>Preserved the complete dev13 repair</strong>, including all tabs, Saved Outcomes, and responsive Spark loading.</li>'
   ];
 
   window.CLINICAL_ASSISTANT_VERSION=VERSION;

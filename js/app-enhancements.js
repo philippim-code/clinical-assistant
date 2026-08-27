@@ -15,6 +15,7 @@
       2:['AutoSense OS essential','Adaptive Phonak Digital 3.0','Health functionalities','SoundRecover2','Real ear sound','WindBlock','RogerDirect','Water resistant']
     }
   };
+  const featureOrder=['AutoSense OS premium','AutoSense OS advanced','AutoSense OS standard','AutoSense OS essential','Adaptive Phonak Digital 3.0','Spheric speech clarity','SpeechSensor','Speech enhancer','Health functionalities','Dynamic noise cancellation','StereoZoom 2.0','Speech in car','SoundRecover2','SoundRelax','Tap control','Motion sensor hearing','Real ear sound','WindBlock','RogerDirect','Water resistant'];
   let receiverMode='right',receiverSyncing=false,receiverInitialized=false;
   const receiverSelections={left:{power:'M',length:'0'},right:{power:'M',length:'0'}};
 
@@ -34,9 +35,12 @@
       .ref-component-preview.ref-bilateral-ready{display:flex;flex-direction:column;min-height:350px}
       .ref-feature-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}.ref-feature-head h4{margin-bottom:4px!important}.ref-feature-head p{margin:0}
       .ref-solution-badge{flex:0 0 auto;padding:6px 10px;border-radius:999px;background:var(--teal);color:#fff;font-size:11px;font-weight:850;white-space:nowrap}
+      .ref-feature-levels{margin:2px 0 14px}.ref-feature-legend{display:flex;align-items:center;gap:18px;margin:0 0 12px;color:var(--muted);font-size:12px;font-weight:700}.ref-feature-legend>span{display:flex;align-items:center;gap:6px}
       .ref-feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
-      .ref-feature-item{display:flex;align-items:flex-start;gap:8px;padding:10px 11px;border:1px solid var(--border);border-radius:11px;background:#f8fbfc;color:var(--text);font-size:13px;font-weight:700;line-height:1.3}
+      .ref-feature-item{display:flex;align-items:flex-start;gap:8px;padding:10px 11px;border:1px solid var(--border);border-radius:11px;background:#f8fbfc;color:var(--text);font-size:13px;font-weight:700;line-height:1.3;transition:background .18s ease,border-color .18s ease,color .18s ease,opacity .18s ease}
+      .ref-feature-item.excluded{background:#f3f5f6;border-color:#e2e7e8;color:#8a9599;opacity:.72}
       .ref-feature-check{display:grid;place-items:center;flex:0 0 19px;width:19px;height:19px;border-radius:50%;background:var(--teal-light);color:var(--teal-dark);font-size:11px;font-weight:900}
+      .ref-feature-check.ref-feature-empty{box-sizing:border-box;background:transparent;border:1.5px solid #aeb8bb;color:transparent}
       @media(max-width:800px){.ref-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
       @media(max-width:600px){.ref-feature-grid{grid-template-columns:1fr}.ref-feature-head{flex-direction:column}.ref-retention-card img{height:125px}.ref-bilateral-preview{height:220px;min-height:220px}.ref-bilateral-preview img{height:205px}}
     `;document.head.appendChild(style);
@@ -71,9 +75,10 @@
   }
   function currentSpark(){const root=document.getElementById('references'),model=root?.querySelector('.ref-model-name')?.textContent.trim()||'';if(!model)return null;const level=Number(root.querySelector('[data-level].active')?.dataset.level||model.match(/MEMINI E (\d)/i)?.[1]||0);return {level,family:/\bAI\b/i.test(model)?'ai':'standard'}}
   function installFeatures(){
-    const root=document.getElementById('references'),info=currentSpark();if(!root||!info)return;const features=sparkFeatures[info.family]?.[info.level];if(!features)return;let section=root.querySelector('[data-ref-section="features"]');if(!section){section=document.createElement('div');section.className='ref-section ref-feature-section';section.dataset.refSection='features';const config=root.querySelector('.ref-config-card');config?config.insertAdjacentElement('afterend',section):referenceSection('Treatment Level')?.insertAdjacentElement('afterend',section)}
-    const key=`${info.family}-${info.level}`;if(section.dataset.featureKey!==key){section.dataset.featureKey=key;const solution=solutionNames[info.level],family=info.family==='ai'?'MEMINI E AI RIC':'MEMINI E RIC';section.innerHTML=`<div class="ref-feature-head"><div><h4>Solution-Level Features</h4><p class="muted">${family} · E${info.level} ${solution}</p></div><span class="ref-solution-badge">E${info.level} · ${solution}</span></div><div class="ref-feature-grid">${features.map(f=>`<div class="ref-feature-item"><span class="ref-feature-check">✓</span><span>${f}</span></div>`).join('')}</div>`}
-    const links=root.querySelector('.ref-sticky-links');if(links&&!links.querySelector('[data-scroll-section="features"]')){const b=document.createElement('button');b.type='button';b.className='ref-nav-link';b.dataset.scrollSection='features';b.textContent='Features';b.addEventListener('click',()=>section.scrollIntoView({behavior:'smooth',block:'start'}));const colors=links.querySelector('[data-scroll-section="colors"]');colors?links.insertBefore(b,colors):links.appendChild(b)}
+    const root=document.getElementById('references'),info=currentSpark();if(!root||!info)return;const features=sparkFeatures[info.family]?.[info.level];if(!features)return;const section=root.querySelector('[data-ref-section="features"]'),content=section?.querySelector('.ref-feature-content');if(!section||!content)return;
+    const key=`${info.family}-${info.level}`;if(section.dataset.featureKey===key)return;section.dataset.featureKey=key;
+    const included=new Set(features),available=new Set(Object.values(sparkFeatures[info.family]).flat()),master=featureOrder.filter(feature=>available.has(feature));
+    content.innerHTML=`<div class="ref-feature-grid">${master.map(feature=>{const isIncluded=included.has(feature);return `<div class="ref-feature-item ${isIncluded?'included':'excluded'}" aria-label="${feature}: ${isIncluded?'included':'not included'}"><span class="ref-feature-check ${isIncluded?'':'ref-feature-empty'}">${isIncluded?'✓':''}</span><span>${feature}</span></div>`;}).join('')}</div>`;
   }
   function enhanceReferences(){installRetentionGallery();installBilateralReceiver();installFeatures()}
   function installReferenceObserver(){if(document.documentElement.dataset.referenceEnhancementEvents)return;document.documentElement.dataset.referenceEnhancementEvents='1';document.addEventListener('clinical-assistant:references-rendered',enhanceReferences)}
