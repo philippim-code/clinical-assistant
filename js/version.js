@@ -2,20 +2,25 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev4';
+  const VERSION='1.9.0-dev5';
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev2.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev3.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev4.css?v='+encodeURIComponent(VERSION)
+    'css/appearance-overhaul-dev4.css?v='+encodeURIComponent(VERSION),
+    'css/appearance-overhaul-dev5.css?v='+encodeURIComponent(VERSION)
+  ];
+  const APPEARANCE_SCRIPTS=[
+    'js/appearance-overhaul-dev5.js?v='+encodeURIComponent(VERSION)
   ];
   const RELEASE_NOTE_TEXT=[
     'Appearance Overhaul development foundation',
     'New premium clinical design system',
     'Redesigned Home dashboard and appointment cards',
     'Deep visual refresh for Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About',
-    'Refined outlined button interactions and copy confirmation state',
-    'Improved Spark configuration status styling and About reminder treatment',
+    'Unified non-interactive Spark configuration status chips',
+    'Flat Saved Outcomes status indicators replacing emoji markers',
+    'First micro-interaction and status-language polish pass',
     'Theme-aware dark and Sycle styling improvements',
     'Reduced-motion accessibility support',
     'Bug fixes'
@@ -25,9 +30,9 @@
     '<li><strong>New premium clinical design system</strong> applies shared spacing, radius, shadow, typography, surface, status, and motion tokens throughout the app.</li>',
     '<li><strong>Redesigned Home dashboard and appointment cards</strong> retain the approved command-center experience.</li>',
     '<li><strong>Deep working-screen refresh</strong> extends the new visual language through Sycle Notes, Saved Outcomes, Clinical Tools, Spark References, Settings, and About.</li>',
-    '<li><strong>Refined action states</strong> keep outlined positive and destructive controls readable on hover and give Copy a clear success confirmation.</li>',
-    '<li><strong>Spark configuration status polish</strong> distinguishes Incomplete as a status chip rather than an action button.</li>',
-    '<li><strong>About reminder refinement</strong> removes the legacy teal edge stripe for a cleaner clinical card treatment.</li>',
+    '<li><strong>Unified Spark status treatment</strong> presents both Incomplete and Configured as flat, non-interactive status chips rather than button-like controls.</li>',
+    '<li><strong>Saved Outcomes status cleanup</strong> replaces yellow and green emoji markers with restrained flat status dots and consistent typography.</li>',
+    '<li><strong>Micro-interaction polish</strong> adds restrained section, selection, success, tab, and toast feedback while respecting reduced-motion preferences.</li>',
     '<li><strong>Theme-aware styling improvements</strong> further unify Clinical Teal, Sycle, and dark appearances.</li>',
     '<li><strong>Reduced-motion accessibility support</strong> respects the device motion preference.</li>',
     '<li><strong>Bug fixes</strong></li>'
@@ -35,7 +40,7 @@
 
   document.documentElement.classList.add('appearance-overhaul');
   APPEARANCE_STYLESHEETS.forEach((href,index)=>{
-    const ids=['appearanceOverhaulStyles','appearanceOverhaulDev2Styles','appearanceOverhaulDev3Styles','appearanceOverhaulDev4Styles'];
+    const ids=['appearanceOverhaulStyles','appearanceOverhaulDev2Styles','appearanceOverhaulDev3Styles','appearanceOverhaulDev4Styles','appearanceOverhaulDev5Styles'];
     const id=ids[index]||('appearanceOverhaulStyles'+index);
     if(document.getElementById(id))return;
     const link=document.createElement('link');
@@ -43,6 +48,15 @@
     link.rel='stylesheet';
     link.href=href;
     document.head.appendChild(link);
+  });
+  APPEARANCE_SCRIPTS.forEach((src,index)=>{
+    const id='appearanceOverhaulScript'+(index+5);
+    if(document.getElementById(id))return;
+    const script=document.createElement('script');
+    script.id=id;
+    script.src=src;
+    script.async=false;
+    document.head.appendChild(script);
   });
 
   window.CLINICAL_ASSISTANT_VERSION=VERSION;
