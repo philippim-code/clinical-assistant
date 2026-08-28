@@ -1,0 +1,124 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev7
+   iPad tap-highlight correction + restrained motion + consistency sweep.
+*/
+
+/* ---------- iPad / Safari tap-highlight correction ----------
+   Native WebKit tap highlights ignore our rounded geometry and can flash as
+   a rectangular box. Disable that browser overlay on custom interactive
+   surfaces and provide our own clipped feedback instead. */
+html.appearance-overhaul .workflow-head,
+html.appearance-overhaul .appt-card,
+html.appearance-overhaul .tab-btn,
+html.appearance-overhaul button,
+html.appearance-overhaul .preset,
+html.appearance-overhaul #references .ref-choice,
+html.appearance-overhaul #references .ref-color-card,
+html.appearance-overhaul #references .ref-retention-card,
+html.appearance-overhaul .tool-launch-card {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.appearance-overhaul .workflow-card {
+  isolation: isolate;
+}
+
+html.appearance-overhaul .workflow-head {
+  border-radius: inherit;
+  transition: background var(--oa-transition-fast), color var(--oa-transition-fast), box-shadow var(--oa-transition-fast);
+}
+
+html.appearance-overhaul .workflow-card.active > .workflow-head {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+html.appearance-overhaul .workflow-card:not(.active) > .workflow-head:active {
+  background: color-mix(in srgb, var(--oa-accent) 9%, var(--oa-surface-soft));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--oa-accent) 25%, transparent);
+}
+
+html.appearance-overhaul .workflow-card.active > .workflow-head:active {
+  background: color-mix(in srgb, var(--oa-accent) 13%, var(--oa-surface));
+}
+
+/* ---------- Tone down Spark selection confirmation ----------
+   Keep the polished response but make it read as confirmation rather than
+   animation. */
+html.appearance-overhaul #references .ref-choice.active,
+html.appearance-overhaul #references .ref-color-card.active,
+html.appearance-overhaul #references .ref-retention-card.active {
+  box-shadow: 0 4px 13px color-mix(in srgb, var(--oa-accent) 9%, transparent) !important;
+}
+
+@keyframes oaSelectionConfirm {
+  0% { transform: scale(.996); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- Focus geometry ----------
+   Focus feedback should follow the element itself, never create a second
+   mismatched rectangle around rounded controls. */
+html.appearance-overhaul .workflow-head:focus-visible,
+html.appearance-overhaul .tab-btn:focus-visible,
+html.appearance-overhaul .appt-card:focus-visible,
+html.appearance-overhaul button:focus-visible,
+html.appearance-overhaul .preset:focus-visible,
+html.appearance-overhaul #references .ref-choice:focus-visible,
+html.appearance-overhaul #references .ref-color-card:focus-visible,
+html.appearance-overhaul #references .ref-retention-card:focus-visible {
+  outline: none !important;
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--oa-accent) 42%, transparent), var(--oa-shadow-xs) !important;
+}
+
+/* ---------- Disabled state consistency ---------- */
+html.appearance-overhaul button:disabled,
+html.appearance-overhaul button[disabled] {
+  opacity: .58;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+html.appearance-overhaul button:disabled:hover,
+html.appearance-overhaul button[disabled]:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ---------- Action group rhythm ---------- */
+html.appearance-overhaul #notes .layout > div > .section:last-child > button,
+html.appearance-overhaul .outcome-actions > button,
+html.appearance-overhaul .toolbar-actions > button,
+html.appearance-overhaul .ref-config-actions > button {
+  vertical-align: middle;
+}
+
+html.appearance-overhaul #notes .layout > div > .section:last-child {
+  overflow: hidden;
+}
+
+/* Keep compact action groups visually aligned even when labels differ. */
+html.appearance-overhaul .outcome-actions > button,
+html.appearance-overhaul .ref-config-actions > button {
+  min-height: 38px;
+}
+
+/* ---------- Touch devices ---------- */
+@media (hover: none) {
+  html.appearance-overhaul .workflow-card:not(.active) > .workflow-head:active {
+    background: color-mix(in srgb, var(--oa-accent) 8%, var(--oa-surface-soft));
+  }
+
+  /* Touch confirmation should feel immediate and not linger as a hover. */
+  html.appearance-overhaul #references .ref-choice:hover,
+  html.appearance-overhaul #references .ref-color-card:hover,
+  html.appearance-overhaul #references .ref-retention-card:hover {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.appearance-overhaul .workflow-head {
+    transition: none !important;
+  }
+}
