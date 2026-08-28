@@ -2,12 +2,12 @@
 (function(){
   'use strict';
 
-  const VERSION='1.8.0-dev20';
+  const VERSION='1.8.0-dev21';
   const RELEASE_NOTES=[
-    '<li><strong>Added independent Left and Right receiver builders</strong> for unilateral fittings or bilateral fittings with different receiver specifications.</li>',
-    '<li><strong>Made retention locks optional</strong> and added a Reset action for starting a new configuration.</li>',
-    '<li><strong>Expanded the top product overview</strong> to reflect selected receivers, coupling, and retention details.</li>',
-    '<li><strong>Refined empty states and status styling</strong> for a cleaner, more consistent clinical workflow.</li>'
+    '<li><strong>Added independent Left and Right coupling builders</strong> for unilateral fittings or different bilateral dome configurations.</li>',
+    '<li><strong>Shortened copied configurations for Sycle notes</strong> with color abbreviations and AS, AD, and AU notation.</li>',
+    '<li><strong>Simplified coupling labels</strong> to compact formats such as S Vented and M Power.</li>',
+    '<li><strong>Completed the Spark configuration workflow</strong> with per-ear receiver and coupling validation.</li>'
   ];
 
   window.CLINICAL_ASSISTANT_VERSION=VERSION;

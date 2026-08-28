@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const ASSET_VERSION='dev20';
+  const ASSET_VERSION='dev21';
   const BASE='assets/spark/catalog/';
   const asset=path=>`${path}?v=${ASSET_VERSION}`;
 
@@ -207,15 +207,6 @@
       const colorName=root.querySelector('.ref-color-card.active strong')?.textContent||'reference finish';
       setImage(hero.querySelector('.ref-hero-visual > .ref-image-slot'),FAMILY[family][color],`Miracle-Ear ${family==='ai'?'Spark MEMINI E AI RIC':'Spark MEMINI E RIC'} in ${colorName}`);
       patchColorCards(root,family);
-      const domeType=activeDataset(root,'[data-dome]','dome',''),domeSize=activeDataset(root,'[data-dome-size]','domeSize',''),heroDomeSlot=hero.querySelector('[data-hero-dome-slot]');
-      if(heroDomeSlot&&domeType&&domeSize)setImage(heroDomeSlot,DOME[domeType+'-'+domeSize],`${domeType} dome ${domeSize}`);
-    }
-
-    const domeSection=section(root,'Domes');
-    if(domeSection){
-      const type=activeDataset(domeSection,'[data-dome]','dome','');
-      const size=activeDataset(domeSection,'[data-dome-size]','domeSize','');
-      if(type&&size)setImage(domeSection.querySelector('.ref-component-preview .ref-image-slot'),DOME[type+'-'+size],`${type} dome ${size}`);
     }
 
     const retentionSection=section(root,'Retention Locks');

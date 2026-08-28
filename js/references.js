@@ -6,10 +6,10 @@
 
   const sparkData={
     colors:[
-      {id:'sand-beige',name:'Sand Beige'},
-      {id:'sandalwood',name:'Sandalwood'},
-      {id:'silver-gray',name:'Silver Gray',default:true},
-      {id:'velvet-black',name:'Velvet Black'}
+      {id:'sand-beige',name:'Sand Beige',abbreviation:'SB'},
+      {id:'sandalwood',name:'Sandalwood',abbreviation:'SW'},
+      {id:'silver-gray',name:'Silver Gray',abbreviation:'SG'},
+      {id:'velvet-black',name:'Velvet Black',abbreviation:'VB'}
     ],
     families:{
       standard:{title:'MEMINI E RIC',subtitle:'Spark RIC family',levels:[5,4,3,2],modelName(level){return `MEMINI E ${level} 5P R-R`;}},
@@ -30,7 +30,7 @@
   };
   const solutionNames={5:'Premium',4:'Advanced',3:'Standard',2:'Essential'};
 
-  const state={view:'home',family:'standard',level:null,color:null,receiverSelections:{left:{power:null,length:null},right:{power:null,length:null}},dome:null,domeSize:null,retention:null};
+  const state={view:'home',family:'standard',level:null,color:null,receiverSelections:{left:{power:null,length:null},right:{power:null,length:null}},couplingSelections:{left:{type:null,size:null},right:{type:null,size:null}},retention:null};
   let sectionObserver=null;
 
   function installStyles(){
@@ -84,7 +84,7 @@
       .ref-nav-model{flex:0 0 auto;max-width:230px;padding:7px 10px;border-left:1px solid var(--border);font-size:11px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       .ref-model-hero{display:grid;grid-template-columns:minmax(230px,.82fr) minmax(0,1.18fr);gap:22px;align-items:center;padding:20px}
       .ref-hero-visual{min-width:0}
-      .ref-hero-components{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+      .ref-hero-components{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
       .ref-hero-components:empty{display:none}
       .ref-hero-component{display:grid;grid-template-columns:48px minmax(0,1fr);align-items:center;gap:8px;min-width:0;padding:8px 9px;border-radius:10px;background:#f5f9fa}
       .ref-hero-component-visual,.ref-hero-component-img{display:block;width:48px;height:48px;object-fit:contain;filter:none!important}
@@ -98,6 +98,7 @@
       .ref-fact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
       .ref-fact{background:#f8fbfc;border:1px solid var(--border);border-radius:11px;padding:11px}
       .ref-fact span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.055em;color:var(--muted);font-weight:800;margin-bottom:4px}
+      .ref-fact-wide{grid-column:1/-1}
       .ref-config-card{display:flex;align-items:center;justify-content:space-between;gap:14px;background:linear-gradient(135deg,var(--teal-light),#f9fcfc);border:1px solid #cfe3e5;border-radius:14px;padding:14px 16px;margin-top:16px}
       .ref-config-copy{min-width:0;flex:1 1 auto}
       .ref-config-label{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);font-weight:900;margin-bottom:4px}
@@ -141,10 +142,13 @@
       .ref-ear-status.complete .ref-ear-status-dot{background:var(--teal)}
       .ref-ear-status.partial .ref-ear-status-dot{background:#d49327}
       .ref-receiver-preview{margin-top:14px}
+      .ref-coupling-preview{margin-top:14px}
       .ref-receiver-preview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));min-height:220px}
       .ref-ear-preview{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;min-height:220px;padding:8px 14px;text-align:center}
       .ref-ear-preview+.ref-ear-preview{border-left:1px solid var(--border)}
       .ref-ear-preview img{display:block;width:100%;height:166px;max-width:260px;object-fit:contain;filter:none!important}
+      .ref-coupling-preview .ref-ear-preview img{height:156px;max-width:220px}
+      .ref-coupling-size-row{min-height:44px;align-items:center}
       .ref-ear-preview-label{display:flex;align-items:center;justify-content:center;gap:6px;min-height:20px;color:var(--text);font-size:12px;font-weight:800}
       .ref-ear-empty-symbol{display:grid;place-items:center;width:48px;height:48px;margin-bottom:11px;border-radius:50%;background:#eaf2f7;color:#2472c8;font-size:18px;font-weight:900}
       .ref-ear-empty-symbol.right{background:#f7e9eb;color:#bf3e49}
@@ -174,6 +178,7 @@
         .ref-receiver-preview-grid{min-height:190px}
         .ref-ear-preview{min-height:190px;padding:8px}
         .ref-ear-preview img{height:142px}
+        .ref-coupling-preview .ref-ear-preview img{height:132px}
       }
     `;
     document.head.appendChild(style);
@@ -192,12 +197,13 @@
   function notifyRendered(){document.dispatchEvent(new CustomEvent('clinical-assistant:references-rendered'));}
   function scrollReferencesTop(){const el=referencesRoot();if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
   function activeFamily(){return sparkData.families[state.family]||sparkData.families.standard;}
-  function activeDome(){return sparkData.domes.find(d=>d.id===state.dome)||null;}
   function selectedColor(){return sparkData.colors.find(c=>c.id===state.color)||null;}
   function resetConfiguration(familyId){
-    state.family=familyId;state.level=null;state.color=null;state.receiverSelections={left:{power:null,length:null},right:{power:null,length:null}};state.dome=null;state.domeSize=null;state.retention=null;
+    state.family=familyId;state.level=null;state.color=null;state.receiverSelections={left:{power:null,length:null},right:{power:null,length:null}};state.couplingSelections={left:{type:null,size:null},right:{type:null,size:null}};state.retention=null;
   }
   const receiverEars=['left','right'];
+  function earName(ear){return ear==='left'?'Left':'Right';}
+  function earCode(ear){return ear==='left'?'AS':'AD';}
   function receiverHasSelection(ear){const item=state.receiverSelections[ear];return Boolean(item?.power||item?.length);}
   function receiverReady(ear){const item=state.receiverSelections[ear];return Boolean(item?.power&&item?.length);}
   function receiverPartial(ear){return receiverHasSelection(ear)&&!receiverReady(ear);}
@@ -214,17 +220,38 @@
   }
   function receiverLabel(){
     const ready=selectedReceiverEars(),partial=receiverEars.filter(receiverPartial);
-    if(partial.length)return `Complete ${partial.map(ear=>ear==='left'?'Left':'Right').join(' and ')} receiver`;
+    if(partial.length)return `Complete ${partial.map(earName).join(' and ')} receiver`;
     if(ready.length)return ready.map(receiverEarLabel).join(' + ');
     return 'Select at least one receiver';
   }
-  function domeConfigurationComplete(){const dome=activeDome();return Boolean(dome&&state.domeSize&&dome.sizes.includes(state.domeSize));}
-  function domeLabel(){const dome=activeDome();return domeConfigurationComplete()?`${dome.name} Dome · ${state.domeSize}`:'Select dome type and size';}
-  function configurationComplete(){return Boolean(state.level&&selectedColor()&&receiverConfigurationComplete()&&domeConfigurationComplete());}
-  function hasAnyConfigurationSelection(){return Boolean(state.level||state.color||receiverEars.some(receiverHasSelection)||state.dome||state.domeSize||state.retention);}
+  function activeCoupling(ear){const item=state.couplingSelections[ear];return sparkData.domes.find(dome=>dome.id===item?.type)||null;}
+  function couplingHasSelection(ear){const item=state.couplingSelections[ear];return Boolean(item?.type||item?.size);}
+  function couplingReady(ear){const item=state.couplingSelections[ear],coupling=activeCoupling(ear);return Boolean(coupling&&item?.size&&coupling.sizes.includes(item.size));}
+  function couplingPartial(ear){return couplingHasSelection(ear)&&!couplingReady(ear);}
+  function couplingShortLabel(ear){const item=state.couplingSelections[ear],coupling=activeCoupling(ear);if(!couplingReady(ear))return '';return `${item.size==='One Size'?'':`${item.size} `}${coupling.name}`;}
+  function couplingEarLabel(ear){return couplingReady(ear)?`${couplingShortLabel(ear)} ${earName(ear)}`:'';}
+  function couplingStatus(ear){
+    const item=state.couplingSelections[ear];
+    if(couplingReady(ear)&&receiverReady(ear))return {kind:'complete',text:`Ready · ${couplingShortLabel(ear)}`};
+    if(couplingReady(ear))return {kind:'partial',text:`Choose a ${earName(ear).toLowerCase()} receiver`};
+    if(item.type)return {kind:'partial',text:'Choose a coupling size'};
+    if(receiverReady(ear))return {kind:'partial',text:'Choose a coupling type'};
+    return {kind:'empty',text:'Not selected'};
+  }
+  function couplingConfigurationComplete(){
+    const selected=selectedReceiverEars();
+    return selected.length>0&&selected.every(couplingReady)&&!receiverEars.some(couplingPartial)&&!receiverEars.some(ear=>couplingReady(ear)&&!receiverReady(ear));
+  }
+  function couplingLabel(){
+    if(couplingConfigurationComplete())return selectedReceiverEars().map(couplingEarLabel).join(' + ');
+    if(selectedReceiverEars().length||receiverEars.some(couplingHasSelection))return 'Complete selected couplings';
+    return 'Select coupling';
+  }
+  function configurationComplete(){return Boolean(state.level&&selectedColor()&&receiverConfigurationComplete()&&couplingConfigurationComplete());}
+  function hasAnyConfigurationSelection(){return Boolean(state.level||state.color||receiverEars.some(receiverHasSelection)||receiverEars.some(couplingHasSelection)||state.retention);}
   function configurationText(){
     const family=activeFamily(),color=selectedColor();
-    const parts=[state.level?family.modelName(state.level):'Select treatment level',color?color.name:'Select color',receiverConfigurationComplete()?receiverLabel():(receiverEars.some(receiverHasSelection)?receiverLabel():'Select at least one receiver'),domeConfigurationComplete()?domeLabel():'Select dome'];
+    const parts=[state.level?family.modelName(state.level):'Select treatment level',color?color.name:'Select color',receiverConfigurationComplete()?receiverLabel():(receiverEars.some(receiverHasSelection)?receiverLabel():'Select at least one receiver'),couplingLabel()];
     if(state.retention)parts.push(`${state.retention} Retention Lock`);
     return parts.join(' · ');
   }
@@ -233,16 +260,23 @@
       const left=state.receiverSelections.left,right=state.receiverSelections.right;
       return left.power===right.power&&left.length===right.length?[`${left.length}${left.power} receivers AU`]:[`${left.length}${left.power} receiver AS`,`${right.length}${right.power} receiver AD`];
     }
-    const selectedEar=selectedReceiverEars()[0],item=state.receiverSelections[selectedEar],ear=selectedEar==='left'?'AS':'AD';
-    return [`a ${item.length}${item.power} receiver ${ear}`];
+    const selectedEar=selectedReceiverEars()[0],item=state.receiverSelections[selectedEar];
+    return [`${item.length}${item.power} receiver ${earCode(selectedEar)}`];
   }
-  function domeClinicalText(){const dome=activeDome(),plural=isBilateral(),size=state.domeSize==='One Size'?'':`${state.domeSize} `,description=`${size}${dome.name.toLowerCase()} dome`;return plural?`${description}s`:`${state.domeSize==='One Size'?'a':'an'} ${description}`;}
-  function retentionClinicalText(){return isBilateral()?`${state.retention} retention locks`:`an ${state.retention} retention lock`;}
-  function joinClinicalItems(items){return items.length===2?`${items[0]} and ${items[1]}`:`${items.slice(0,-1).join(', ')}, and ${items[items.length-1]}`;}
+  function couplingClinicalDescription(ear,plural=false){const item=state.couplingSelections[ear],coupling=activeCoupling(ear),size=item.size==='One Size'?'':`${item.size} `;return `${size}${coupling.name.toLowerCase()} dome${plural?'s':''}`;}
+  function couplingClinicalItems(){
+    const selected=selectedReceiverEars();
+    if(selected.length===2){
+      const left=state.couplingSelections.left,right=state.couplingSelections.right;
+      if(left.type===right.type&&left.size===right.size)return [`${couplingClinicalDescription('left',true)} AU`];
+    }
+    return selected.map(ear=>`${couplingClinicalDescription(ear)} ${earCode(ear)}`);
+  }
+  function retentionClinicalText(){return `${state.retention} retention lock${isBilateral()?'s':''}`;}
   function clinicalNoteText(){
-    const family=activeFamily(),color=selectedColor(),plural=isBilateral(),components=[...receiverClinicalItems(),domeClinicalText()];
-    if(state.retention)components.push(retentionClinicalText());
-    return `Purchased Spark ${family.modelName(state.level)} hearing aid${plural?'s':''} in ${color.name} with ${joinClinicalItems(components)}.`;
+    const family=activeFamily(),color=selectedColor(),items=[`Spark ${family.modelName(state.level)}`,color.abbreviation,...receiverClinicalItems(),...couplingClinicalItems()];
+    if(state.retention)items.push(retentionClinicalText());
+    return `${items.join(', ')}.`;
   }
   function legacyCopy(text){const area=document.createElement('textarea');area.value=text;area.setAttribute('readonly','');area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();area.setSelectionRange(0,text.length);let copied=false;try{copied=document.execCommand('copy')}catch(_){copied=false}area.remove();return copied;}
   function copyConfigurationForNote(button){
@@ -257,16 +291,33 @@
   }
   function receiverPreviewEarMarkup(ear){
     const status=receiverEarStatus(ear),name=ear==='left'?'Left':'Right',markerClass=ear==='right'?' right':'',assetSide=ear==='left'?'L':'R',item=state.receiverSelections[ear];
-    if(receiverReady(ear))return `<div class="ref-ear-preview complete" data-preview-ear="${ear}"><img src="assets/spark/catalog/receivers/${assetSide}-${item.length}-${item.power}.png?v=dev20" alt="${receiverEarLabel(ear)} Spark receiver"><div class="ref-ear-preview-label"><span class="ref-side-marker${markerClass}" aria-hidden="true"></span>${receiverEarLabel(ear)}</div></div>`;
+    if(receiverReady(ear))return `<div class="ref-ear-preview complete" data-preview-ear="${ear}"><img src="assets/spark/catalog/receivers/${assetSide}-${item.length}-${item.power}.png?v=dev21" alt="${receiverEarLabel(ear)} Spark receiver"><div class="ref-ear-preview-label"><span class="ref-side-marker${markerClass}" aria-hidden="true"></span>${receiverEarLabel(ear)}</div></div>`;
     return `<div class="ref-ear-preview ${status.kind}" data-preview-ear="${ear}"><div class="ref-ear-empty-symbol ${ear==='right'?'right':''}" aria-hidden="true">${ear==='left'?'L':'R'}</div><div class="ref-ear-preview-label">${name} Receiver</div><small>${status.text}</small></div>`;
   }
   function receiverPreviewMarkup(){return `<div class="ref-receiver-preview-grid">${receiverEars.map(receiverPreviewEarMarkup).join('')}</div>`;}
+  function couplingAsset(ear){
+    const item=state.couplingSelections[ear],coupling=activeCoupling(ear);
+    if(!couplingReady(ear))return '';
+    const filename=coupling.id==='cap'?'cap':`${coupling.id}-${item.size.toLowerCase()}`;
+    return `assets/spark/catalog/domes/${filename}.png?v=dev21`;
+  }
+  function couplingSelectorMarkup(ear){
+    const item=state.couplingSelections[ear],coupling=activeCoupling(ear),sizes=coupling?coupling.sizes:[],status=couplingStatus(ear),name=earName(ear),markerClass=ear==='right'?' right':'';
+    return `<div class="ref-ear-panel ${status.kind}" data-coupling-panel="${ear}"><div class="ref-ear-panel-head"><div class="ref-ear-title"><span class="ref-side-marker${markerClass}" aria-hidden="true"></span><div class="ref-ear-title-copy"><strong>${name} Coupling</strong><small>For the ${name.toLowerCase()} ear</small></div></div>${couplingHasSelection(ear)?`<button type="button" class="ref-ear-clear" data-clear-coupling="${ear}">Clear</button>`:''}</div><div class="row-title">Type</div><div class="ref-choice-row" aria-label="${name} coupling type">${sparkData.domes.map(value=>`<button type="button" class="ref-choice ${item.type===value.id?'active':''}" data-coupling-ear="${ear}" data-coupling-type="${value.id}" aria-pressed="${item.type===value.id}">${value.name}</button>`).join('')}</div><div class="row-title">Size</div><div class="ref-choice-row ref-coupling-size-row" aria-label="${name} coupling size">${sizes.length?sizes.map(value=>`<button type="button" class="ref-choice ${item.size===value?'active':''}" data-coupling-ear="${ear}" data-coupling-size="${value}" aria-pressed="${item.size===value}">${value}</button>`).join(''):'<span class="ref-inline-hint">Select a coupling type first.</span>'}</div><div class="ref-ear-status ${status.kind}"><span class="ref-ear-status-dot" aria-hidden="true"></span>${status.text}</div></div>`;
+  }
+  function couplingPreviewEarMarkup(ear){
+    const status=couplingStatus(ear),name=earName(ear),markerClass=ear==='right'?' right':'';
+    if(couplingReady(ear))return `<div class="ref-ear-preview ${status.kind}" data-coupling-preview-ear="${ear}"><img src="${couplingAsset(ear)}" alt="${couplingShortLabel(ear)} ${name.toLowerCase()} coupling"><div class="ref-ear-preview-label"><span class="ref-side-marker${markerClass}" aria-hidden="true"></span>${couplingEarLabel(ear)}</div></div>`;
+    return `<div class="ref-ear-preview ${status.kind}" data-coupling-preview-ear="${ear}"><div class="ref-ear-empty-symbol ${ear==='right'?'right':''}" aria-hidden="true">${ear==='left'?'L':'R'}</div><div class="ref-ear-preview-label">${name} Coupling</div><small>${status.text}</small></div>`;
+  }
+  function couplingPreviewMarkup(){return `<div class="ref-receiver-preview-grid ref-coupling-preview-grid">${receiverEars.map(couplingPreviewEarMarkup).join('')}</div>`;}
   function heroComponentsMarkup(){
-    const items=selectedReceiverEars().map(ear=>{const receiver=state.receiverSelections[ear],side=ear==='left'?'L':'R';return `<div class="ref-hero-component"><img class="ref-hero-component-img" src="assets/spark/catalog/receivers/${side}-${receiver.length}-${receiver.power}.png?v=dev20" alt="${receiverEarLabel(ear)} Spark receiver"><div><span>${ear==='left'?'Left':'Right'} Receiver</span><strong>${receiver.length}${receiver.power}</strong></div></div>`;});
-    if(domeConfigurationComplete())items.push(`<div class="ref-hero-component"><div class="ref-hero-component-visual" data-hero-dome-slot></div><div><span>Coupling</span><strong>${domeLabel()}</strong></div></div>`);
+    const items=selectedReceiverEars().map(ear=>{const receiver=state.receiverSelections[ear],side=ear==='left'?'L':'R';return `<div class="ref-hero-component"><img class="ref-hero-component-img" src="assets/spark/catalog/receivers/${side}-${receiver.length}-${receiver.power}.png?v=dev21" alt="${receiverEarLabel(ear)} Spark receiver"><div><span>${earName(ear)} Receiver</span><strong>${receiver.length}${receiver.power}</strong></div></div>`;});
+    receiverEars.filter(couplingReady).forEach(ear=>items.push(`<div class="ref-hero-component"><img class="ref-hero-component-img" src="${couplingAsset(ear)}" alt="${couplingShortLabel(ear)} ${earName(ear).toLowerCase()} coupling"><div><span>${earName(ear)} Coupling</span><strong>${couplingShortLabel(ear)}</strong></div></div>`));
     return items.join('');
   }
   function receiverFactText(ear){const item=state.receiverSelections[ear];return receiverReady(ear)?`${item.length}${item.power}`:(receiverHasSelection(ear)?'Incomplete':'Not selected');}
+  function couplingFactText(ear){return couplingReady(ear)?couplingShortLabel(ear):(couplingHasSelection(ear)?'Incomplete':'Not selected');}
   function resetCurrentConfiguration(){
     if(!hasAnyConfigurationSelection()||!window.confirm('Reset this Spark configuration and start over?'))return;
     resetConfiguration(state.family);renderSparkProduct();if(typeof window.toast==='function')window.toast('Configuration reset.');
@@ -322,7 +373,7 @@
     wireBreadcrumbs(root);notifyRendered();scrollReferencesTop();
   }
 
-  function stickyNav(model){return `<nav class="ref-sticky-nav" aria-label="Spark reference sections"><div class="ref-sticky-links"><button type="button" class="ref-nav-link active" data-scroll-section="features">Features</button><button type="button" class="ref-nav-link" data-scroll-section="colors">Colors</button><button type="button" class="ref-nav-link" data-scroll-section="receivers">Receivers</button><button type="button" class="ref-nav-link" data-scroll-section="domes">Domes</button><button type="button" class="ref-nav-link" data-scroll-section="retention">Retention</button><button type="button" class="ref-nav-link" data-scroll-section="accessories">Accessories</button></div><div class="ref-nav-model" title="${model}">${model}</div></nav>`;}
+  function stickyNav(model){return `<nav class="ref-sticky-nav" aria-label="Spark reference sections"><div class="ref-sticky-links"><button type="button" class="ref-nav-link active" data-scroll-section="features">Features</button><button type="button" class="ref-nav-link" data-scroll-section="colors">Colors</button><button type="button" class="ref-nav-link" data-scroll-section="receivers">Receivers</button><button type="button" class="ref-nav-link" data-scroll-section="couplings">Couplings</button><button type="button" class="ref-nav-link" data-scroll-section="retention">Retention</button><button type="button" class="ref-nav-link" data-scroll-section="accessories">Accessories</button></div><div class="ref-nav-model" title="${model}">${model}</div></nav>`;}
 
   function wireSectionNav(root){
     root.querySelectorAll('[data-scroll-section]').forEach(button=>button.addEventListener('click',()=>{const target=root.querySelector(`[data-ref-section="${button.dataset.scrollSection}"]`);if(target)target.scrollIntoView({behavior:'smooth',block:'start'});}));
@@ -336,18 +387,18 @@
   function renderSparkProduct(){
     state.view='product';
     const family=activeFamily();if(state.level&&!family.levels.includes(state.level))state.level=null;
-    const model=state.level?family.modelName(state.level):family.title,color=selectedColor(),dome=activeDome(),domeSizes=dome?dome.sizes:[],isComplete=configurationComplete(),hasAnySelection=hasAnyConfigurationSelection();
+    const model=state.level?family.modelName(state.level):family.title,color=selectedColor(),isComplete=configurationComplete(),hasAnySelection=hasAnyConfigurationSelection();
     const root=referencesRoot();if(!root)return;
     root.innerHTML=`<div class="ref-shell">
       ${breadcrumb([{label:'References',action:'home'},{label:'Hearing Aids',action:'home'},{label:'Spark',action:'spark'},{label:family.title}])}
       <div class="ref-page-head"><div><h3>${family.title}</h3><p class="muted">Configure the device and review compatible Spark fitting components.</p></div><div class="ref-page-actions"><button type="button" class="secondary ref-back" data-ref-breadcrumb="spark">← Spark</button><button type="button" class="primary" id="openSparkStore">Open Spark Store ↗</button></div></div>
       ${stickyNav(model)}
-      <div class="ref-section ref-model-hero"><div class="ref-hero-visual">${placeholder(color?`${family.title} · ${color.name}`:family.title)}<div class="ref-hero-components">${heroComponentsMarkup()}</div></div><div><div class="ref-model-name">${model}</div><div class="ref-family-name">${family.title}</div><div class="ref-identity-chips"><span class="ref-identity-chip">Spark</span><span class="ref-identity-chip">RIC</span>${state.level?`<span class="ref-identity-chip">E${state.level}</span>`:''}${color?`<span class="ref-identity-chip">${color.name}</span>`:''}</div><div class="ref-fact-grid"><div class="ref-fact"><span>Model</span><strong>${state.level?model:'Not selected'}</strong></div><div class="ref-fact"><span>Color</span><strong>${color?color.name:'Not selected'}</strong></div><div class="ref-fact"><span>Left Receiver</span><strong>${receiverFactText('left')}</strong></div><div class="ref-fact"><span>Right Receiver</span><strong>${receiverFactText('right')}</strong></div><div class="ref-fact"><span>Coupling</span><strong>${domeConfigurationComplete()?domeLabel():'Not selected'}</strong></div><div class="ref-fact"><span>Retention</span><strong>${state.retention?`${state.retention} Lock`:'Not selected · Optional'}</strong></div></div></div></div>
+      <div class="ref-section ref-model-hero"><div class="ref-hero-visual">${placeholder(color?`${family.title} · ${color.name}`:family.title)}<div class="ref-hero-components">${heroComponentsMarkup()}</div></div><div><div class="ref-model-name">${model}</div><div class="ref-family-name">${family.title}</div><div class="ref-identity-chips"><span class="ref-identity-chip">Spark</span><span class="ref-identity-chip">RIC</span>${state.level?`<span class="ref-identity-chip">E${state.level}</span>`:''}${color?`<span class="ref-identity-chip">${color.name}</span>`:''}</div><div class="ref-fact-grid"><div class="ref-fact"><span>Model</span><strong>${state.level?model:'Not selected'}</strong></div><div class="ref-fact"><span>Color</span><strong>${color?color.name:'Not selected'}</strong></div><div class="ref-fact"><span>Left Receiver</span><strong>${receiverFactText('left')}</strong></div><div class="ref-fact"><span>Left Coupling</span><strong>${couplingFactText('left')}</strong></div><div class="ref-fact"><span>Right Receiver</span><strong>${receiverFactText('right')}</strong></div><div class="ref-fact"><span>Right Coupling</span><strong>${couplingFactText('right')}</strong></div><div class="ref-fact ref-fact-wide"><span>Retention</span><strong>${state.retention?`${state.retention} Lock`:'Not selected · Optional'}</strong></div></div></div></div>
       <div class="ref-config-card" aria-label="Current Spark configuration"><div class="ref-config-copy"><div class="ref-config-label">Current Configuration</div><div class="ref-config-value" aria-live="polite">${configurationText()}</div></div><div class="ref-config-actions"><span class="ref-config-badge ${isComplete?'':'incomplete'}">${isComplete?'✓ Configured':'Incomplete'}</span><button type="button" class="secondary ref-reset-config" data-reset-configuration ${hasAnySelection?'':'disabled'}>Reset</button><button type="button" class="ref-copy-config" data-copy-configuration ${isComplete?'':'disabled'}>Copy for Clinical Note</button></div></div>
       <div class="ref-section ref-feature-section" data-ref-section="features"><div class="ref-feature-head"><div><h4>Treatment Level &amp; Features</h4><p class="muted">Switch levels to compare included and unavailable features.</p></div><span class="ref-solution-badge">${state.level?`E${state.level} · ${solutionNames[state.level]}`:'Select level'}</span></div><div class="ref-level-row ref-feature-levels" aria-label="Treatment level">${family.levels.map(level=>`<button type="button" class="ref-choice ${state.level===level?'active':''}" data-level="${level}">E${level}</button>`).join('')}</div><div class="ref-feature-content">${state.level?'':'<div class="ref-empty-prompt">Select a treatment level to compare its included features.</div>'}</div></div>
       <div class="ref-section" data-ref-section="colors"><h4>Colors</h4><p class="muted">Select the hearing-aid finish.</p><div class="ref-color-grid">${sparkData.colors.map(item=>`<div class="ref-color-card ${state.color===item.id?'active':''}" data-color="${item.id}" role="button" tabindex="0"><div class="ref-color-chip" style="background:${colorVisual(item.id)}"></div><strong>${item.name}</strong></div>`).join('')}</div></div>
       <div class="ref-section" data-ref-section="receivers"><h4>Receivers</h4><p class="muted">Configure each ear independently. Complete either ear for a unilateral fitting or both for a bilateral fitting.</p><div class="ref-ear-config-grid">${receiverEars.map(receiverSelectorMarkup).join('')}</div><div class="ref-component-preview ref-receiver-preview"><div class="ref-component-kicker">Receiver Preview</div>${receiverPreviewMarkup()}</div></div>
-      <div class="ref-section" data-ref-section="domes"><h4>Domes</h4><p class="muted">Cap is one size. Open, Vented, and Power domes are available in S, M, and L.</p><div class="ref-component-grid"><div><div class="row-title">Dome Type</div><div class="ref-choice-row">${sparkData.domes.map(x=>`<button type="button" class="ref-choice ${state.dome===x.id?'active':''}" data-dome="${x.id}">${x.name}</button>`).join('')}</div><div class="row-title">Size</div><div class="ref-choice-row">${domeSizes.length?domeSizes.map(x=>`<button type="button" class="ref-choice ${state.domeSize===x?'active':''}" data-dome-size="${x}">${x}</button>`).join(''):'<span class="ref-inline-hint">Select a dome type first.</span>'}</div></div><div class="ref-component-preview"><div class="ref-component-kicker">Selected Dome</div>${placeholder(domeLabel(),'')}<div class="ref-selection-summary"><strong>${domeLabel()}</strong></div></div></div></div>
+      <div class="ref-section" data-ref-section="couplings"><h4>Couplings</h4><p class="muted">Configure each ear independently. Cap is one size; Open, Vented, and Power domes are available in S, M, and L.</p><div class="ref-ear-config-grid">${receiverEars.map(couplingSelectorMarkup).join('')}</div><div class="ref-component-preview ref-coupling-preview"><div class="ref-component-kicker">Coupling Preview</div>${couplingPreviewMarkup()}</div></div>
       <div class="ref-section" data-ref-section="retention"><div class="ref-section-title-row"><h4>Retention Locks</h4><span class="ref-optional-label">Optional</span></div><p class="muted">Select a size only when a retention lock is being used. Tap the selected size again to clear it.</p><div class="ref-choice-row">${sparkData.retentionLocks.map(x=>`<button type="button" class="ref-choice ${state.retention===x?'active':''}" data-retention="${x}" aria-pressed="${state.retention===x}">${x}</button>`).join('')}</div><div class="ref-selection-summary"><strong>${state.retention?`${state.retention} Retention Lock`:'No retention lock selected'}</strong></div></div>
       <div class="ref-section" data-ref-section="accessories"><h4>Charger & Maintenance</h4><p class="muted">Spark charging and wax-management accessories.</p><div class="ref-accessory-grid">${sparkData.accessories.map(item=>`<div class="ref-accessory-card">${placeholder(item.name)}<h5>${item.name}</h5><p>${item.type}</p></div>`).join('')}</div></div>
     </div>`;
@@ -358,8 +409,9 @@
     root.querySelectorAll('[data-receiver-power]').forEach(b=>b.addEventListener('click',()=>{state.receiverSelections[b.dataset.receiverEar].power=b.dataset.receiverPower;renderSparkProduct();}));
     root.querySelectorAll('[data-receiver-length]').forEach(b=>b.addEventListener('click',()=>{state.receiverSelections[b.dataset.receiverEar].length=b.dataset.receiverLength;renderSparkProduct();}));
     root.querySelectorAll('[data-clear-receiver]').forEach(b=>b.addEventListener('click',()=>{state.receiverSelections[b.dataset.clearReceiver]={power:null,length:null};renderSparkProduct();}));
-    root.querySelectorAll('[data-dome]').forEach(b=>b.addEventListener('click',()=>{state.dome=b.dataset.dome;state.domeSize=null;renderSparkProduct();}));
-    root.querySelectorAll('[data-dome-size]').forEach(b=>b.addEventListener('click',()=>{state.domeSize=b.dataset.domeSize;renderSparkProduct();}));
+    root.querySelectorAll('[data-coupling-type]').forEach(b=>b.addEventListener('click',()=>{const item=state.couplingSelections[b.dataset.couplingEar];item.type=b.dataset.couplingType;item.size=null;renderSparkProduct();}));
+    root.querySelectorAll('[data-coupling-size]').forEach(b=>b.addEventListener('click',()=>{state.couplingSelections[b.dataset.couplingEar].size=b.dataset.couplingSize;renderSparkProduct();}));
+    root.querySelectorAll('[data-clear-coupling]').forEach(b=>b.addEventListener('click',()=>{state.couplingSelections[b.dataset.clearCoupling]={type:null,size:null};renderSparkProduct();}));
     root.querySelectorAll('[data-retention]').forEach(b=>b.addEventListener('click',()=>{state.retention=state.retention===b.dataset.retention?null:b.dataset.retention;renderSparkProduct();}));
     root.querySelector('[data-reset-configuration]')?.addEventListener('click',resetCurrentConfiguration);
     root.querySelector('[data-copy-configuration]')?.addEventListener('click',e=>copyConfigurationForNote(e.currentTarget));
