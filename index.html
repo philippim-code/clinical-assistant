@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
 <link rel="apple-touch-icon" sizes="192x192" href="assets/icon-192.png" />
 <link rel="manifest" href="manifest.json" />
-<link rel="stylesheet" href="css/styles.css?v=dev23" />
+<link rel="stylesheet" href="css/styles.css?v=dev24" />
 </head>
 <body>
 <div id="splash" class="splash"><div class="splash-card"><img src="assets/logo.png" class="splash-logo" alt="Miracle-Ear Logo"><div class="splash-title">Miracle-Ear</div><div class="splash-subtitle">Clinical Assistant <span data-app-version></span></div></div></div>
@@ -55,7 +55,7 @@
 
 <div id="outcomes" class="tab-panel"><div class="section"><h3>Saved Outcomes</h3><p class="muted">Saved outcomes stay on this computer/browser using local storage. Use initials, first name, appointment time, or another minimal identifier if possible.</p><div class="grid-2 outcomes-toolbar-grid"><div class="outcomes-search"><label class="inline-label">Search Saved Outcomes</label><input type="text" id="outcomeSearch" placeholder="Search patient label, appointment type, reminder, or note..." oninput="renderOutcomes()"></div><div class="toolbar-actions outcomes-actions"><button class="info" onclick="exportTodaysOutcomes()">Export Saved Outcomes</button><button class="success-outline" onclick="markAllOutcomesComplete()">Mark All Complete</button><button class="danger-outline" onclick="clearCompletedOutcomes()">Clear Completed</button></div></div><div id="outcomeSummary" class="result-box">No saved outcomes yet.</div><div id="outcomeList" style="margin-top:14px;"><p>No saved outcomes yet.</p></div></div></div>
 <div id="tools" class="tab-panel">
-<div class="section"><h3>PTA Severity Calculator</h3>
+<div class="section" data-pta-severity-tool><h3>PTA Severity Calculator</h3>
 <div class="grid-2"><div><label class="inline-label">Right Ear PTA</label><input type="number" id="toolRightPTA" placeholder="ex. 45" oninput="updateStandalonePTA()"></div><div><label class="inline-label">Left Ear PTA</label><input type="number" id="toolLeftPTA" placeholder="ex. 40" oninput="updateStandalonePTA()"></div></div>
 <div class="result-box" id="toolPTAResult">Enter PTA values to see severity.</div>
 <p class="muted">PTA guide: No Loss (&lt;25 dB), Mild (26–40 dB), Moderate (41–55 dB), Moderate to Severe (56–69 dB), Severe to Profound (70–95 dB), Unaidable (&gt;95 dB).</p>
@@ -106,11 +106,13 @@
 <label class="inline-label"><input type="checkbox" id="homeShowNewAppointment" checked> New Appointment</label>
 <label class="inline-label"><input type="checkbox" id="homeShowRecent" checked> Recent Activity</label>
 </div>
-</div><div class="grid-2"><div><label class="inline-label">Financing Companies <span class="muted">one per line</span></label><textarea id="settingsFinance" placeholder="PatientFi
+</div>
+<div class="settings-group" data-settings-financing><h4>Financing Companies</h4><p class="muted">Customize the financing companies available in documentation workflows.</p><label class="inline-label">Companies <span class="muted">one per line</span></label><textarea id="settingsFinance" placeholder="PatientFi
 Powerpay
 Paymonthly/Care Credit
-HFD"></textarea></div><div><label class="inline-label">Common Programming Presets <span class="muted">one per line</span></label><textarea id="settingsAdjustments" placeholder="Increased speech 1 click AU
-Ran feedback test"></textarea></div></div><button class="primary" onclick="saveSettings()">Save Settings</button><button class="danger-outline" onclick="resetSettings()">Reset Defaults</button><div class="result-box" id="settingsStatus">Settings ready.</div></div></div>
+HFD"></textarea></div>
+<div class="settings-group"><h4>Common Programming Presets</h4><label class="inline-label">Presets <span class="muted">one per line</span></label><textarea id="settingsAdjustments" placeholder="Increased speech 1 click AU
+Ran feedback test"></textarea></div><button class="primary" onclick="saveSettings()">Save Settings</button><button class="danger-outline" onclick="resetSettings()">Reset Defaults</button><div class="result-box" id="settingsStatus">Settings ready.</div></div></div>
 <div id="about" class="tab-panel">
   <div class="about-hero section">
     <div class="about-brand">
@@ -203,11 +205,11 @@ Ran feedback test"></textarea></div></div><button class="primary" onclick="saveS
 <div class="footer">Miracle-Ear Clinical Assistant <span data-app-version></span> | Ctrl + Enter = Generate & Copy Note | Ctrl + S = Save Outcome</div>
 </div>
 <div id="toast" class="toast"></div>
-<script src="js/version.js?v=dev23"></script>
-<script src="js/app-core.js?v=dev23"></script>
-<script src="js/smart-notes.js?v=dev23"></script>
-<script src="js/references.js?v=dev23"></script>
-<script src="js/reference-images.js?v=dev23"></script>
-<script src="js/app-enhancements.js?v=dev23"></script>
+<script src="js/version.js?v=dev24"></script>
+<script src="js/app-core.js?v=dev24"></script>
+<script src="js/smart-notes.js?v=dev24"></script>
+<script src="js/references.js?v=dev24"></script>
+<script src="js/reference-images.js?v=dev24"></script>
+<script src="js/app-enhancements.js?v=dev24"></script>
 </body>
 </html>

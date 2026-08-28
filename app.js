@@ -325,7 +325,6 @@ function saveOutcome(){
   let label=(document.getElementById('currentPatientLabel')?.value||'').trim();
   let reminder=(document.getElementById('currentPatientReminder')?.value||'').trim();
   if(!label){const entered=prompt('Patient label (use initials, first name, or appointment time):','');if(entered===null)return;label=entered.trim();}
-  if(!reminder){reminder=prompt('Optional quick reminder/status (example: needs closeout, waiting on payment, call back):','')||'';}
   const appointmentState=collectDraftState();
   appointmentState.generatedNote=note;appointmentState.patientLabel=label;appointmentState.patientReminder=reminder;
   let items=getSavedOutcomes();

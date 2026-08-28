@@ -2,15 +2,22 @@
 (function(){
   'use strict';
 
-  const VERSION='1.8.0-dev23';
+  const VERSION='1.8.0-dev24';
+  const RELEASE_NOTE_TEXT=[
+    'Collapsible PTA Severity Calculator',
+    'Dedicated Financing Companies settings panel',
+    'Flexible COU scoring',
+    'Bug fixes'
+  ];
   const RELEASE_NOTES=[
-    '<li><strong>Save completed Spark configurations</strong> directly from the reference workflow while retaining clipboard copy.</li>',
-    '<li><strong>Surface the latest saved configuration</strong> when documenting a hearing-aid purchase or trade-up.</li>',
-    '<li><strong>Add configurations to purchase notes with one tap</strong> while keeping the device field fully editable.</li>',
-    '<li><strong>Show when the configuration was saved</strong> to reduce the chance of selecting an older patient setup.</li>'
+    '<li><strong>Collapsible PTA Severity Calculator</strong> keeps Clinical Tools cleaner until the calculator is needed.</li>',
+    '<li><strong>Dedicated Financing Companies settings panel</strong> separates financing customization from the main Settings screen.</li>',
+    '<li><strong>Flexible COU scoring</strong> supports documentation when at least one score is entered.</li>',
+    '<li><strong>Bug fixes</strong></li>'
   ];
 
   window.CLINICAL_ASSISTANT_VERSION=VERSION;
+  window.CLINICAL_ASSISTANT_RELEASE_NOTE_TEXT=RELEASE_NOTE_TEXT.slice();
   window.CLINICAL_ASSISTANT_RELEASE_NOTES=RELEASE_NOTES.slice();
   window.applyClinicalAssistantVersion=function(){
     document.querySelectorAll('[data-app-version]').forEach(el=>{

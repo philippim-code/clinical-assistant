@@ -131,7 +131,29 @@ function otoscopyText(prefix){
   return base;
 }
 function trialText(prefix){if(!checked(prefix+'Trial'))return '';const device=fixAcronyms(val(prefix+'TrialDevice'));const date=val(prefix+'TrialDate');let text='Accepted a 3-day take-home trial';if(device)text+=' of '+device;if(date){const d=new Date(date+'T00:00:00');text+=`; follow-up scheduled for ${d.toLocaleDateString()}`;}return text}
-function couText(prefix){if(!checked(prefix+'COU'))return'';let baseline=radio(prefix+'COUBaseline')||'unaided',u=val(prefix+'CU'),a1=val(prefix+'CA1'),a2=val(prefix+'CA2'),a3=val(prefix+'CA3');if(u&&a1&&a2&&a3){return baseline==='existing hearing aids'?`COU completed with existing hearing aids: ${u}% VS ${a1}%-${a2}%-${a3}% with new technology`:`COU completed unaided: ${u}% VS ${a1}%-${a2}%-${a3}% with demo hearing aids`;}return baseline==='existing hearing aids'?'COU completed with existing hearing aids':'COU completed unaided with demo hearing aids'}
+function couText(prefix){
+  if(!checked(prefix+'COU'))return'';
+  const baseline=radio(prefix+'COUBaseline')||'unaided';
+  const baselineScore=val(prefix+'CU');
+  const newScores=[val(prefix+'CA1'),val(prefix+'CA2'),val(prefix+'CA3')].filter(Boolean);
+  const comparison=newScores.map(score=>score+'%').join('-');
+  if(baselineScore&&newScores.length){
+    return baseline==='existing hearing aids'
+      ?`COU completed with existing hearing aids: ${baselineScore}% VS ${comparison} with new technology`
+      :`COU completed unaided: ${baselineScore}% VS ${comparison} with demo hearing aids`;
+  }
+  if(baselineScore){
+    return baseline==='existing hearing aids'
+      ?`COU completed with existing hearing aids: ${baselineScore}%`
+      :`COU completed unaided: ${baselineScore}%`;
+  }
+  if(newScores.length){
+    return baseline==='existing hearing aids'
+      ?`COU completed with new technology: ${comparison}`
+      :`COU completed with demo hearing aids: ${comparison}`;
+  }
+  return baseline==='existing hearing aids'?'COU completed with existing hearing aids':'COU completed unaided with demo hearing aids';
+}
 function financeText(prefix){if(!checked(prefix+'Fin'))return'';let c=radio(prefix+'Finance');return c?'financed through '+c:'financed'}
 function essentialsText(prefix){return radio(prefix+'Ess')}
 function purchaseText(prefix,trade=false){if(!checked(prefix+'Purchased'))return'';let d=fixAcronyms(val(prefix+'Device')),base=trade?(d?'Traded up to '+d:'Traded up to new hearing aids'):(d?'Purchased '+d:'Purchased hearing aids'),f=financeText(prefix),e=essentialsText(prefix);return formatList([base,f,e])}
@@ -370,7 +392,6 @@ function saveOutcome(){
   let label=(document.getElementById('currentPatientLabel')?.value||'').trim();
   let reminder=(document.getElementById('currentPatientReminder')?.value||'').trim();
   if(!label){const entered=prompt('Patient label (use initials, first name, or appointment time):','');if(entered===null)return;label=entered.trim();}
-  if(!reminder){reminder=prompt('Optional quick reminder/status (example: needs closeout, waiting on payment, call back):','')||'';}
   const appointmentState=collectDraftState();
   appointmentState.generatedNote=note;appointmentState.patientLabel=label;appointmentState.patientReminder=reminder;
   let items=getSavedOutcomes();
@@ -1549,15 +1570,8 @@ if(window.matchMedia){
 window.addEventListener('load',()=>{renderPersonalizationSettings();setTimeout(openLandingPage,0);});
 
 function showVersionInfo(){
-  alert(`Miracle-Ear Clinical Assistant
-
-Version ${APP_VERSION}
-
-What's new:
-• PTA Calculator remains first and immediately visible in Clinical Tools
-• Medical Referrals now opens from a compact, reusable tool card
-• Responsive referral panel with clear Open and Close controls
-• Existing referral directory, actions, guidance, and local persistence preserved`);
+  const notes=(window.CLINICAL_ASSISTANT_RELEASE_NOTE_TEXT||[]).map(item=>'• '+item).join('\n');
+  alert(`Miracle-Ear Clinical Assistant\n\nVersion ${APP_VERSION}\n\nWhat's new:\n${notes}`);
 }
 
 
