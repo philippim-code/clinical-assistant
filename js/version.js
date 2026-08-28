@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.8.0-dev18';
+  const VERSION='1.8.0-dev19';
   const RELEASE_NOTES=[
     '<li><strong>Converted Spark into a blank-start configuration builder</strong> with no treatment or fitting components selected automatically.</li>',
     '<li><strong>Added Copy for Clinical Note</strong> to produce a concise, ready-to-paste purchase sentence after configuration is complete.</li>',

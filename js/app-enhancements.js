@@ -27,7 +27,7 @@
       .ref-retention-card.active:after{content:'✓';position:absolute;right:10px;top:9px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--teal);color:#fff;font-size:12px;font-weight:900}
       .ref-retention-card img{display:block;width:100%;height:190px;object-fit:contain}.ref-retention-card strong{display:block;margin-top:7px;text-align:center;font-size:13px}
       .ref-receiver-preview .ref-image-slot{box-sizing:border-box;height:220px!important;min-height:220px}
-      .ref-bilateral-preview{box-sizing:border-box;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;height:220px;min-height:220px;align-items:center;margin:0 0 8px;padding:4px 8px 0}
+      .ref-bilateral-preview{box-sizing:border-box;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;height:220px;min-height:220px;align-items:center;margin:0;padding:4px 8px 0}
       .ref-bilateral-preview img{width:100%;height:210px;max-height:210px;object-fit:contain;display:block}
       .ref-bilateral-empty{display:flex;align-items:center;justify-content:center;border:1px dashed var(--border);border-radius:11px;color:var(--muted);font-size:12px;text-align:center;padding:16px}
       .ref-component-preview.ref-bilateral-ready .ref-image-slot{display:none!important}.ref-component-preview:not(.ref-bilateral-ready) .ref-bilateral-preview{display:none!important}

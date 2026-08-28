@@ -187,7 +187,7 @@
     if(state.receiverSide!=='both')return '';
     if(!receiverConfigurationComplete())return '<div class="ref-bilateral-preview ref-bilateral-empty"><span>Complete both receiver configurations to preview them together.</span></div>';
     const left=state.receiverSelections.left,right=state.receiverSelections.right;
-    return `<div class="ref-bilateral-preview"><img src="assets/spark/catalog/receivers/L-${left.length}-${left.power}.png?v=dev18" alt="${receiverEarLabel('left')} Spark receiver"><img src="assets/spark/catalog/receivers/R-${right.length}-${right.power}.png?v=dev18" alt="${receiverEarLabel('right')} Spark receiver"></div>`;
+    return `<div class="ref-bilateral-preview"><img src="assets/spark/catalog/receivers/L-${left.length}-${left.power}.png?v=dev19" alt="${receiverEarLabel('left')} Spark receiver"><img src="assets/spark/catalog/receivers/R-${right.length}-${right.power}.png?v=dev19" alt="${receiverEarLabel('right')} Spark receiver"></div>`;
   }
 
   function renderHome(){
