@@ -84,8 +84,8 @@
       .ref-nav-model{flex:0 0 auto;max-width:230px;padding:7px 10px;border-left:1px solid var(--border);font-size:11px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       .ref-model-hero{display:grid;grid-template-columns:minmax(230px,.82fr) minmax(0,1.18fr);gap:22px;align-items:center;padding:20px}
       .ref-hero-visual{min-width:0}
-      .ref-hero-components{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
-      .ref-hero-components:empty{display:none}
+      .ref-hero-components{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-height:136px;margin-top:10px}
+      .ref-hero-components:empty{visibility:hidden}
       .ref-hero-component{display:grid;grid-template-columns:48px minmax(0,1fr);align-items:center;gap:8px;min-width:0;padding:8px 9px;border-radius:10px;background:#f5f9fa}
       .ref-hero-component-visual,.ref-hero-component-img{display:block;width:48px;height:48px;object-fit:contain;filter:none!important}
       .ref-hero-component-visual .ref-catalog-image{width:100%;height:100%;object-fit:contain}
@@ -169,7 +169,8 @@
         .ref-nav-model{display:none}
         .ref-nav-link{padding:8px 10px}
         .ref-model-hero{padding:16px;gap:14px}
-        .ref-hero-components{grid-template-columns:1fr}
+        .ref-hero-components{grid-template-columns:1fr;min-height:0}
+        .ref-hero-components:empty{display:none;visibility:visible}
         .ref-model-name{font-size:22px}
         .ref-config-card{align-items:flex-start;flex-direction:column}
         .ref-config-actions{width:100%;justify-content:flex-start;flex-wrap:wrap}
@@ -291,7 +292,7 @@
   }
   function receiverPreviewEarMarkup(ear){
     const status=receiverEarStatus(ear),name=ear==='left'?'Left':'Right',markerClass=ear==='right'?' right':'',assetSide=ear==='left'?'L':'R',item=state.receiverSelections[ear];
-    if(receiverReady(ear))return `<div class="ref-ear-preview complete" data-preview-ear="${ear}"><img src="assets/spark/catalog/receivers/${assetSide}-${item.length}-${item.power}.png?v=dev21" alt="${receiverEarLabel(ear)} Spark receiver"><div class="ref-ear-preview-label"><span class="ref-side-marker${markerClass}" aria-hidden="true"></span>${receiverEarLabel(ear)}</div></div>`;
+    if(receiverReady(ear))return `<div class="ref-ear-preview complete" data-preview-ear="${ear}"><img src="assets/spark/catalog/receivers/${assetSide}-${item.length}-${item.power}.png?v=dev22" alt="${receiverEarLabel(ear)} Spark receiver"><div class="ref-ear-preview-label"><span class="ref-side-marker${markerClass}" aria-hidden="true"></span>${receiverEarLabel(ear)}</div></div>`;
     return `<div class="ref-ear-preview ${status.kind}" data-preview-ear="${ear}"><div class="ref-ear-empty-symbol ${ear==='right'?'right':''}" aria-hidden="true">${ear==='left'?'L':'R'}</div><div class="ref-ear-preview-label">${name} Receiver</div><small>${status.text}</small></div>`;
   }
   function receiverPreviewMarkup(){return `<div class="ref-receiver-preview-grid">${receiverEars.map(receiverPreviewEarMarkup).join('')}</div>`;}
@@ -299,7 +300,7 @@
     const item=state.couplingSelections[ear],coupling=activeCoupling(ear);
     if(!couplingReady(ear))return '';
     const filename=coupling.id==='cap'?'cap':`${coupling.id}-${item.size.toLowerCase()}`;
-    return `assets/spark/catalog/domes/${filename}.png?v=dev21`;
+    return `assets/spark/catalog/domes/${filename}.png?v=dev22`;
   }
   function couplingSelectorMarkup(ear){
     const item=state.couplingSelections[ear],coupling=activeCoupling(ear),sizes=coupling?coupling.sizes:[],status=couplingStatus(ear),name=earName(ear),markerClass=ear==='right'?' right':'';
@@ -312,7 +313,7 @@
   }
   function couplingPreviewMarkup(){return `<div class="ref-receiver-preview-grid ref-coupling-preview-grid">${receiverEars.map(couplingPreviewEarMarkup).join('')}</div>`;}
   function heroComponentsMarkup(){
-    const items=selectedReceiverEars().map(ear=>{const receiver=state.receiverSelections[ear],side=ear==='left'?'L':'R';return `<div class="ref-hero-component"><img class="ref-hero-component-img" src="assets/spark/catalog/receivers/${side}-${receiver.length}-${receiver.power}.png?v=dev21" alt="${receiverEarLabel(ear)} Spark receiver"><div><span>${earName(ear)} Receiver</span><strong>${receiver.length}${receiver.power}</strong></div></div>`;});
+    const items=selectedReceiverEars().map(ear=>{const receiver=state.receiverSelections[ear],side=ear==='left'?'L':'R';return `<div class="ref-hero-component"><img class="ref-hero-component-img" src="assets/spark/catalog/receivers/${side}-${receiver.length}-${receiver.power}.png?v=dev22" alt="${receiverEarLabel(ear)} Spark receiver"><div><span>${earName(ear)} Receiver</span><strong>${receiver.length}${receiver.power}</strong></div></div>`;});
     receiverEars.filter(couplingReady).forEach(ear=>items.push(`<div class="ref-hero-component"><img class="ref-hero-component-img" src="${couplingAsset(ear)}" alt="${couplingShortLabel(ear)} ${earName(ear).toLowerCase()} coupling"><div><span>${earName(ear)} Coupling</span><strong>${couplingShortLabel(ear)}</strong></div></div>`));
     return items.join('');
   }
