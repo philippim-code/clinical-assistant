@@ -1,0 +1,29 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev2 refinements */
+
+/* Keep the primary brand header intentionally clean. */
+html.appearance-overhaul .header::after {
+  content: none !important;
+  display: none !important;
+}
+
+/*
+  Pending-outcome notifications sit slightly above their tab button.
+  The navigation is horizontally scrollable on touch devices, so content
+  outside its box is clipped. Reserve vertical space inside the scroller
+  so notification badges remain fully visible without changing the badge.
+*/
+html.appearance-overhaul .tabs {
+  padding-top: 12px;
+  padding-bottom: 6px;
+}
+
+html.appearance-overhaul .tab-btn {
+  overflow: visible;
+}
+
+@media (max-width: 760px) {
+  html.appearance-overhaul .tabs {
+    padding-top: 12px;
+    padding-bottom: 6px;
+  }
+}
