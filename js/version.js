@@ -2,33 +2,37 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev2';
+  const VERSION='1.9.0-dev3';
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev2.css?v='+encodeURIComponent(VERSION)
+    'css/appearance-overhaul-dev2.css?v='+encodeURIComponent(VERSION),
+    'css/appearance-overhaul-dev3.css?v='+encodeURIComponent(VERSION)
   ];
   const RELEASE_NOTE_TEXT=[
     'Appearance Overhaul development foundation',
     'New premium clinical design system',
     'Redesigned Home dashboard and appointment cards',
-    'Refined navigation, typography, spacing, surfaces, and controls',
-    'Improved desktop and mobile visual hierarchy',
+    'Deep visual refresh for Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About',
+    'Refined navigation, typography, spacing, surfaces, controls, and responsive layouts',
+    'Theme-aware dark and Sycle styling improvements',
     'Reduced-motion accessibility support',
     'Bug fixes'
   ];
   const RELEASE_NOTES=[
-    '<li><strong>Appearance Overhaul development foundation</strong> begins the v1.9 visual refresh while preserving the v1.8 clinical workflows.</li>',
-    '<li><strong>New premium clinical design system</strong> introduces shared spacing, radius, shadow, typography, surface, status, and motion tokens.</li>',
-    '<li><strong>Redesigned Home dashboard and appointment cards</strong> create a cleaner command-center experience without changing appointment logic.</li>',
-    '<li><strong>Refined navigation, typography, spacing, surfaces, and controls</strong> establish a consistent visual language across the app.</li>',
-    '<li><strong>Improved desktop and mobile visual hierarchy</strong> makes the interface feel more intentional on both workstations and the PWA.</li>',
+    '<li><strong>Appearance Overhaul development foundation</strong> continues the v1.9 visual refresh while preserving the v1.8 clinical workflows.</li>',
+    '<li><strong>New premium clinical design system</strong> applies shared spacing, radius, shadow, typography, surface, status, and motion tokens throughout the app.</li>',
+    '<li><strong>Redesigned Home dashboard and appointment cards</strong> retain the approved command-center experience.</li>',
+    '<li><strong>Deep working-screen refresh</strong> extends the new visual language through Sycle Notes, Saved Outcomes, Clinical Tools, Spark References, Settings, and About.</li>',
+    '<li><strong>Refined responsive layouts</strong> improve hierarchy and consistency across desktop, iPad, and phone views.</li>',
+    '<li><strong>Theme-aware styling improvements</strong> further unify Clinical Teal, Sycle, and dark appearances.</li>',
     '<li><strong>Reduced-motion accessibility support</strong> respects the device motion preference.</li>',
     '<li><strong>Bug fixes</strong></li>'
   ];
 
   document.documentElement.classList.add('appearance-overhaul');
   APPEARANCE_STYLESHEETS.forEach((href,index)=>{
-    const id=index===0?'appearanceOverhaulStyles':'appearanceOverhaulDev2Styles';
+    const ids=['appearanceOverhaulStyles','appearanceOverhaulDev2Styles','appearanceOverhaulDev3Styles'];
+    const id=ids[index]||('appearanceOverhaulStyles'+index);
     if(document.getElementById(id))return;
     const link=document.createElement('link');
     link.id=id;
