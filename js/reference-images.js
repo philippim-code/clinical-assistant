@@ -99,7 +99,7 @@
       .ref-product-card .ref-image-slot.ref-has-catalog-image,.ref-family-card .ref-image-slot.ref-has-catalog-image{height:210px}
       .ref-model-hero .ref-image-slot.ref-has-catalog-image{height:285px;background:#fff}
       .ref-component-preview .ref-image-slot.ref-has-catalog-image{height:220px;background:#fff}
-      .ref-accessory-card .ref-image-slot.ref-has-catalog-image{height:210px;background:#fff}
+      .ref-accessory-card .ref-image-slot.ref-has-catalog-image{height:210px;border:0;border-radius:0;background:transparent;padding:4px 8px}
       .ref-retention-preview{margin-top:14px;max-width:440px}
       .ref-color-card{position:relative;overflow:hidden;padding:8px 8px 10px!important}
       .ref-color-card .ref-color-chip{height:88px!important;border:0!important;background:#fff!important;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:7px!important}

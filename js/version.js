@@ -2,11 +2,11 @@
 (function(){
   'use strict';
 
-  const VERSION='1.8.0-dev16';
+  const VERSION='1.8.0-dev17';
   const RELEASE_NOTES=[
-    '<li><strong>Changed Spark feature reading order</strong> to fill each column from top to bottom before moving right.</li>',
-    '<li><strong>Kept included features together first</strong> with unavailable features following in the same cumulative order.</li>',
-    '<li><strong>Preserved responsive ordering</strong> across three-column, two-column, and single-column layouts.</li>'
+    '<li><strong>Simplified Charger & Maintenance cards</strong> by removing the redundant frame around each product image.</li>',
+    '<li><strong>Replaced receiver-side emojis</strong> with clean, flat clinical color markers for Left, Right, and Both.</li>',
+    '<li><strong>Streamlined receiver labels</strong> while preserving the standard blue-left and red-right convention.</li>'
   ];
 
   window.CLINICAL_ASSISTANT_VERSION=VERSION;
