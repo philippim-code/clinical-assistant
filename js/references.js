@@ -228,19 +228,19 @@
     if(state.retention)parts.push(`${state.retention} Retention Lock`);
     return parts.join(' · ');
   }
-  function receiverClinicalText(){
+  function receiverClinicalItems(){
     if(isBilateral()){
       const left=state.receiverSelections.left,right=state.receiverSelections.right;
-      return left.power===right.power&&left.length===right.length?`${left.length}${left.power} receivers AU`:`${left.length}${left.power} receiver AS and ${right.length}${right.power} receiver AD`;
+      return left.power===right.power&&left.length===right.length?[`${left.length}${left.power} receivers AU`]:[`${left.length}${left.power} receiver AS`,`${right.length}${right.power} receiver AD`];
     }
     const selectedEar=selectedReceiverEars()[0],item=state.receiverSelections[selectedEar],ear=selectedEar==='left'?'AS':'AD';
-    return `a ${item.length}${item.power} receiver ${ear}`;
+    return [`a ${item.length}${item.power} receiver ${ear}`];
   }
   function domeClinicalText(){const dome=activeDome(),plural=isBilateral(),size=state.domeSize==='One Size'?'':`${state.domeSize} `,description=`${size}${dome.name.toLowerCase()} dome`;return plural?`${description}s`:`${state.domeSize==='One Size'?'a':'an'} ${description}`;}
   function retentionClinicalText(){return isBilateral()?`${state.retention} retention locks`:`an ${state.retention} retention lock`;}
   function joinClinicalItems(items){return items.length===2?`${items[0]} and ${items[1]}`:`${items.slice(0,-1).join(', ')}, and ${items[items.length-1]}`;}
   function clinicalNoteText(){
-    const family=activeFamily(),color=selectedColor(),plural=isBilateral(),components=[receiverClinicalText(),domeClinicalText()];
+    const family=activeFamily(),color=selectedColor(),plural=isBilateral(),components=[...receiverClinicalItems(),domeClinicalText()];
     if(state.retention)components.push(retentionClinicalText());
     return `Purchased Spark ${family.modelName(state.level)} hearing aid${plural?'s':''} in ${color.name} with ${joinClinicalItems(components)}.`;
   }
