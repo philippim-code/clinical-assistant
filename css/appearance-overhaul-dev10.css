@@ -1,0 +1,113 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev10
+   Spark motion removal + layout stabilization.
+*/
+
+/* ---------- Spark: keep re-renders physically still ----------
+   The Spark shell is rebuilt after most selections. Do not replay a page
+   entrance animation every time that happens. */
+html.appearance-overhaul #references .ref-shell {
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Selected Spark controls communicate state with color/border only.
+   No lift, scale, or press transform should move the interface. */
+html.appearance-overhaul #references .ref-choice,
+html.appearance-overhaul #references .ref-color-card,
+html.appearance-overhaul #references .ref-retention-card,
+html.appearance-overhaul #references .ref-nav-link {
+  animation: none !important;
+  transform: none !important;
+  transition-property: background-color, border-color, color, box-shadow !important;
+  transition-duration: 110ms !important;
+  transition-timing-function: ease-out !important;
+}
+
+html.appearance-overhaul #references .ref-choice:hover,
+html.appearance-overhaul #references .ref-choice:active,
+html.appearance-overhaul #references .ref-choice.active,
+html.appearance-overhaul #references .ref-color-card:hover,
+html.appearance-overhaul #references .ref-color-card:active,
+html.appearance-overhaul #references .ref-color-card.active,
+html.appearance-overhaul #references .ref-retention-card:hover,
+html.appearance-overhaul #references .ref-retention-card:active,
+html.appearance-overhaul #references .ref-retention-card.active,
+html.appearance-overhaul #references .ref-nav-link:hover,
+html.appearance-overhaul #references .ref-nav-link:active,
+html.appearance-overhaul #references .ref-nav-link.active,
+html.appearance-overhaul #references .oa-selected-now {
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Prevent the global button press scale from affecting any Spark control. */
+html.appearance-overhaul #references button:active {
+  transform: none !important;
+}
+
+/* ---------- Receiver / Coupling card geometry ----------
+   Spark conditionally inserts a Clear button after the first selection.
+   Reserve that exact space before it appears so the ear card does not grow. */
+html.appearance-overhaul #references .ref-ear-panel-head::after {
+  content: "";
+  display: block;
+  flex: 0 0 66px;
+  width: 66px;
+  height: 38px;
+  pointer-events: none;
+}
+
+html.appearance-overhaul #references .ref-ear-panel-head:has(.ref-ear-clear)::after {
+  display: none;
+}
+
+html.appearance-overhaul #references .ref-ear-clear {
+  box-sizing: border-box;
+  flex: 0 0 66px;
+  width: 66px;
+  min-width: 66px;
+  height: 38px;
+  min-height: 38px;
+  margin: 0 !important;
+  padding: 0 10px !important;
+}
+
+/* Coupling size buttons replace a short hint after a type is selected.
+   Reserve button-height from the beginning to avoid a vertical nudge. */
+html.appearance-overhaul #references .ref-coupling-size-row {
+  min-height: 38px;
+  align-items: center;
+}
+
+html.appearance-overhaul #references .ref-coupling-size-row .ref-inline-hint {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+}
+
+/* Ear panels can change status color, but their geometry should never animate. */
+html.appearance-overhaul #references .ref-ear-panel,
+html.appearance-overhaul #references .ref-ear-status {
+  transition: background-color 110ms ease-out, color 110ms ease-out, border-color 110ms ease-out !important;
+  transform: none !important;
+}
+
+@media (max-width: 520px) {
+  html.appearance-overhaul #references .ref-ear-panel-head::after,
+  html.appearance-overhaul #references .ref-ear-clear {
+    flex-basis: 60px;
+    width: 60px;
+    min-width: 60px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.appearance-overhaul #references .ref-choice,
+  html.appearance-overhaul #references .ref-color-card,
+  html.appearance-overhaul #references .ref-retention-card,
+  html.appearance-overhaul #references .ref-nav-link,
+  html.appearance-overhaul #references .ref-ear-panel,
+  html.appearance-overhaul #references .ref-ear-status {
+    transition: none !important;
+  }
+}
