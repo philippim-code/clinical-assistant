@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev7';
+  const VERSION='1.9.0-dev8';
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev2.css?v='+encodeURIComponent(VERSION),
@@ -10,22 +10,25 @@
     'css/appearance-overhaul-dev4.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev5.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev6.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev7.css?v='+encodeURIComponent(VERSION)
+    'css/appearance-overhaul-dev7.css?v='+encodeURIComponent(VERSION),
+    'css/appearance-overhaul-dev8.css?v='+encodeURIComponent(VERSION)
   ];
   const APPEARANCE_SCRIPTS=[
     'js/appearance-overhaul-dev5.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev6.js?v='+encodeURIComponent(VERSION)
+    'js/appearance-overhaul-dev6.js?v='+encodeURIComponent(VERSION),
+    'js/appearance-overhaul-dev8.js?v='+encodeURIComponent(VERSION)
   ];
   const RELEASE_NOTE_TEXT=[
     'Appearance Overhaul development foundation',
     'New premium clinical design system',
     'Redesigned Home dashboard and appointment cards',
     'Deep visual refresh for Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About',
+    'Expanded Home command center with Continue Working, Quick Tools, and Clinical Reference',
     'Unified non-interactive Spark configuration status chips',
     'Flat Saved Outcomes status indicators replacing emoji markers',
-    'Aligned About card grids and improved Settings action spacing',
+    'Theme-aware About important notice',
+    'Corrected Spark selection animation targeting',
     'Polished empty states and interaction refinement',
-    'Corrected iPad tap-highlight geometry and softened Spark selection motion',
     'Global focus, disabled-state, and action consistency sweep',
     'Theme-aware dark and Sycle styling improvements',
     'Reduced-motion accessibility support',
@@ -34,14 +37,13 @@
   const RELEASE_NOTES=[
     '<li><strong>Appearance Overhaul development foundation</strong> continues the v1.9 visual refresh while preserving the v1.8 clinical workflows.</li>',
     '<li><strong>New premium clinical design system</strong> applies shared spacing, radius, shadow, typography, surface, status, and motion tokens throughout the app.</li>',
-    '<li><strong>Redesigned Home dashboard and appointment cards</strong> retain the approved command-center experience.</li>',
+    '<li><strong>Expanded Home command center</strong> adds contextual Continue Working actions, one-tap Quick Tools, direct Spark Reference access, and visibility controls in Appearance & Home.</li>',
     '<li><strong>Deep working-screen refresh</strong> extends the new visual language through Sycle Notes, Saved Outcomes, Clinical Tools, Spark References, Settings, and About.</li>',
     '<li><strong>Unified Spark status treatment</strong> presents both Incomplete and Configured as flat, non-interactive status chips rather than button-like controls.</li>',
     '<li><strong>Saved Outcomes status cleanup</strong> replaces yellow and green emoji markers with restrained flat status dots and consistent typography.</li>',
-    '<li><strong>Layout polish</strong> aligns About card rows and restores consistent spacing before Settings actions.</li>',
-    '<li><strong>Empty-state refinement</strong> adds intentional, lightweight states for Recent Activity, Saved Outcomes, and Medical Referrals when no content is available.</li>',
-    '<li><strong>iPad interaction correction</strong> replaces rectangular native tap highlights with feedback that follows the rounded workflow-card geometry.</li>',
-    '<li><strong>Subtler Spark selection feedback</strong> retains confirmation while reducing scale and shadow intensity.</li>',
+    '<li><strong>Theme correction</strong> updates the About Data & Privacy important notice so it remains readable and appropriately subdued in light and dark appearances.</li>',
+    '<li><strong>Targeted Spark selection feedback</strong> animates only the newly selected option rather than the option being replaced.</li>',
+    '<li><strong>Layout and empty-state polish</strong> aligns About card rows, restores Settings spacing, and adds intentional empty states for key areas.</li>',
     '<li><strong>Consistency sweep</strong> unifies focus treatment, disabled controls, compact action sizing, and touch behavior.</li>',
     '<li><strong>Theme-aware styling improvements</strong> further unify Clinical Teal, Sycle, and dark appearances.</li>',
     '<li><strong>Reduced-motion accessibility support</strong> respects the device motion preference.</li>',
@@ -50,7 +52,7 @@
 
   document.documentElement.classList.add('appearance-overhaul');
   APPEARANCE_STYLESHEETS.forEach((href,index)=>{
-    const ids=['appearanceOverhaulStyles','appearanceOverhaulDev2Styles','appearanceOverhaulDev3Styles','appearanceOverhaulDev4Styles','appearanceOverhaulDev5Styles','appearanceOverhaulDev6Styles','appearanceOverhaulDev7Styles'];
+    const ids=['appearanceOverhaulStyles','appearanceOverhaulDev2Styles','appearanceOverhaulDev3Styles','appearanceOverhaulDev4Styles','appearanceOverhaulDev5Styles','appearanceOverhaulDev6Styles','appearanceOverhaulDev7Styles','appearanceOverhaulDev8Styles'];
     const id=ids[index]||('appearanceOverhaulStyles'+index);
     if(document.getElementById(id))return;
     const link=document.createElement('link');
@@ -60,7 +62,7 @@
     document.head.appendChild(link);
   });
   APPEARANCE_SCRIPTS.forEach((src,index)=>{
-    const ids=['appearanceOverhaulScript5','appearanceOverhaulScript6'];
+    const ids=['appearanceOverhaulScript5','appearanceOverhaulScript6','appearanceOverhaulScript8'];
     const id=ids[index]||('appearanceOverhaulScript'+(index+5));
     if(document.getElementById(id))return;
     const script=document.createElement('script');
