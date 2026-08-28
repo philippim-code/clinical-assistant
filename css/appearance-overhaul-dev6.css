@@ -1,0 +1,138 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev6
+   Layout cleanup + empty-state and interaction refinement.
+*/
+
+/* ---------- About grid alignment ----------
+   Prevent the global .section + .section spacing rule from offsetting the
+   second card in a two-column About row. */
+html.appearance-overhaul #about .about-grid {
+  align-items: stretch;
+}
+
+html.appearance-overhaul #about .about-grid > .section {
+  margin-top: 0 !important;
+  height: 100%;
+}
+
+/* ---------- Settings action spacing ----------
+   Preserve the same vertical rhythm between the final launcher and the
+   Save / Reset action row as between the launcher cards themselves. */
+html.appearance-overhaul #settings > .section > .tool-launch-card:last-of-type {
+  margin-bottom: 18px;
+}
+
+html.appearance-overhaul #settings > .section > button.primary,
+html.appearance-overhaul #settings > .section > button.danger-outline {
+  margin-top: 0;
+}
+
+html.appearance-overhaul #settings #settingsStatus {
+  margin-top: 14px;
+}
+
+/* ---------- Polished empty states ---------- */
+html.appearance-overhaul .oa-empty-state {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 92px;
+  padding: 16px 17px;
+  border: 1px solid var(--oa-border);
+  border-radius: var(--oa-radius-md);
+  color: var(--oa-text-secondary);
+  background: linear-gradient(135deg, var(--oa-surface-soft), var(--oa-surface));
+}
+
+html.appearance-overhaul .oa-empty-state.compact {
+  min-height: 78px;
+  padding: 13px 15px;
+}
+
+html.appearance-overhaul .oa-empty-state-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  color: var(--oa-accent-strong);
+  background: var(--oa-surface-tint);
+}
+
+html.appearance-overhaul .oa-empty-state-icon svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+html.appearance-overhaul .oa-empty-state-copy {
+  min-width: 0;
+}
+
+html.appearance-overhaul .oa-empty-state-copy strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--oa-text);
+  font-size: 13px;
+  font-weight: 740;
+}
+
+html.appearance-overhaul .oa-empty-state-copy span {
+  display: block;
+  color: var(--oa-text-tertiary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* ---------- Interaction refinement ---------- */
+html.appearance-overhaul .tool-launch-card {
+  transition: transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms cubic-bezier(.2,.8,.2,1), border-color 180ms cubic-bezier(.2,.8,.2,1);
+}
+
+@media (hover: hover) {
+  html.appearance-overhaul .tool-launch-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--oa-accent) 24%, var(--oa-border));
+    box-shadow: var(--oa-shadow-md);
+  }
+}
+
+html.appearance-overhaul .tool-launch-card:active {
+  transform: scale(.992);
+}
+
+html.appearance-overhaul .dashboard-card,
+html.appearance-overhaul #outcomes .outcome-card,
+html.appearance-overhaul #references .ref-section,
+html.appearance-overhaul #references .ref-color-card,
+html.appearance-overhaul #references .ref-retention-card {
+  will-change: transform;
+}
+
+html.appearance-overhaul #settings .tool-launch-action,
+html.appearance-overhaul #tools .tool-launch-action {
+  min-width: 92px;
+}
+
+/* Slightly more visible but still restrained selection confirmation. */
+html.appearance-overhaul #references .ref-choice.active,
+html.appearance-overhaul #references .ref-color-card.active,
+html.appearance-overhaul #references .ref-retention-card.active {
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--oa-accent) 14%, transparent) !important;
+}
+
+@media (max-width: 760px) {
+  html.appearance-overhaul .oa-empty-state {
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.appearance-overhaul .tool-launch-card {
+    transition: none !important;
+  }
+}
