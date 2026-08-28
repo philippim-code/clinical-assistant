@@ -1,0 +1,69 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev9
+   Home spacing + smoother Quick Tools overlay + Spark motion cleanup.
+*/
+
+/* ---------- Home command-center rhythm ---------- */
+html.appearance-overhaul #homeCommandGrid {
+  margin-bottom: 20px;
+}
+
+/* ---------- Spark selection feedback ----------
+   Selection state remains clear through border/background/shadow styling,
+   but no extra confirmation animation is needed. */
+html.appearance-overhaul #references .oa-selected-now,
+html.appearance-overhaul #references .ref-choice.active,
+html.appearance-overhaul #references .ref-color-card.active,
+html.appearance-overhaul #references .ref-retention-card.active {
+  animation: none !important;
+}
+
+/* ---------- Clinical Tool overlay ----------
+   Avoid Safari/iPad backdrop-filter compositing artifacts. A clean dimmed
+   scrim plus a restrained panel entrance is smoother and more predictable. */
+html.appearance-overhaul .clinical-tool-overlay {
+  background: rgba(12, 27, 31, .44) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html.appearance-overhaul[data-appearance="dark"] .clinical-tool-overlay {
+  background: rgba(3, 8, 10, .62) !important;
+}
+
+html.appearance-overhaul .clinical-tool-overlay:not(.hidden) {
+  animation: oaToolScrimIn 150ms ease-out both;
+}
+
+html.appearance-overhaul .clinical-tool-overlay:not(.hidden) > .clinical-tool-panel {
+  animation: oaToolPanelIn 180ms cubic-bezier(.2,.8,.2,1) both;
+  transform-origin: center center;
+}
+
+@keyframes oaToolScrimIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes oaToolPanelIn {
+  from { opacity: 0; transform: translateY(7px) scale(.994); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* When a Quick Tool is opened directly from Home, the overlay is briefly
+   hosted at body level so Home remains the visible context underneath it. */
+html.appearance-overhaul body > .clinical-tool-overlay {
+  z-index: 1400;
+}
+
+@media (max-width: 760px) {
+  html.appearance-overhaul #homeCommandGrid {
+    margin-bottom: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.appearance-overhaul .clinical-tool-overlay:not(.hidden),
+  html.appearance-overhaul .clinical-tool-overlay:not(.hidden) > .clinical-tool-panel {
+    animation: none !important;
+  }
+}
