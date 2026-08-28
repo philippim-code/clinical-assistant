@@ -1,4 +1,14 @@
-Miracle-Ear Clinical Assistant v1.8.0-dev12
+Miracle-Ear Clinical Assistant v1.8.0
+
+v1.8.0
+August 28, 2026
+
+- Added the complete Spark product reference and configuration workflow.
+- Added independent left and right receiver and coupling selections with optional retention locks.
+- Added saved Spark configurations to Sycle purchase-note documentation.
+- Added collapsible Clinical Tools and Settings panels for a cleaner default workspace.
+- Added flexible COU scoring when at least one score is entered.
+- Bug fixes.
 
 v1.8.0-dev12
 August 27, 2026

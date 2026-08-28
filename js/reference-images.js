@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const ASSET_VERSION='dev25';
+  const ASSET_VERSION='1.8.0';
   const BASE='assets/spark/catalog/';
   const asset=path=>`${path}?v=${ASSET_VERSION}`;
 

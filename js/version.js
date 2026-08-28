@@ -2,16 +2,20 @@
 (function(){
   'use strict';
 
-  const VERSION='1.8.0-dev25';
+  const VERSION='1.8.0';
   const RELEASE_NOTE_TEXT=[
-    'Collapsible PTA Severity Calculator',
-    'Dedicated Financing Companies and Programming Presets settings panels',
+    'Complete Spark configuration reference and documentation workflow',
+    'Independent left and right receiver and coupling selections',
+    'Saved Spark configurations in Sycle purchase notes',
+    'Collapsible Clinical Tools and Settings panels',
     'Flexible COU scoring',
     'Bug fixes'
   ];
   const RELEASE_NOTES=[
-    '<li><strong>Collapsible PTA Severity Calculator</strong> keeps Clinical Tools cleaner until the calculator is needed.</li>',
-    '<li><strong>Dedicated Financing Companies and Programming Presets settings panels</strong> keep customization closed until needed.</li>',
+    '<li><strong>Complete Spark configuration reference and documentation workflow</strong> makes the Spark reference useful for both product selection and concise clinical documentation.</li>',
+    '<li><strong>Independent left and right receiver and coupling selections</strong> support monaural and binaural configurations with optional retention locks.</li>',
+    '<li><strong>Saved Spark configurations in Sycle purchase notes</strong> connect the reference workflow directly to purchase documentation.</li>',
+    '<li><strong>Collapsible Clinical Tools and Settings panels</strong> keep optional tools and customization controls closed until needed.</li>',
     '<li><strong>Flexible COU scoring</strong> supports documentation when at least one score is entered.</li>',
     '<li><strong>Bug fixes</strong></li>'
   ];
