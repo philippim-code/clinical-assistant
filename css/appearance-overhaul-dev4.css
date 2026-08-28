@@ -1,0 +1,120 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev4
+   Targeted interaction and status polish from iPad visual review.
+*/
+
+/* ---------- Outlined action states ----------
+   Prevent legacy hover colors from creating white-on-white buttons under
+   the new higher-specificity surface system. Keep outlines restrained. */
+html.appearance-overhaul button.success-outline {
+  color: var(--oa-success) !important;
+  border: 1px solid color-mix(in srgb, var(--oa-success) 42%, var(--oa-border)) !important;
+  background: var(--oa-surface) !important;
+  box-shadow: none !important;
+}
+
+html.appearance-overhaul button.success-outline:hover {
+  color: var(--oa-success) !important;
+  border-color: color-mix(in srgb, var(--oa-success) 58%, var(--oa-border)) !important;
+  background: color-mix(in srgb, var(--oa-success) 8%, var(--oa-surface)) !important;
+  box-shadow: var(--oa-shadow-xs) !important;
+}
+
+html.appearance-overhaul button.success-outline:active {
+  color: var(--oa-success) !important;
+  background: color-mix(in srgb, var(--oa-success) 13%, var(--oa-surface)) !important;
+}
+
+html.appearance-overhaul button.danger-outline {
+  color: var(--oa-danger) !important;
+  border: 1px solid color-mix(in srgb, var(--oa-danger) 42%, var(--oa-border)) !important;
+  background: var(--oa-surface) !important;
+  box-shadow: none !important;
+}
+
+html.appearance-overhaul button.danger-outline:hover {
+  color: var(--oa-danger) !important;
+  border-color: color-mix(in srgb, var(--oa-danger) 58%, var(--oa-border)) !important;
+  background: color-mix(in srgb, var(--oa-danger) 7%, var(--oa-surface)) !important;
+  box-shadow: var(--oa-shadow-xs) !important;
+}
+
+html.appearance-overhaul button.danger-outline:active {
+  color: var(--oa-danger) !important;
+  background: color-mix(in srgb, var(--oa-danger) 12%, var(--oa-surface)) !important;
+}
+
+/* Copy confirmation becomes an unmistakable success state instead of
+   inheriting the white outline appearance while the label says Copied. */
+html.appearance-overhaul #outcomes .outcome-actions button.info.success-outline {
+  color: #fff !important;
+  border-color: var(--oa-success) !important;
+  background: var(--oa-success) !important;
+  box-shadow: none !important;
+}
+
+html.appearance-overhaul #outcomes .outcome-actions button.info.success-outline:hover,
+html.appearance-overhaul #outcomes .outcome-actions button.info.success-outline:active {
+  color: #fff !important;
+  border-color: var(--oa-success) !important;
+  background: var(--oa-success) !important;
+}
+
+/* ---------- Spark configuration status ----------
+   Incomplete is information, not an action. Render it as a quiet status
+   chip with no control-like border and a flat amber indicator. */
+html.appearance-overhaul #references .ref-config-badge.incomplete {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  min-height: 0 !important;
+  padding: 7px 9px !important;
+  color: var(--oa-text-secondary) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: var(--oa-surface-soft) !important;
+  box-shadow: none !important;
+  cursor: default !important;
+}
+
+html.appearance-overhaul #references .ref-config-badge.incomplete::before {
+  content: "";
+  display: block;
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c48a18;
+  box-shadow: 0 0 0 3px rgba(196,138,24,.10);
+}
+
+html.appearance-overhaul[data-appearance="dark"] #references .ref-config-badge.incomplete::before {
+  background: #d4a33d;
+  box-shadow: 0 0 0 3px rgba(212,163,61,.12);
+}
+
+/* ---------- About reminder ----------
+   Remove the legacy left-edge teal stripe that reads like an accidental
+   shadow/line in the new card language. Use a uniform quiet border. */
+html.appearance-overhaul #about .about-disclaimer {
+  border: 1px solid color-mix(in srgb, var(--oa-accent) 16%, var(--oa-border)) !important;
+  border-left-width: 1px !important;
+  border-radius: var(--oa-radius-md) !important;
+  background: linear-gradient(135deg, var(--oa-surface-soft), var(--oa-surface)) !important;
+  box-shadow: none !important;
+}
+
+/* Keep touch feedback crisp without leaving an iPad hover state looking
+   visually selected after the interaction. */
+@media (hover: none) {
+  html.appearance-overhaul button.success-outline:hover {
+    background: var(--oa-surface) !important;
+  }
+
+  html.appearance-overhaul button.danger-outline:hover {
+    background: var(--oa-surface) !important;
+  }
+
+  html.appearance-overhaul #outcomes .outcome-actions button.info.success-outline:hover {
+    background: var(--oa-success) !important;
+  }
+}
