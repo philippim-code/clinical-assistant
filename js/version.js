@@ -2,12 +2,12 @@
 (function(){
   'use strict';
 
-  const VERSION='1.8.0-dev19';
+  const VERSION='1.8.0-dev20';
   const RELEASE_NOTES=[
-    '<li><strong>Converted Spark into a blank-start configuration builder</strong> with no treatment or fitting components selected automatically.</li>',
-    '<li><strong>Added Copy for Clinical Note</strong> to produce a concise, ready-to-paste purchase sentence after configuration is complete.</li>',
-    '<li><strong>Stabilized bilateral receiver previews</strong> so switching between one and both receivers no longer shifts later sections.</li>',
-    '<li><strong>Simplified Spark image presentation</strong> and matched the Spark header action-button heights.</li>'
+    '<li><strong>Added independent Left and Right receiver builders</strong> for unilateral fittings or bilateral fittings with different receiver specifications.</li>',
+    '<li><strong>Made retention locks optional</strong> and added a Reset action for starting a new configuration.</li>',
+    '<li><strong>Expanded the top product overview</strong> to reflect selected receivers, coupling, and retention details.</li>',
+    '<li><strong>Refined empty states and status styling</strong> for a cleaner, more consistent clinical workflow.</li>'
   ];
 
   window.CLINICAL_ASSISTANT_VERSION=VERSION;

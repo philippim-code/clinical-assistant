@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const ASSET_VERSION='dev13';
+  const ASSET_VERSION='dev20';
   const BASE='assets/spark/catalog/';
   const asset=path=>`${path}?v=${ASSET_VERSION}`;
 
@@ -205,16 +205,10 @@
       const family=model.includes(' AI')?'ai':'standard';
       const selectedColor=activeDataset(root,'.ref-color-card','color',''),color=selectedColor||'silver-gray';
       const colorName=root.querySelector('.ref-color-card.active strong')?.textContent||'reference finish';
-      setImage(hero.querySelector('.ref-image-slot'),FAMILY[family][color],`Miracle-Ear ${family==='ai'?'Spark MEMINI E AI RIC':'Spark MEMINI E RIC'} in ${colorName}`);
+      setImage(hero.querySelector('.ref-hero-visual > .ref-image-slot'),FAMILY[family][color],`Miracle-Ear ${family==='ai'?'Spark MEMINI E AI RIC':'Spark MEMINI E RIC'} in ${colorName}`);
       patchColorCards(root,family);
-    }
-
-    const receiverSection=section(root,'Receivers');
-    if(receiverSection){
-      const power=activeDataset(receiverSection,'[data-receiver-power]','receiverPower','');
-      const length=activeDataset(receiverSection,'[data-receiver-length]','receiverLength','');
-      const side=activeDataset(receiverSection,'[data-receiver-side]','receiverSide','');
-      if(power&&length&&side)setImage(receiverSection.querySelector('.ref-component-preview .ref-image-slot'),receiverSrc(side==='left'?'L':'R',length,power),`${length}${power} ${side==='left'?'left blue':'right red'} Spark receiver`);
+      const domeType=activeDataset(root,'[data-dome]','dome',''),domeSize=activeDataset(root,'[data-dome-size]','domeSize',''),heroDomeSlot=hero.querySelector('[data-hero-dome-slot]');
+      if(heroDomeSlot&&domeType&&domeSize)setImage(heroDomeSlot,DOME[domeType+'-'+domeSize],`${domeType} dome ${domeSize}`);
     }
 
     const domeSection=section(root,'Domes');

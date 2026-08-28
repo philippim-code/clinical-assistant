@@ -30,7 +30,7 @@
   };
   const solutionNames={5:'Premium',4:'Advanced',3:'Standard',2:'Essential'};
 
-  const state={view:'home',family:'standard',level:null,color:null,receiverPower:null,receiverLength:null,receiverSide:null,receiverSelections:{left:{power:null,length:null},right:{power:null,length:null}},dome:null,domeSize:null,retention:null};
+  const state={view:'home',family:'standard',level:null,color:null,receiverSelections:{left:{power:null,length:null},right:{power:null,length:null}},dome:null,domeSize:null,retention:null};
   let sectionObserver=null;
 
   function installStyles(){
@@ -83,6 +83,14 @@
       .ref-nav-link:hover,.ref-nav-link.active{background:var(--teal-light)!important;color:var(--teal-dark)!important;transform:none!important}
       .ref-nav-model{flex:0 0 auto;max-width:230px;padding:7px 10px;border-left:1px solid var(--border);font-size:11px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       .ref-model-hero{display:grid;grid-template-columns:minmax(230px,.82fr) minmax(0,1.18fr);gap:22px;align-items:center;padding:20px}
+      .ref-hero-visual{min-width:0}
+      .ref-hero-components{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+      .ref-hero-components:empty{display:none}
+      .ref-hero-component{display:grid;grid-template-columns:48px minmax(0,1fr);align-items:center;gap:8px;min-width:0;padding:8px 9px;border-radius:10px;background:#f5f9fa}
+      .ref-hero-component-visual,.ref-hero-component-img{display:block;width:48px;height:48px;object-fit:contain;filter:none!important}
+      .ref-hero-component-visual .ref-catalog-image{width:100%;height:100%;object-fit:contain}
+      .ref-hero-component span{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.055em;color:var(--muted);font-weight:850;margin-bottom:2px}
+      .ref-hero-component strong{display:block;min-width:0;color:var(--text);font-size:11px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       .ref-model-name{font-size:25px;font-weight:850;color:var(--text);margin-bottom:5px;line-height:1.18}
       .ref-family-name{color:var(--teal);font-weight:750;margin-bottom:12px}
       .ref-identity-chips{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 14px}
@@ -95,10 +103,11 @@
       .ref-config-label{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);font-weight:900;margin-bottom:4px}
       .ref-config-value{font-size:14px;color:var(--text);font-weight:800;line-height:1.4}
       .ref-config-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex:0 0 auto}
-      .ref-config-badge{flex:0 0 auto;border-radius:999px;background:var(--teal);color:#fff;padding:7px 10px;font-size:11px;font-weight:850}
-      .ref-config-badge.incomplete{background:#e9eef0;color:#627074}
-      .ref-copy-config{box-sizing:border-box;min-height:38px;margin:0;padding:8px 12px;border-radius:10px;font-size:12px;white-space:nowrap}
+      .ref-config-badge{flex:0 0 auto;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--teal-dark);padding:8px 10px;font-size:11px;font-weight:850;box-shadow:var(--shadow-sm,0 2px 8px rgba(0,0,0,.05))}
+      .ref-config-badge.incomplete{background:#fff;color:#627074;box-shadow:none}
+      .ref-copy-config,.ref-reset-config{box-sizing:border-box;min-height:38px;margin:0;padding:8px 12px;border-radius:10px;font-size:12px;white-space:nowrap}
       .ref-copy-config:disabled{background:#dfe7e9!important;border-color:#dfe7e9!important;color:#849195!important;box-shadow:none!important;cursor:not-allowed;transform:none!important}
+      .ref-reset-config:disabled{background:#fff!important;border-color:var(--border)!important;color:#9aa4a7!important;box-shadow:none!important;cursor:not-allowed;transform:none!important}
       .ref-inline-hint,.ref-empty-prompt{color:var(--muted);font-size:12px}
       .ref-empty-prompt{display:flex;align-items:center;justify-content:center;min-height:86px;border:1px dashed var(--border);border-radius:11px;background:#fafcfc;text-align:center;padding:14px}
       .ref-color-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
@@ -111,6 +120,38 @@
       .ref-component-kicker{font-size:10px;text-transform:uppercase;letter-spacing:.065em;color:var(--muted);font-weight:850;margin-bottom:8px}
       .ref-selection-summary{margin-top:12px;padding:12px;border-radius:10px;background:var(--teal-light);color:var(--teal-dark);font-weight:800}
       .ref-selection-summary strong{color:var(--text)}
+      .ref-ear-config-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+      .ref-ear-panel{min-width:0;border-radius:13px;background:#f7fafb;padding:14px}
+      .ref-ear-panel.complete{background:#f1f8f8}
+      .ref-ear-panel.partial{background:#fff9ef}
+      .ref-ear-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+      .ref-ear-title{display:flex;align-items:center;gap:8px;min-width:0}
+      .ref-ear-title-copy{min-width:0}
+      .ref-ear-title strong{display:block;color:var(--text);font-size:14px}
+      .ref-ear-title small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+      .ref-ear-panel .row-title{font-size:12px;margin-top:12px}
+      .ref-ear-panel .ref-choice-row{margin-top:7px}
+      .ref-ear-panel .ref-choice{padding:8px 11px;min-width:43px}
+      .ref-ear-clear{min-height:30px!important;margin:0;padding:5px 8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);box-shadow:none;font-size:10px}
+      .ref-ear-clear:hover{background:#fff;color:var(--teal-dark);border-color:#b9d4d7;box-shadow:none;transform:none}
+      .ref-ear-status{display:flex;align-items:center;gap:6px;min-height:28px;margin-top:12px;padding:7px 9px;border-radius:8px;background:#fff;color:var(--muted);font-size:11px;font-weight:750}
+      .ref-ear-status.complete{color:var(--teal-dark)}
+      .ref-ear-status.partial{color:#8a5a0a}
+      .ref-ear-status-dot{width:7px;height:7px;border-radius:50%;background:#aeb8bb;flex:0 0 auto}
+      .ref-ear-status.complete .ref-ear-status-dot{background:var(--teal)}
+      .ref-ear-status.partial .ref-ear-status-dot{background:#d49327}
+      .ref-receiver-preview{margin-top:14px}
+      .ref-receiver-preview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));min-height:220px}
+      .ref-ear-preview{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;min-height:220px;padding:8px 14px;text-align:center}
+      .ref-ear-preview+.ref-ear-preview{border-left:1px solid var(--border)}
+      .ref-ear-preview img{display:block;width:100%;height:166px;max-width:260px;object-fit:contain;filter:none!important}
+      .ref-ear-preview-label{display:flex;align-items:center;justify-content:center;gap:6px;min-height:20px;color:var(--text);font-size:12px;font-weight:800}
+      .ref-ear-empty-symbol{display:grid;place-items:center;width:48px;height:48px;margin-bottom:11px;border-radius:50%;background:#eaf2f7;color:#2472c8;font-size:18px;font-weight:900}
+      .ref-ear-empty-symbol.right{background:#f7e9eb;color:#bf3e49}
+      .ref-ear-preview small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+      .ref-section-title-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+      .ref-section-title-row h4{margin-bottom:0}
+      .ref-optional-label{display:inline-flex;align-items:center;padding:4px 7px;border:1px solid var(--border);border-radius:999px;background:#f7f9fa;color:var(--muted);font-size:9px;font-weight:850;text-transform:uppercase;letter-spacing:.05em}
       .ref-accessory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
       .ref-accessory-card{border:1px solid var(--border);border-radius:14px;padding:14px;background:#fff;box-shadow:0 2px 7px rgba(25,58,62,.04)}
       .ref-accessory-card h5{margin:10px 0 3px;font-size:15px;color:var(--text)}
@@ -124,16 +165,22 @@
         .ref-nav-model{display:none}
         .ref-nav-link{padding:8px 10px}
         .ref-model-hero{padding:16px;gap:14px}
+        .ref-hero-components{grid-template-columns:1fr}
         .ref-model-name{font-size:22px}
         .ref-config-card{align-items:flex-start;flex-direction:column}
-        .ref-config-actions{width:100%;justify-content:space-between}
+        .ref-config-actions{width:100%;justify-content:flex-start;flex-wrap:wrap}
+        .ref-copy-config{margin-left:auto}
+        .ref-ear-config-grid{grid-template-columns:1fr}
+        .ref-receiver-preview-grid{min-height:190px}
+        .ref-ear-preview{min-height:190px;padding:8px}
+        .ref-ear-preview img{height:142px}
       }
     `;
     document.head.appendChild(style);
   }
 
   function placeholder(label,note='Loading product image…'){
-    return `<div class="ref-image-slot"><div class="ref-image-icon">🦻</div><strong>${label}</strong><small>${note}</small></div>`;
+    return `<div class="ref-image-slot"><div class="ref-image-icon">🦻</div><strong>${label}</strong>${note?`<small>${note}</small>`:''}</div>`;
   }
 
   function colorVisual(id){
@@ -148,34 +195,55 @@
   function activeDome(){return sparkData.domes.find(d=>d.id===state.dome)||null;}
   function selectedColor(){return sparkData.colors.find(c=>c.id===state.color)||null;}
   function resetConfiguration(familyId){
-    state.family=familyId;state.level=null;state.color=null;state.receiverPower=null;state.receiverLength=null;state.receiverSide=null;state.receiverSelections={left:{power:null,length:null},right:{power:null,length:null}};state.dome=null;state.domeSize=null;state.retention=null;
+    state.family=familyId;state.level=null;state.color=null;state.receiverSelections={left:{power:null,length:null},right:{power:null,length:null}};state.dome=null;state.domeSize=null;state.retention=null;
   }
+  const receiverEars=['left','right'];
+  function receiverHasSelection(ear){const item=state.receiverSelections[ear];return Boolean(item?.power||item?.length);}
   function receiverReady(ear){const item=state.receiverSelections[ear];return Boolean(item?.power&&item?.length);}
-  function receiverConfigurationComplete(){return state.receiverSide==='both'?(receiverReady('left')&&receiverReady('right')):((state.receiverSide==='left'||state.receiverSide==='right')&&receiverReady(state.receiverSide));}
+  function receiverPartial(ear){return receiverHasSelection(ear)&&!receiverReady(ear);}
+  function selectedReceiverEars(){return receiverEars.filter(receiverReady);}
+  function receiverConfigurationComplete(){return selectedReceiverEars().length>0&&!receiverEars.some(receiverPartial);}
+  function isBilateral(){return selectedReceiverEars().length===2;}
   function receiverEarLabel(ear){const item=state.receiverSelections[ear];return receiverReady(ear)?`${item.length}${item.power} ${ear==='left'?'Left':'Right'}`:'';}
+  function receiverEarStatus(ear){
+    const item=state.receiverSelections[ear];
+    if(receiverReady(ear))return {kind:'complete',text:`Ready · ${item.length}${item.power}`};
+    if(item.power)return {kind:'partial',text:'Choose a receiver length'};
+    if(item.length)return {kind:'partial',text:'Choose a receiver power'};
+    return {kind:'empty',text:'Not selected'};
+  }
   function receiverLabel(){
-    if(state.receiverSide==='both')return receiverConfigurationComplete()?`${receiverEarLabel('left')} + ${receiverEarLabel('right')}`:'Complete both receiver configurations';
-    if(state.receiverSide==='left'||state.receiverSide==='right')return receiverReady(state.receiverSide)?receiverEarLabel(state.receiverSide):`Select ${state.receiverSide} receiver power and length`;
-    return 'Select receiver side, power, and length';
+    const ready=selectedReceiverEars(),partial=receiverEars.filter(receiverPartial);
+    if(partial.length)return `Complete ${partial.map(ear=>ear==='left'?'Left':'Right').join(' and ')} receiver`;
+    if(ready.length)return ready.map(receiverEarLabel).join(' + ');
+    return 'Select at least one receiver';
   }
   function domeConfigurationComplete(){const dome=activeDome();return Boolean(dome&&state.domeSize&&dome.sizes.includes(state.domeSize));}
   function domeLabel(){const dome=activeDome();return domeConfigurationComplete()?`${dome.name} Dome · ${state.domeSize}`:'Select dome type and size';}
-  function configurationComplete(){return Boolean(state.level&&selectedColor()&&receiverConfigurationComplete()&&domeConfigurationComplete()&&state.retention);}
+  function configurationComplete(){return Boolean(state.level&&selectedColor()&&receiverConfigurationComplete()&&domeConfigurationComplete());}
+  function hasAnyConfigurationSelection(){return Boolean(state.level||state.color||receiverEars.some(receiverHasSelection)||state.dome||state.domeSize||state.retention);}
   function configurationText(){
     const family=activeFamily(),color=selectedColor();
-    return [state.level?family.modelName(state.level):'Select treatment level',color?color.name:'Select color',receiverConfigurationComplete()?receiverLabel():'Select receiver',domeConfigurationComplete()?domeLabel():'Select dome',state.retention?`${state.retention} Retention Lock`:'Select retention'].join(' · ');
+    const parts=[state.level?family.modelName(state.level):'Select treatment level',color?color.name:'Select color',receiverConfigurationComplete()?receiverLabel():(receiverEars.some(receiverHasSelection)?receiverLabel():'Select at least one receiver'),domeConfigurationComplete()?domeLabel():'Select dome'];
+    if(state.retention)parts.push(`${state.retention} Retention Lock`);
+    return parts.join(' · ');
   }
   function receiverClinicalText(){
-    if(state.receiverSide==='both'){
+    if(isBilateral()){
       const left=state.receiverSelections.left,right=state.receiverSelections.right;
       return left.power===right.power&&left.length===right.length?`${left.length}${left.power} receivers AU`:`${left.length}${left.power} receiver AS and ${right.length}${right.power} receiver AD`;
     }
-    const item=state.receiverSelections[state.receiverSide],ear=state.receiverSide==='left'?'AS':'AD';
+    const selectedEar=selectedReceiverEars()[0],item=state.receiverSelections[selectedEar],ear=selectedEar==='left'?'AS':'AD';
     return `a ${item.length}${item.power} receiver ${ear}`;
   }
-  function domeClinicalText(){const dome=activeDome(),plural=state.receiverSide==='both',size=state.domeSize==='One Size'?'':`${state.domeSize} `;return `${size}${dome.name.toLowerCase()} dome${plural?'s':''}`;}
-  function retentionClinicalText(){return `${state.retention} retention lock${state.receiverSide==='both'?'s':''}`;}
-  function clinicalNoteText(){const family=activeFamily(),color=selectedColor(),plural=state.receiverSide==='both';return `Purchased Spark ${family.modelName(state.level)} hearing aid${plural?'s':''} in ${color.name} with ${receiverClinicalText()}, ${domeClinicalText()}, and ${retentionClinicalText()}.`;}
+  function domeClinicalText(){const dome=activeDome(),plural=isBilateral(),size=state.domeSize==='One Size'?'':`${state.domeSize} `,description=`${size}${dome.name.toLowerCase()} dome`;return plural?`${description}s`:`${state.domeSize==='One Size'?'a':'an'} ${description}`;}
+  function retentionClinicalText(){return isBilateral()?`${state.retention} retention locks`:`an ${state.retention} retention lock`;}
+  function joinClinicalItems(items){return items.length===2?`${items[0]} and ${items[1]}`:`${items.slice(0,-1).join(', ')}, and ${items[items.length-1]}`;}
+  function clinicalNoteText(){
+    const family=activeFamily(),color=selectedColor(),plural=isBilateral(),components=[receiverClinicalText(),domeClinicalText()];
+    if(state.retention)components.push(retentionClinicalText());
+    return `Purchased Spark ${family.modelName(state.level)} hearing aid${plural?'s':''} in ${color.name} with ${joinClinicalItems(components)}.`;
+  }
   function legacyCopy(text){const area=document.createElement('textarea');area.value=text;area.setAttribute('readonly','');area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();area.setSelectionRange(0,text.length);let copied=false;try{copied=document.execCommand('copy')}catch(_){copied=false}area.remove();return copied;}
   function copyConfigurationForNote(button){
     if(!configurationComplete())return;
@@ -183,11 +251,25 @@
     if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(success,()=>{if(legacyCopy(text))success();else if(typeof window.toast==='function')window.toast('Copy failed. Please try again.')});
     else if(legacyCopy(text))success();else if(typeof window.toast==='function')window.toast('Copy failed. Please try again.');
   }
-  function receiverPreviewMarkup(){
-    if(state.receiverSide!=='both')return '';
-    if(!receiverConfigurationComplete())return '<div class="ref-bilateral-preview ref-bilateral-empty"><span>Complete both receiver configurations to preview them together.</span></div>';
-    const left=state.receiverSelections.left,right=state.receiverSelections.right;
-    return `<div class="ref-bilateral-preview"><img src="assets/spark/catalog/receivers/L-${left.length}-${left.power}.png?v=dev19" alt="${receiverEarLabel('left')} Spark receiver"><img src="assets/spark/catalog/receivers/R-${right.length}-${right.power}.png?v=dev19" alt="${receiverEarLabel('right')} Spark receiver"></div>`;
+  function receiverSelectorMarkup(ear){
+    const item=state.receiverSelections[ear],status=receiverEarStatus(ear),name=ear==='left'?'Left':'Right',markerClass=ear==='right'?' right':'';
+    return `<div class="ref-ear-panel ${status.kind}" data-ear-panel="${ear}"><div class="ref-ear-panel-head"><div class="ref-ear-title"><span class="ref-side-marker${markerClass}" aria-hidden="true"></span><div class="ref-ear-title-copy"><strong>${name} Ear</strong><small>${ear==='left'?'Blue':'Red'} receiver</small></div></div>${receiverHasSelection(ear)?`<button type="button" class="ref-ear-clear" data-clear-receiver="${ear}">Clear</button>`:''}</div><div class="row-title">Power</div><div class="ref-choice-row" aria-label="${name} receiver power">${sparkData.receivers.powers.map(value=>`<button type="button" class="ref-choice ${item.power===value?'active':''}" data-receiver-ear="${ear}" data-receiver-power="${value}" aria-pressed="${item.power===value}">${value}</button>`).join('')}</div><div class="row-title">Length</div><div class="ref-choice-row" aria-label="${name} receiver length">${sparkData.receivers.lengths.map(value=>`<button type="button" class="ref-choice ${item.length===value?'active':''}" data-receiver-ear="${ear}" data-receiver-length="${value}" aria-pressed="${item.length===value}">${value}</button>`).join('')}</div><div class="ref-ear-status ${status.kind}"><span class="ref-ear-status-dot" aria-hidden="true"></span>${status.text}</div></div>`;
+  }
+  function receiverPreviewEarMarkup(ear){
+    const status=receiverEarStatus(ear),name=ear==='left'?'Left':'Right',markerClass=ear==='right'?' right':'',assetSide=ear==='left'?'L':'R',item=state.receiverSelections[ear];
+    if(receiverReady(ear))return `<div class="ref-ear-preview complete" data-preview-ear="${ear}"><img src="assets/spark/catalog/receivers/${assetSide}-${item.length}-${item.power}.png?v=dev20" alt="${receiverEarLabel(ear)} Spark receiver"><div class="ref-ear-preview-label"><span class="ref-side-marker${markerClass}" aria-hidden="true"></span>${receiverEarLabel(ear)}</div></div>`;
+    return `<div class="ref-ear-preview ${status.kind}" data-preview-ear="${ear}"><div class="ref-ear-empty-symbol ${ear==='right'?'right':''}" aria-hidden="true">${ear==='left'?'L':'R'}</div><div class="ref-ear-preview-label">${name} Receiver</div><small>${status.text}</small></div>`;
+  }
+  function receiverPreviewMarkup(){return `<div class="ref-receiver-preview-grid">${receiverEars.map(receiverPreviewEarMarkup).join('')}</div>`;}
+  function heroComponentsMarkup(){
+    const items=selectedReceiverEars().map(ear=>{const receiver=state.receiverSelections[ear],side=ear==='left'?'L':'R';return `<div class="ref-hero-component"><img class="ref-hero-component-img" src="assets/spark/catalog/receivers/${side}-${receiver.length}-${receiver.power}.png?v=dev20" alt="${receiverEarLabel(ear)} Spark receiver"><div><span>${ear==='left'?'Left':'Right'} Receiver</span><strong>${receiver.length}${receiver.power}</strong></div></div>`;});
+    if(domeConfigurationComplete())items.push(`<div class="ref-hero-component"><div class="ref-hero-component-visual" data-hero-dome-slot></div><div><span>Coupling</span><strong>${domeLabel()}</strong></div></div>`);
+    return items.join('');
+  }
+  function receiverFactText(ear){const item=state.receiverSelections[ear];return receiverReady(ear)?`${item.length}${item.power}`:(receiverHasSelection(ear)?'Incomplete':'Not selected');}
+  function resetCurrentConfiguration(){
+    if(!hasAnyConfigurationSelection()||!window.confirm('Reset this Spark configuration and start over?'))return;
+    resetConfiguration(state.family);renderSparkProduct();if(typeof window.toast==='function')window.toast('Configuration reset.');
   }
 
   function renderHome(){
@@ -254,32 +336,32 @@
   function renderSparkProduct(){
     state.view='product';
     const family=activeFamily();if(state.level&&!family.levels.includes(state.level))state.level=null;
-    const model=state.level?family.modelName(state.level):family.title,color=selectedColor(),dome=activeDome(),domeSizes=dome?dome.sizes:[],isComplete=configurationComplete();
+    const model=state.level?family.modelName(state.level):family.title,color=selectedColor(),dome=activeDome(),domeSizes=dome?dome.sizes:[],isComplete=configurationComplete(),hasAnySelection=hasAnyConfigurationSelection();
     const root=referencesRoot();if(!root)return;
     root.innerHTML=`<div class="ref-shell">
       ${breadcrumb([{label:'References',action:'home'},{label:'Hearing Aids',action:'home'},{label:'Spark',action:'spark'},{label:family.title}])}
       <div class="ref-page-head"><div><h3>${family.title}</h3><p class="muted">Configure the device and review compatible Spark fitting components.</p></div><div class="ref-page-actions"><button type="button" class="secondary ref-back" data-ref-breadcrumb="spark">← Spark</button><button type="button" class="primary" id="openSparkStore">Open Spark Store ↗</button></div></div>
       ${stickyNav(model)}
-      <div class="ref-section ref-model-hero"><div>${placeholder(color?`${family.title} · ${color.name}`:family.title)}</div><div><div class="ref-model-name">${model}</div><div class="ref-family-name">${family.title}</div><div class="ref-identity-chips"><span class="ref-identity-chip">Spark</span><span class="ref-identity-chip">RIC</span>${state.level?`<span class="ref-identity-chip">E${state.level}</span>`:''}${color?`<span class="ref-identity-chip">${color.name}</span>`:''}</div><div class="ref-fact-grid"><div class="ref-fact"><span>Model</span><strong>${state.level?model:'Not selected'}</strong></div><div class="ref-fact"><span>Color</span><strong>${color?color.name:'Not selected'}</strong></div><div class="ref-fact"><span>Receiver System</span><strong>S / M / P</strong></div><div class="ref-fact"><span>Receiver Lengths</span><strong>00 / 0 / 1 / 2 / 3</strong></div></div></div></div>
-      <div class="ref-config-card" aria-label="Current Spark configuration"><div class="ref-config-copy"><div class="ref-config-label">Current Configuration</div><div class="ref-config-value" aria-live="polite">${configurationText()}</div></div><div class="ref-config-actions"><span class="ref-config-badge ${isComplete?'':'incomplete'}">${isComplete?'Configured':'Incomplete'}</span><button type="button" class="ref-copy-config" data-copy-configuration ${isComplete?'':'disabled'}>Copy for Clinical Note</button></div></div>
+      <div class="ref-section ref-model-hero"><div class="ref-hero-visual">${placeholder(color?`${family.title} · ${color.name}`:family.title)}<div class="ref-hero-components">${heroComponentsMarkup()}</div></div><div><div class="ref-model-name">${model}</div><div class="ref-family-name">${family.title}</div><div class="ref-identity-chips"><span class="ref-identity-chip">Spark</span><span class="ref-identity-chip">RIC</span>${state.level?`<span class="ref-identity-chip">E${state.level}</span>`:''}${color?`<span class="ref-identity-chip">${color.name}</span>`:''}</div><div class="ref-fact-grid"><div class="ref-fact"><span>Model</span><strong>${state.level?model:'Not selected'}</strong></div><div class="ref-fact"><span>Color</span><strong>${color?color.name:'Not selected'}</strong></div><div class="ref-fact"><span>Left Receiver</span><strong>${receiverFactText('left')}</strong></div><div class="ref-fact"><span>Right Receiver</span><strong>${receiverFactText('right')}</strong></div><div class="ref-fact"><span>Coupling</span><strong>${domeConfigurationComplete()?domeLabel():'Not selected'}</strong></div><div class="ref-fact"><span>Retention</span><strong>${state.retention?`${state.retention} Lock`:'Not selected · Optional'}</strong></div></div></div></div>
+      <div class="ref-config-card" aria-label="Current Spark configuration"><div class="ref-config-copy"><div class="ref-config-label">Current Configuration</div><div class="ref-config-value" aria-live="polite">${configurationText()}</div></div><div class="ref-config-actions"><span class="ref-config-badge ${isComplete?'':'incomplete'}">${isComplete?'✓ Configured':'Incomplete'}</span><button type="button" class="secondary ref-reset-config" data-reset-configuration ${hasAnySelection?'':'disabled'}>Reset</button><button type="button" class="ref-copy-config" data-copy-configuration ${isComplete?'':'disabled'}>Copy for Clinical Note</button></div></div>
       <div class="ref-section ref-feature-section" data-ref-section="features"><div class="ref-feature-head"><div><h4>Treatment Level &amp; Features</h4><p class="muted">Switch levels to compare included and unavailable features.</p></div><span class="ref-solution-badge">${state.level?`E${state.level} · ${solutionNames[state.level]}`:'Select level'}</span></div><div class="ref-level-row ref-feature-levels" aria-label="Treatment level">${family.levels.map(level=>`<button type="button" class="ref-choice ${state.level===level?'active':''}" data-level="${level}">E${level}</button>`).join('')}</div><div class="ref-feature-content">${state.level?'':'<div class="ref-empty-prompt">Select a treatment level to compare its included features.</div>'}</div></div>
       <div class="ref-section" data-ref-section="colors"><h4>Colors</h4><p class="muted">Select the hearing-aid finish.</p><div class="ref-color-grid">${sparkData.colors.map(item=>`<div class="ref-color-card ${state.color===item.id?'active':''}" data-color="${item.id}" role="button" tabindex="0"><div class="ref-color-chip" style="background:${colorVisual(item.id)}"></div><strong>${item.name}</strong></div>`).join('')}</div></div>
-      <div class="ref-section" data-ref-section="receivers"><h4>Receivers</h4><p class="muted">Choose power, length, and side. Left receivers are blue; right receivers are red.</p><div class="ref-component-grid"><div><div class="row-title">Power</div><div class="ref-choice-row">${sparkData.receivers.powers.map(x=>`<button type="button" class="ref-choice ${state.receiverPower===x?'active':''}" data-receiver-power="${x}">${x}</button>`).join('')}</div><div class="row-title">Length</div><div class="ref-choice-row">${sparkData.receivers.lengths.map(x=>`<button type="button" class="ref-choice ${state.receiverLength===x?'active':''}" data-receiver-length="${x}">${x}</button>`).join('')}</div><div class="row-title">Side</div><div class="ref-choice-row">${sparkData.receivers.sides.map(x=>`<button type="button" class="ref-choice ref-choice-side ${state.receiverSide===x.id?'active':''}" data-receiver-side="${x.id}"><span class="ref-side-marker ${x.id==='right'?'right':''}" aria-hidden="true"></span><span>${x.name}</span></button>`).join('')}<button type="button" class="ref-choice ref-choice-side ${state.receiverSide==='both'?'active':''}" data-receiver-both><span class="ref-side-marker both" aria-hidden="true"></span><span>Both</span></button></div></div><div class="ref-component-preview ref-receiver-preview ${state.receiverSide==='both'?'ref-bilateral-ready':''}"><div class="ref-component-kicker">Selected Receiver</div>${placeholder(receiverLabel())}${receiverPreviewMarkup()}<div class="ref-selection-summary"><strong>${receiverLabel()}</strong></div></div></div></div>
-      <div class="ref-section" data-ref-section="domes"><h4>Domes</h4><p class="muted">Cap is one size. Open, Vented, and Power domes are available in S, M, and L.</p><div class="ref-component-grid"><div><div class="row-title">Dome Type</div><div class="ref-choice-row">${sparkData.domes.map(x=>`<button type="button" class="ref-choice ${state.dome===x.id?'active':''}" data-dome="${x.id}">${x.name}</button>`).join('')}</div><div class="row-title">Size</div><div class="ref-choice-row">${domeSizes.length?domeSizes.map(x=>`<button type="button" class="ref-choice ${state.domeSize===x?'active':''}" data-dome-size="${x}">${x}</button>`).join(''):'<span class="ref-inline-hint">Select a dome type first.</span>'}</div></div><div class="ref-component-preview"><div class="ref-component-kicker">Selected Dome</div>${placeholder(domeLabel())}<div class="ref-selection-summary"><strong>${domeLabel()}</strong></div></div></div></div>
-      <div class="ref-section" data-ref-section="retention"><h4>Retention Locks</h4><p class="muted">Available in S, M, and L.</p><div class="ref-choice-row">${sparkData.retentionLocks.map(x=>`<button type="button" class="ref-choice ${state.retention===x?'active':''}" data-retention="${x}">${x}</button>`).join('')}</div><div class="ref-selection-summary"><strong>${state.retention?`${state.retention} Retention Lock`:'Select a retention lock size'}</strong></div></div>
+      <div class="ref-section" data-ref-section="receivers"><h4>Receivers</h4><p class="muted">Configure each ear independently. Complete either ear for a unilateral fitting or both for a bilateral fitting.</p><div class="ref-ear-config-grid">${receiverEars.map(receiverSelectorMarkup).join('')}</div><div class="ref-component-preview ref-receiver-preview"><div class="ref-component-kicker">Receiver Preview</div>${receiverPreviewMarkup()}</div></div>
+      <div class="ref-section" data-ref-section="domes"><h4>Domes</h4><p class="muted">Cap is one size. Open, Vented, and Power domes are available in S, M, and L.</p><div class="ref-component-grid"><div><div class="row-title">Dome Type</div><div class="ref-choice-row">${sparkData.domes.map(x=>`<button type="button" class="ref-choice ${state.dome===x.id?'active':''}" data-dome="${x.id}">${x.name}</button>`).join('')}</div><div class="row-title">Size</div><div class="ref-choice-row">${domeSizes.length?domeSizes.map(x=>`<button type="button" class="ref-choice ${state.domeSize===x?'active':''}" data-dome-size="${x}">${x}</button>`).join(''):'<span class="ref-inline-hint">Select a dome type first.</span>'}</div></div><div class="ref-component-preview"><div class="ref-component-kicker">Selected Dome</div>${placeholder(domeLabel(),'')}<div class="ref-selection-summary"><strong>${domeLabel()}</strong></div></div></div></div>
+      <div class="ref-section" data-ref-section="retention"><div class="ref-section-title-row"><h4>Retention Locks</h4><span class="ref-optional-label">Optional</span></div><p class="muted">Select a size only when a retention lock is being used. Tap the selected size again to clear it.</p><div class="ref-choice-row">${sparkData.retentionLocks.map(x=>`<button type="button" class="ref-choice ${state.retention===x?'active':''}" data-retention="${x}" aria-pressed="${state.retention===x}">${x}</button>`).join('')}</div><div class="ref-selection-summary"><strong>${state.retention?`${state.retention} Retention Lock`:'No retention lock selected'}</strong></div></div>
       <div class="ref-section" data-ref-section="accessories"><h4>Charger & Maintenance</h4><p class="muted">Spark charging and wax-management accessories.</p><div class="ref-accessory-grid">${sparkData.accessories.map(item=>`<div class="ref-accessory-card">${placeholder(item.name)}<h5>${item.name}</h5><p>${item.type}</p></div>`).join('')}</div></div>
     </div>`;
     wireBreadcrumbs(root);wireSectionNav(root);
     root.querySelector('#openSparkStore').addEventListener('click',()=>window.location.assign(SPARK_STORE_URL));
     root.querySelectorAll('[data-level]').forEach(b=>b.addEventListener('click',()=>{state.level=Number(b.dataset.level);renderSparkProduct();}));
     root.querySelectorAll('[data-color]').forEach(card=>{card.addEventListener('click',()=>{state.color=card.dataset.color;renderSparkProduct();});card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}});});
-    root.querySelectorAll('[data-receiver-power]').forEach(b=>b.addEventListener('click',()=>{state.receiverPower=b.dataset.receiverPower;if(state.receiverSide==='both'){state.receiverSelections.left.power=state.receiverPower;state.receiverSelections.right.power=state.receiverPower}else if(state.receiverSide)state.receiverSelections[state.receiverSide].power=state.receiverPower;renderSparkProduct();}));
-    root.querySelectorAll('[data-receiver-length]').forEach(b=>b.addEventListener('click',()=>{state.receiverLength=b.dataset.receiverLength;if(state.receiverSide==='both'){state.receiverSelections.left.length=state.receiverLength;state.receiverSelections.right.length=state.receiverLength}else if(state.receiverSide)state.receiverSelections[state.receiverSide].length=state.receiverLength;renderSparkProduct();}));
-    root.querySelectorAll('[data-receiver-side]').forEach(b=>b.addEventListener('click',()=>{const next=b.dataset.receiverSide,previous=state.receiverSide,provisional={power:state.receiverPower,length:state.receiverLength},saved=state.receiverSelections[next];state.receiverSide=next;if(saved.power||saved.length){state.receiverPower=saved.power;state.receiverLength=saved.length}else if(!previous){saved.power=provisional.power;saved.length=provisional.length}else{state.receiverPower=null;state.receiverLength=null}renderSparkProduct();}));
-    root.querySelector('[data-receiver-both]')?.addEventListener('click',()=>{const previous=state.receiverSide,provisional={power:state.receiverPower,length:state.receiverLength};state.receiverSide='both';if(!previous){['left','right'].forEach(ear=>{state.receiverSelections[ear]={...provisional}})}renderSparkProduct();});
+    root.querySelectorAll('[data-receiver-power]').forEach(b=>b.addEventListener('click',()=>{state.receiverSelections[b.dataset.receiverEar].power=b.dataset.receiverPower;renderSparkProduct();}));
+    root.querySelectorAll('[data-receiver-length]').forEach(b=>b.addEventListener('click',()=>{state.receiverSelections[b.dataset.receiverEar].length=b.dataset.receiverLength;renderSparkProduct();}));
+    root.querySelectorAll('[data-clear-receiver]').forEach(b=>b.addEventListener('click',()=>{state.receiverSelections[b.dataset.clearReceiver]={power:null,length:null};renderSparkProduct();}));
     root.querySelectorAll('[data-dome]').forEach(b=>b.addEventListener('click',()=>{state.dome=b.dataset.dome;state.domeSize=null;renderSparkProduct();}));
     root.querySelectorAll('[data-dome-size]').forEach(b=>b.addEventListener('click',()=>{state.domeSize=b.dataset.domeSize;renderSparkProduct();}));
-    root.querySelectorAll('[data-retention]').forEach(b=>b.addEventListener('click',()=>{state.retention=b.dataset.retention;renderSparkProduct();}));
+    root.querySelectorAll('[data-retention]').forEach(b=>b.addEventListener('click',()=>{state.retention=state.retention===b.dataset.retention?null:b.dataset.retention;renderSparkProduct();}));
+    root.querySelector('[data-reset-configuration]')?.addEventListener('click',resetCurrentConfiguration);
     root.querySelector('[data-copy-configuration]')?.addEventListener('click',e=>copyConfigurationForNote(e.currentTarget));
     notifyRendered();
   }
