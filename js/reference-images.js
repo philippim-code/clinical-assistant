@@ -97,9 +97,10 @@
       .ref-catalog-image{width:100%;height:100%;object-fit:contain;display:block;filter:none!important}
       .ref-image-slot.ref-has-catalog-image{border-style:solid;border-color:#d9e6e8;background:#fff;padding:8px;overflow:hidden}
       .ref-product-card .ref-image-slot.ref-has-catalog-image,.ref-family-card .ref-image-slot.ref-has-catalog-image{height:210px}
-      .ref-model-hero .ref-image-slot.ref-has-catalog-image{height:285px;background:#fff}
-      .ref-component-preview .ref-image-slot.ref-has-catalog-image{height:220px;background:#fff}
-      .ref-accessory-card .ref-image-slot.ref-has-catalog-image{height:210px;border:0;border-radius:0;background:transparent;padding:4px 8px}
+      .ref-model-hero .ref-image-slot.ref-has-catalog-image{height:285px}
+      .ref-component-preview .ref-image-slot.ref-has-catalog-image{height:220px}
+      .ref-accessory-card .ref-image-slot.ref-has-catalog-image{height:210px}
+      .ref-product-card[data-ref-product="spark"] .ref-image-slot.ref-has-catalog-image,.ref-family-card .ref-image-slot.ref-has-catalog-image,.ref-model-hero .ref-image-slot.ref-has-catalog-image,.ref-component-preview .ref-image-slot.ref-has-catalog-image,.ref-accessory-card .ref-image-slot.ref-has-catalog-image{border:0;border-radius:0;background:transparent;padding:4px 8px}
       .ref-retention-preview{margin-top:14px;max-width:440px}
       .ref-color-card{position:relative;overflow:hidden;padding:8px 8px 10px!important}
       .ref-color-card .ref-color-chip{height:88px!important;border:0!important;background:#fff!important;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:7px!important}
@@ -202,38 +203,40 @@
     if(hero){
       const model=(hero.querySelector('.ref-model-name')?.textContent||'').toUpperCase();
       const family=model.includes(' AI')?'ai':'standard';
-      const color=activeDataset(root,'.ref-color-card','color','silver-gray');
-      const colorName=root.querySelector('.ref-color-card.active strong')?.textContent||'Silver Gray';
+      const selectedColor=activeDataset(root,'.ref-color-card','color',''),color=selectedColor||'silver-gray';
+      const colorName=root.querySelector('.ref-color-card.active strong')?.textContent||'reference finish';
       setImage(hero.querySelector('.ref-image-slot'),FAMILY[family][color],`Miracle-Ear ${family==='ai'?'Spark MEMINI E AI RIC':'Spark MEMINI E RIC'} in ${colorName}`);
       patchColorCards(root,family);
     }
 
     const receiverSection=section(root,'Receivers');
     if(receiverSection){
-      const power=activeDataset(receiverSection,'[data-receiver-power]','receiverPower','M');
-      const length=activeDataset(receiverSection,'[data-receiver-length]','receiverLength','0');
-      const side=activeDataset(receiverSection,'[data-receiver-side]','receiverSide','right');
-      setImage(receiverSection.querySelector('.ref-component-preview .ref-image-slot'),receiverSrc(side==='left'?'L':'R',length,power),`${length}${power} ${side==='left'?'left blue':'right red'} Spark receiver`);
+      const power=activeDataset(receiverSection,'[data-receiver-power]','receiverPower','');
+      const length=activeDataset(receiverSection,'[data-receiver-length]','receiverLength','');
+      const side=activeDataset(receiverSection,'[data-receiver-side]','receiverSide','');
+      if(power&&length&&side)setImage(receiverSection.querySelector('.ref-component-preview .ref-image-slot'),receiverSrc(side==='left'?'L':'R',length,power),`${length}${power} ${side==='left'?'left blue':'right red'} Spark receiver`);
     }
 
     const domeSection=section(root,'Domes');
     if(domeSection){
-      const type=activeDataset(domeSection,'[data-dome]','dome','vented');
-      const size=activeDataset(domeSection,'[data-dome-size]','domeSize',type==='cap'?'One Size':'S');
-      setImage(domeSection.querySelector('.ref-component-preview .ref-image-slot'),DOME[type+'-'+size],`${type} dome ${size}`);
+      const type=activeDataset(domeSection,'[data-dome]','dome','');
+      const size=activeDataset(domeSection,'[data-dome-size]','domeSize','');
+      if(type&&size)setImage(domeSection.querySelector('.ref-component-preview .ref-image-slot'),DOME[type+'-'+size],`${type} dome ${size}`);
     }
 
     const retentionSection=section(root,'Retention Locks');
     if(retentionSection){
-      const size=activeDataset(retentionSection,'[data-retention]','retention','M');
-      let preview=retentionSection.querySelector('.ref-retention-preview');
-      if(!preview){
-        preview=document.createElement('div');
-        preview.className='ref-component-preview ref-retention-preview';
-        preview.innerHTML='<div class="ref-image-slot"></div>';
-        retentionSection.appendChild(preview);
+      const size=activeDataset(retentionSection,'[data-retention]','retention','');
+      if(size){
+        let preview=retentionSection.querySelector('.ref-retention-preview');
+        if(!preview){
+          preview=document.createElement('div');
+          preview.className='ref-component-preview ref-retention-preview';
+          preview.innerHTML='<div class="ref-image-slot"></div>';
+          retentionSection.appendChild(preview);
+        }
+        setImage(preview.querySelector('.ref-image-slot'),RETENTION[size],`${size} Spark retention lock`);
       }
-      setImage(preview.querySelector('.ref-image-slot'),RETENTION[size],`${size} Spark retention lock`);
     }
 
     const accessorySection=section(root,'Charger & Maintenance');
