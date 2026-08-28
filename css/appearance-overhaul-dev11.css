@@ -1,0 +1,376 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev11
+   Office Profiles + contextual office header.
+*/
+
+/* ---------- Header office context ---------- */
+html.appearance-overhaul .header {
+  align-items: center;
+}
+
+html.appearance-overhaul .oa-office-header {
+  min-width: 0;
+  margin-left: auto;
+  padding-left: 24px;
+  border-left: 1px solid color-mix(in srgb, var(--oa-border) 86%, transparent);
+  text-align: right;
+}
+
+html.appearance-overhaul .oa-office-header[hidden] {
+  display: none !important;
+}
+
+html.appearance-overhaul .oa-office-header-name {
+  margin-bottom: 3px;
+  color: color-mix(in srgb, var(--oa-text-secondary) 82%, var(--oa-text));
+  font-size: 12px;
+  font-weight: 760;
+  letter-spacing: .055em;
+  text-transform: uppercase;
+}
+
+html.appearance-overhaul .oa-office-header-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  color: var(--oa-text-tertiary);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+html.appearance-overhaul .oa-office-header-meta + .oa-office-header-meta {
+  margin-top: 2px;
+}
+
+html.appearance-overhaul .oa-office-header a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--oa-transition-fast), border-color var(--oa-transition-fast);
+}
+
+html.appearance-overhaul .oa-office-header a:hover,
+html.appearance-overhaul .oa-office-header a:focus-visible {
+  color: var(--oa-accent-strong);
+  border-bottom-color: color-mix(in srgb, var(--oa-accent) 32%, transparent);
+  outline: none;
+}
+
+html.appearance-overhaul .oa-office-mobile-chip {
+  display: none;
+}
+
+/* ---------- Settings launcher ---------- */
+html.appearance-overhaul .oa-office-settings-launcher {
+  margin-top: 18px;
+  margin-bottom: 18px;
+}
+
+html.appearance-overhaul .oa-office-settings-launcher .tool-launch-icon {
+  font-size: 18px;
+}
+
+html.appearance-overhaul .oa-office-settings-current {
+  margin-top: 3px;
+  color: var(--oa-text-tertiary);
+  font-size: 12px;
+}
+
+/* ---------- Office Profiles overlay ---------- */
+html.appearance-overhaul .oa-office-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1450;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(14px,3vw,36px);
+  background: rgba(12,27,31,.44);
+}
+
+html.appearance-overhaul[data-appearance="dark"] .oa-office-overlay {
+  background: rgba(3,8,10,.64);
+}
+
+html.appearance-overhaul .oa-office-overlay.hidden {
+  display: none !important;
+}
+
+html.appearance-overhaul .oa-office-panel {
+  width: min(940px,100%);
+  max-height: min(88vh,820px);
+  overflow: auto;
+  border: 1px solid var(--oa-border);
+  border-radius: var(--oa-radius-xl);
+  background: var(--oa-surface);
+  box-shadow: var(--oa-shadow-lg);
+}
+
+html.appearance-overhaul .oa-office-panel-head {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--oa-border);
+  background: color-mix(in srgb, var(--oa-surface) 94%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+html.appearance-overhaul .oa-office-panel-head h3 {
+  margin: 2px 0 0;
+  color: var(--oa-text);
+  font-size: 20px;
+}
+
+html.appearance-overhaul .oa-office-panel-body {
+  padding: 22px;
+}
+
+html.appearance-overhaul .oa-office-eyebrow {
+  color: var(--oa-accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+html.appearance-overhaul .oa-office-current-block {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 12px;
+  align-items: end;
+  padding: 15px;
+  border: 1px solid color-mix(in srgb, var(--oa-accent) 20%, var(--oa-border));
+  border-radius: var(--oa-radius-md);
+  background: linear-gradient(135deg,var(--oa-surface-tint),var(--oa-surface));
+}
+
+html.appearance-overhaul .oa-office-current-block select {
+  margin-top: 6px;
+}
+
+html.appearance-overhaul .oa-office-section-title {
+  margin: 22px 0 10px;
+  color: var(--oa-text);
+  font-size: 14px;
+  font-weight: 750;
+}
+
+html.appearance-overhaul .oa-office-list {
+  display: grid;
+  gap: 9px;
+}
+
+html.appearance-overhaul .oa-office-list-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 15px;
+  border: 1px solid var(--oa-border);
+  border-radius: var(--oa-radius-md);
+  background: var(--oa-surface-soft);
+}
+
+html.appearance-overhaul .oa-office-list-card.current {
+  border-color: color-mix(in srgb, var(--oa-accent) 28%, var(--oa-border));
+  background: var(--oa-surface-tint);
+}
+
+html.appearance-overhaul .oa-office-list-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+html.appearance-overhaul .oa-office-list-copy strong {
+  display: block;
+  color: var(--oa-text);
+  font-size: 13px;
+}
+
+html.appearance-overhaul .oa-office-list-copy span {
+  display: block;
+  margin-top: 2px;
+  color: var(--oa-text-tertiary);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+html.appearance-overhaul .oa-office-list-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+html.appearance-overhaul .oa-office-list-actions button {
+  margin: 0;
+}
+
+html.appearance-overhaul .oa-office-form {
+  margin-top: 10px;
+  padding: 16px;
+  border: 1px solid var(--oa-border);
+  border-radius: var(--oa-radius-md);
+  background: var(--oa-surface-soft);
+}
+
+html.appearance-overhaul .oa-office-form-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(130px,.45fr);
+  gap: 12px;
+}
+
+html.appearance-overhaul .oa-office-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+html.appearance-overhaul .oa-office-form-actions button {
+  margin: 0;
+}
+
+/* ---------- Mobile office sheet ---------- */
+html.appearance-overhaul .oa-office-mobile-sheet-copy {
+  padding: 2px 0 4px;
+}
+
+html.appearance-overhaul .oa-office-mobile-sheet-copy strong {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--oa-text);
+  font-size: 18px;
+}
+
+html.appearance-overhaul .oa-office-mobile-sheet-copy span {
+  display: block;
+  margin-top: 4px;
+  color: var(--oa-text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+html.appearance-overhaul .oa-office-mobile-actions {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+
+html.appearance-overhaul .oa-office-mobile-actions a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 43px;
+  padding: 9px 12px;
+  border-radius: var(--oa-radius-sm);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+html.appearance-overhaul .oa-office-mobile-actions .primary-link {
+  color: #fff;
+  background: var(--oa-accent);
+}
+
+html.appearance-overhaul .oa-office-mobile-actions .secondary-link {
+  color: var(--oa-accent-strong);
+  border: 1px solid var(--oa-border-strong);
+  background: var(--oa-surface);
+}
+
+@media (max-width: 760px) {
+  html.appearance-overhaul .oa-office-header {
+    padding-left: 14px;
+  }
+
+  html.appearance-overhaul .oa-office-header-full {
+    display: none;
+  }
+
+  html.appearance-overhaul .oa-office-mobile-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 32px;
+    margin: 0;
+    padding: 6px 9px;
+    color: var(--oa-text-secondary);
+    border: 1px solid var(--oa-border);
+    border-radius: 999px;
+    background: var(--oa-surface);
+    box-shadow: none;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  html.appearance-overhaul .oa-office-mobile-chip:hover,
+  html.appearance-overhaul .oa-office-mobile-chip:active {
+    color: var(--oa-accent-strong);
+    background: var(--oa-surface-tint);
+    transform: none;
+    box-shadow: none;
+  }
+
+  html.appearance-overhaul .oa-office-form-grid,
+  html.appearance-overhaul .oa-office-current-block {
+    grid-template-columns: 1fr;
+  }
+
+  html.appearance-overhaul .oa-office-list-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  html.appearance-overhaul .oa-office-list-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  html.appearance-overhaul .header {
+    gap: 10px;
+  }
+
+  html.appearance-overhaul .oa-office-header {
+    padding-left: 8px;
+    border-left: 0;
+  }
+
+  html.appearance-overhaul .oa-office-mobile-chip {
+    max-width: 118px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  html.appearance-overhaul .oa-office-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  html.appearance-overhaul .oa-office-panel {
+    width: 100%;
+    max-height: 91vh;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 22px 22px 0 0;
+  }
+
+  html.appearance-overhaul .oa-office-panel-head {
+    padding: 16px;
+  }
+
+  html.appearance-overhaul .oa-office-panel-body {
+    padding: 17px 16px 24px;
+  }
+}
