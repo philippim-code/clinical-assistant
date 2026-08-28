@@ -299,7 +299,7 @@
   }
   function receiverPreviewEarMarkup(ear){
     const status=receiverEarStatus(ear),name=ear==='left'?'Left':'Right',markerClass=ear==='right'?' right':'',assetSide=ear==='left'?'L':'R',item=state.receiverSelections[ear];
-    if(receiverReady(ear))return `<div class="ref-ear-preview complete" data-preview-ear="${ear}"><img src="assets/spark/catalog/receivers/${assetSide}-${item.length}-${item.power}.png?v=dev24" alt="${receiverEarLabel(ear)} Spark receiver"><div class="ref-ear-preview-label"><span class="ref-side-marker${markerClass}" aria-hidden="true"></span>${receiverEarLabel(ear)}</div></div>`;
+    if(receiverReady(ear))return `<div class="ref-ear-preview complete" data-preview-ear="${ear}"><img src="assets/spark/catalog/receivers/${assetSide}-${item.length}-${item.power}.png?v=dev25" alt="${receiverEarLabel(ear)} Spark receiver"><div class="ref-ear-preview-label"><span class="ref-side-marker${markerClass}" aria-hidden="true"></span>${receiverEarLabel(ear)}</div></div>`;
     return `<div class="ref-ear-preview ${status.kind}" data-preview-ear="${ear}"><div class="ref-ear-empty-symbol ${ear==='right'?'right':''}" aria-hidden="true">${ear==='left'?'L':'R'}</div><div class="ref-ear-preview-label">${name} Receiver</div><small>${status.text}</small></div>`;
   }
   function receiverPreviewMarkup(){return `<div class="ref-receiver-preview-grid">${receiverEars.map(receiverPreviewEarMarkup).join('')}</div>`;}
@@ -307,7 +307,7 @@
     const item=state.couplingSelections[ear],coupling=activeCoupling(ear);
     if(!couplingReady(ear))return '';
     const filename=coupling.id==='cap'?'cap':`${coupling.id}-${item.size.toLowerCase()}`;
-    return `assets/spark/catalog/domes/${filename}.png?v=dev24`;
+    return `assets/spark/catalog/domes/${filename}.png?v=dev25`;
   }
   function couplingSelectorMarkup(ear){
     const item=state.couplingSelections[ear],coupling=activeCoupling(ear),sizes=coupling?coupling.sizes:[],status=couplingStatus(ear),name=earName(ear),markerClass=ear==='right'?' right':'';
@@ -320,7 +320,7 @@
   }
   function couplingPreviewMarkup(){return `<div class="ref-receiver-preview-grid ref-coupling-preview-grid">${receiverEars.map(couplingPreviewEarMarkup).join('')}</div>`;}
   function heroComponentsMarkup(){
-    const items=selectedReceiverEars().map(ear=>{const receiver=state.receiverSelections[ear],side=ear==='left'?'L':'R';return `<div class="ref-hero-component"><img class="ref-hero-component-img" src="assets/spark/catalog/receivers/${side}-${receiver.length}-${receiver.power}.png?v=dev24" alt="${receiverEarLabel(ear)} Spark receiver"><div><span>${earName(ear)} Receiver</span><strong>${receiver.length}${receiver.power}</strong></div></div>`;});
+    const items=selectedReceiverEars().map(ear=>{const receiver=state.receiverSelections[ear],side=ear==='left'?'L':'R';return `<div class="ref-hero-component"><img class="ref-hero-component-img" src="assets/spark/catalog/receivers/${side}-${receiver.length}-${receiver.power}.png?v=dev25" alt="${receiverEarLabel(ear)} Spark receiver"><div><span>${earName(ear)} Receiver</span><strong>${receiver.length}${receiver.power}</strong></div></div>`;});
     receiverEars.filter(couplingReady).forEach(ear=>items.push(`<div class="ref-hero-component"><img class="ref-hero-component-img" src="${couplingAsset(ear)}" alt="${couplingShortLabel(ear)} ${earName(ear).toLowerCase()} coupling"><div><span>${earName(ear)} Coupling</span><strong>${couplingShortLabel(ear)}</strong></div></div>`));
     return items.join('');
   }

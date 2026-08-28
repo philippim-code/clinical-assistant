@@ -2,16 +2,16 @@
 (function(){
   'use strict';
 
-  const VERSION='1.8.0-dev24';
+  const VERSION='1.8.0-dev25';
   const RELEASE_NOTE_TEXT=[
     'Collapsible PTA Severity Calculator',
-    'Dedicated Financing Companies settings panel',
+    'Dedicated Financing Companies and Programming Presets settings panels',
     'Flexible COU scoring',
     'Bug fixes'
   ];
   const RELEASE_NOTES=[
     '<li><strong>Collapsible PTA Severity Calculator</strong> keeps Clinical Tools cleaner until the calculator is needed.</li>',
-    '<li><strong>Dedicated Financing Companies settings panel</strong> separates financing customization from the main Settings screen.</li>',
+    '<li><strong>Dedicated Financing Companies and Programming Presets settings panels</strong> keep customization closed until needed.</li>',
     '<li><strong>Flexible COU scoring</strong> supports documentation when at least one score is entered.</li>',
     '<li><strong>Bug fixes</strong></li>'
   ];
