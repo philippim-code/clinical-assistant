@@ -1,0 +1,193 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev5
+   Status language cleanup + first micro-interaction polish pass.
+*/
+
+/* ---------- Unified Spark configuration status ----------
+   Both incomplete and configured are informational states, not controls. */
+html.appearance-overhaul #references .ref-config-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  min-height: 0 !important;
+  padding: 7px 9px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  cursor: default !important;
+  pointer-events: none !important;
+  user-select: none;
+  font-weight: 780 !important;
+}
+
+html.appearance-overhaul #references .ref-config-badge.incomplete {
+  color: var(--oa-text-secondary) !important;
+  background: var(--oa-surface-soft) !important;
+}
+
+html.appearance-overhaul #references .ref-config-badge:not(.incomplete) {
+  color: var(--oa-success) !important;
+  background: color-mix(in srgb, var(--oa-success) 8%, var(--oa-surface)) !important;
+}
+
+html.appearance-overhaul #references .ref-config-badge::before {
+  content: "";
+  display: block;
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+html.appearance-overhaul #references .ref-config-badge.incomplete::before {
+  background: #c48a18;
+  box-shadow: 0 0 0 3px rgba(196,138,24,.10);
+}
+
+html.appearance-overhaul #references .ref-config-badge:not(.incomplete)::before {
+  background: var(--oa-success);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--oa-success) 12%, transparent);
+}
+
+html.appearance-overhaul[data-appearance="dark"] #references .ref-config-badge:not(.incomplete) {
+  color: #84d3a9 !important;
+  background: color-mix(in srgb, var(--oa-success) 13%, var(--oa-surface)) !important;
+}
+
+/* Hide the legacy text checkmark. The green dot is now the shared visual
+   language for successful status, keeping the chip flat and non-button-like. */
+html.appearance-overhaul #references .ref-config-badge:not(.incomplete) {
+  font-size: 0 !important;
+}
+html.appearance-overhaul #references .ref-config-badge:not(.incomplete)::after {
+  content: "Configured";
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+/* ---------- Saved Outcomes status language ---------- */
+html.appearance-overhaul .oa-status-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+
+html.appearance-overhaul .oa-status-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--oa-text-secondary);
+  white-space: nowrap;
+}
+
+html.appearance-overhaul .oa-status-item strong {
+  color: var(--oa-text) !important;
+  font-size: inherit !important;
+}
+
+html.appearance-overhaul .oa-status-dot {
+  display: inline-block;
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+html.appearance-overhaul .oa-status-dot.pending {
+  background: #c48a18;
+  box-shadow: 0 0 0 3px rgba(196,138,24,.10);
+}
+
+html.appearance-overhaul .oa-status-dot.completed {
+  background: var(--oa-success);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--oa-success) 11%, transparent);
+}
+
+html.appearance-overhaul .oa-status-separator {
+  width: 1px;
+  align-self: stretch;
+  min-height: 18px;
+  background: var(--oa-border);
+}
+
+html.appearance-overhaul .oa-status-filtered {
+  color: var(--oa-text-tertiary);
+  font-size: 12px;
+}
+
+html.appearance-overhaul #outcomeList > h3.oa-outcome-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+html.appearance-overhaul #outcomeList > h3.oa-outcome-heading .oa-status-dot {
+  width: 8px;
+  height: 8px;
+  flex-basis: 8px;
+}
+
+/* ---------- Micro-interaction pass ---------- */
+html.appearance-overhaul .workflow-card.active > .workflow-body {
+  animation: oaSectionReveal 180ms cubic-bezier(.2,.8,.2,1);
+}
+
+html.appearance-overhaul #references .ref-choice.active,
+html.appearance-overhaul #references .ref-color-card.active,
+html.appearance-overhaul #references .ref-retention-card.active {
+  animation: oaSelectionConfirm 160ms cubic-bezier(.2,.8,.2,1);
+}
+
+html.appearance-overhaul .tab-btn.active {
+  transition: color var(--oa-transition-fast), background var(--oa-transition-fast), box-shadow var(--oa-transition-fast), transform var(--oa-transition-fast);
+}
+
+html.appearance-overhaul .tab-btn:active,
+html.appearance-overhaul .appt-card:active {
+  transform: scale(.985);
+}
+
+html.appearance-overhaul #outcomes .outcome-actions button.info.success-outline {
+  animation: oaSuccessConfirm 220ms cubic-bezier(.2,.8,.2,1);
+}
+
+html.appearance-overhaul .toast.show {
+  animation: oaToastArrive 220ms cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes oaSectionReveal {
+  from { opacity: .35; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes oaSelectionConfirm {
+  0% { transform: scale(.985); }
+  100% { transform: scale(1); }
+}
+
+@keyframes oaSuccessConfirm {
+  0% { transform: scale(.97); }
+  65% { transform: scale(1.025); }
+  100% { transform: scale(1); }
+}
+
+@keyframes oaToastArrive {
+  from { opacity: 0; transform: translateY(8px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 600px) {
+  html.appearance-overhaul .oa-status-separator { display: none; }
+  html.appearance-overhaul .oa-status-line { gap: 8px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.appearance-overhaul .workflow-card.active > .workflow-body,
+  html.appearance-overhaul #references .ref-choice.active,
+  html.appearance-overhaul #references .ref-color-card.active,
+  html.appearance-overhaul #references .ref-retention-card.active,
+  html.appearance-overhaul #outcomes .outcome-actions button.info.success-outline,
+  html.appearance-overhaul .toast.show {
+    animation: none !important;
+  }
+}
