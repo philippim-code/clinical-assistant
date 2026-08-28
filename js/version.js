@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev9';
+  const VERSION='1.9.0-dev10';
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev2.css?v='+encodeURIComponent(VERSION),
@@ -12,7 +12,8 @@
     'css/appearance-overhaul-dev6.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev7.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev8.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev9.css?v='+encodeURIComponent(VERSION)
+    'css/appearance-overhaul-dev9.css?v='+encodeURIComponent(VERSION),
+    'css/appearance-overhaul-dev10.css?v='+encodeURIComponent(VERSION)
   ];
   const APPEARANCE_SCRIPTS=[
     'js/appearance-overhaul-dev5.js?v='+encodeURIComponent(VERSION),
@@ -27,7 +28,8 @@
     'Deep visual refresh for Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About',
     'Expanded Home command center with Continue Working, Quick Tools, and Clinical Reference',
     'Improved Home section spacing and direct Quick Tool overlays',
-    'Removed Spark selection confirmation animation',
+    'Removed Spark selection and re-render motion',
+    'Stabilized Spark receiver and coupling card geometry',
     'Unified non-interactive Spark configuration status chips',
     'Flat Saved Outcomes status indicators replacing emoji markers',
     'Theme-aware About important notice',
@@ -43,7 +45,8 @@
     '<li><strong>Expanded Home command center</strong> adds contextual Continue Working actions, one-tap Quick Tools, direct Spark Reference access, and visibility controls in Appearance & Home.</li>',
     '<li><strong>Quick Tools refinement</strong> keeps Home visible behind tool overlays, removes the intermediate Clinical Tools page flash, smooths modal entrance, and restores consistent spacing before Recent Activity.</li>',
     '<li><strong>Deep working-screen refresh</strong> extends the new visual language through Sycle Notes, Saved Outcomes, Clinical Tools, Spark References, Settings, and About.</li>',
-    '<li><strong>Spark interaction simplification</strong> removes the extra selection-confirmation animation while preserving clear selected states.</li>',
+    '<li><strong>Spark interaction simplification</strong> removes selection, press, and page re-render motion so configuration changes stay physically still while selected states remain clear.</li>',
+    '<li><strong>Spark layout stabilization</strong> reserves Clear-button and coupling-size space so Receiver and Coupling cards no longer subtly grow after the first selection.</li>',
     '<li><strong>Unified Spark status treatment</strong> presents both Incomplete and Configured as flat, non-interactive status chips rather than button-like controls.</li>',
     '<li><strong>Saved Outcomes status cleanup</strong> replaces yellow and green emoji markers with restrained flat status dots and consistent typography.</li>',
     '<li><strong>Theme correction</strong> updates the About Data & Privacy important notice so it remains readable and appropriately subdued in light and dark appearances.</li>',
@@ -56,7 +59,7 @@
 
   document.documentElement.classList.add('appearance-overhaul');
   APPEARANCE_STYLESHEETS.forEach((href,index)=>{
-    const ids=['appearanceOverhaulStyles','appearanceOverhaulDev2Styles','appearanceOverhaulDev3Styles','appearanceOverhaulDev4Styles','appearanceOverhaulDev5Styles','appearanceOverhaulDev6Styles','appearanceOverhaulDev7Styles','appearanceOverhaulDev8Styles','appearanceOverhaulDev9Styles'];
+    const ids=['appearanceOverhaulStyles','appearanceOverhaulDev2Styles','appearanceOverhaulDev3Styles','appearanceOverhaulDev4Styles','appearanceOverhaulDev5Styles','appearanceOverhaulDev6Styles','appearanceOverhaulDev7Styles','appearanceOverhaulDev8Styles','appearanceOverhaulDev9Styles','appearanceOverhaulDev10Styles'];
     const id=ids[index]||('appearanceOverhaulStyles'+index);
     if(document.getElementById(id))return;
     const link=document.createElement('link');
