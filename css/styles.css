@@ -149,6 +149,20 @@ input[type="text"]:focus,input[type="number"]:focus,select:focus,textarea:focus{
   .appbar-left .autosave-status{white-space:normal}
 }
 
+/* Saved Spark configuration handoff into purchase documentation */
+.purchase-config-slot:empty{display:none}
+.purchase-config-prompt{margin:8px 0 12px;padding:12px 13px;border-left:4px solid var(--teal);border-radius:9px;background:linear-gradient(135deg,var(--teal-light),#fff)}
+.purchase-config-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.purchase-config-head span{display:block;color:var(--teal-dark);font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}
+.purchase-config-head strong{display:block;margin-top:3px;font-size:14px;color:var(--text)}
+.purchase-config-head small{flex:0 0 auto;color:var(--muted);font-size:10px}
+.purchase-config-text{margin-top:10px;padding:9px 10px;border:1px solid #cfe3e5;border-radius:8px;background:rgba(255,255,255,.8);font-size:13px;font-weight:700;line-height:1.45}
+.purchase-config-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+.purchase-config-actions button{margin-top:6px}
+.purchase-config-actions span{color:var(--muted);font-size:11px}
+.purchase-config-actions button:disabled{opacity:.72;cursor:default;transform:none}
+@media(max-width:700px){.purchase-config-head{flex-direction:column;gap:4px}.purchase-config-actions button{width:100%;margin-right:0}}
+
 
 /* ===== iPhone / iPad responsive test branch ===== */
 html{-webkit-text-size-adjust:100%}

@@ -2,13 +2,12 @@
 (function(){
   'use strict';
 
-  const VERSION='1.8.0-dev22';
+  const VERSION='1.8.0-dev23';
   const RELEASE_NOTES=[
-    '<li><strong>Added independent Left and Right coupling builders</strong> for unilateral fittings or different bilateral dome configurations.</li>',
-    '<li><strong>Shortened copied configurations for Sycle notes</strong> with color abbreviations and AS, AD, and AU notation.</li>',
-    '<li><strong>Simplified coupling labels</strong> to compact formats such as S Vented and M Power.</li>',
-    '<li><strong>Completed the Spark configuration workflow</strong> with per-ear receiver and coupling validation.</li>',
-    '<li><strong>Stabilized the Spark overview height</strong> so adding the second ear does not shift the reference sections below.</li>'
+    '<li><strong>Save completed Spark configurations</strong> directly from the reference workflow while retaining clipboard copy.</li>',
+    '<li><strong>Surface the latest saved configuration</strong> when documenting a hearing-aid purchase or trade-up.</li>',
+    '<li><strong>Add configurations to purchase notes with one tap</strong> while keeping the device field fully editable.</li>',
+    '<li><strong>Show when the configuration was saved</strong> to reduce the chance of selecting an older patient setup.</li>'
   ];
 
   window.CLINICAL_ASSISTANT_VERSION=VERSION;

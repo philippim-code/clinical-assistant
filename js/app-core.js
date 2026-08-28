@@ -1,6 +1,7 @@
 const APP_VERSION=window.CLINICAL_ASSISTANT_VERSION;
 let editingOutcomeId=null;
 let currentAppointment='';let replacedItems=[];
+const SAVED_DEVICE_CONFIGURATION_STORAGE_KEY='meClinicalAssistantSavedDeviceConfiguration';
 const DEFAULT_SETTINGS={finance:['PatientFi','Powerpay','Paymonthly/Care Credit','HFD'],adjustments:['Increased speech 1 click AU','Ran feedback test']};
 function getSettings(){try{return Object.assign({},DEFAULT_SETTINGS,JSON.parse(localStorage.getItem('meClinicalSettings')||'{}'))}catch(e){return DEFAULT_SETTINGS}}
 function saveSettings(){const finance=document.getElementById('settingsFinance').value.split(/\n/).map(x=>x.trim()).filter(Boolean);const adjustments=document.getElementById('settingsAdjustments').value.split(/\n/).map(x=>x.trim()).filter(Boolean);localStorage.setItem('meClinicalSettings',JSON.stringify({finance:finance.length?finance:DEFAULT_SETTINGS.finance,adjustments:adjustments.length?adjustments:DEFAULT_SETTINGS.adjustments}));document.getElementById('settingsStatus').textContent='Settings saved. Reload the appointment type to see updated dropdowns/presets.';toast('✓ Settings saved.')}
@@ -8,7 +9,7 @@ function resetSettings(){if(!confirm('Reset settings to defaults?'))return;local
 function renderSettings(){const s=getSettings();const f=document.getElementById('settingsFinance');const a=document.getElementById('settingsAdjustments');if(f)f.value=s.finance.join('\n');if(a)a.value=s.adjustments.join('\n');}
 function financeOptions(prefix){return getSettings().finance.map(x=>`<label class="inline-label"><input type="radio" name="${prefix}Finance" value="${x.replace(/"/g,'&quot;')}">${x}</label>`).join('')}
 function adjustmentPresetPills(id){return getSettings().adjustments.map(x=>`<span class="preset" onclick="setText('${id}','${x.replace(/'/g,"&#39;")}')">${x}</span>`).join('')}
-function showTab(tabId,button){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(tabId).classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));button.classList.add('active');if(tabId==='home')renderDashboard();if(tabId==='outcomes')renderOutcomes();if(tabId==='tools')renderReferrals();if(tabId==='settings')renderSettings();if(tabId==='about')renderAbout();}
+function showTab(tabId,button){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(tabId).classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));button.classList.add('active');if(tabId==='home')renderDashboard();if(tabId==='notes')refreshOpenSavedConfigurationPrompts();if(tabId==='outcomes')renderOutcomes();if(tabId==='tools')renderReferrals();if(tabId==='settings')renderSettings();if(tabId==='about')renderAbout();}
 function severityForPTA(value){const n=parseFloat(value);if(isNaN(n))return{label:'Not entered',cls:'severity-invalid'};if(n<25)return{label:'No Loss',cls:'severity-normal'};if(n<=40)return{label:'Mild',cls:'severity-mild'};if(n<=55)return{label:'Moderate',cls:'severity-moderate'};if(n<=69)return{label:'Moderate to Severe',cls:'severity-modsev'};if(n<=95)return{label:'Severe to Profound',cls:'severity-severe'};return{label:'Unaidable',cls:'severity-profound'}}
 function updateStandalonePTA(){const r=severityForPTA(document.getElementById('toolRightPTA').value),l=severityForPTA(document.getElementById('toolLeftPTA').value);document.getElementById('toolPTAResult').innerHTML=`Right: <span class="${r.cls}">${r.label}</span> &nbsp; | &nbsp; Left: <span class="${l.cls}">${l.label}</span>`}
 function setText(id,value){document.getElementById(id).value=value;markNoteAsNotGenerated()}
@@ -28,7 +29,52 @@ function cou(prefix){return `<div class="subbox"><label class="inline-label"><in
 function financing(prefix){return `<label class="inline-label"><input type="checkbox" id="${prefix}Fin" onchange="toggleBox('${prefix}FinBox',this.checked)">Financed</label><div id="${prefix}FinBox" class="subbox hidden">${financeOptions(prefix)}</div>`}
 /* v1.4.4: removed superseded duplicate function declaration */
 
-function purchaseOutcome(prefix,trade=false){const label=trade?'Traded Up To New Hearing Aids':'Purchased Hearing Aids';return `<div class="subbox"><label class="inline-label"><input type="checkbox" id="${prefix}Purchased" onchange="toggleBox('${prefix}PurchaseBox',this.checked)">${label}</label><div id="${prefix}PurchaseBox" class="hidden"><input type="text" id="${prefix}Device" placeholder="ex. ME Energy 5 RIC R AX">${financing(prefix)}${myEssentials(prefix)}</div></div>`}
+function getLatestSavedDeviceConfiguration(){
+  try{
+    const value=JSON.parse(localStorage.getItem(SAVED_DEVICE_CONFIGURATION_STORAGE_KEY)||'null');
+    if(!value||typeof value!=='object')return null;
+    const deviceText=String(value.deviceText||value.fullText||'').trim().replace(/[.]$/,'');
+    return deviceText?{...value,deviceText}:null;
+  }catch(e){return null;}
+}
+function savedConfigurationTime(value){
+  const date=new Date(value||'');
+  if(Number.isNaN(date.getTime()))return 'Recently saved';
+  return 'Saved '+date.toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+}
+function savedConfigurationPromptMarkup(prefix){
+  const configuration=getLatestSavedDeviceConfiguration();
+  if(!configuration)return '';
+  const input=document.getElementById(prefix+'Device');
+  const applied=Boolean(input&&input.value.trim()===configuration.deviceText);
+  return `<div class="purchase-config-prompt" data-purchase-config-card>
+    <div class="purchase-config-head"><div><span>Latest Saved Configuration</span><strong>Ready from Spark Reference</strong></div><small>${escapeHtml(savedConfigurationTime(configuration.savedAt))}</small></div>
+    <div class="purchase-config-text">${escapeHtml(configuration.deviceText)}</div>
+    <div class="purchase-config-actions"><button type="button" class="tiny ${applied?'success-outline':''}" onclick="useSavedDeviceConfiguration('${prefix}')" ${applied?'disabled':''}>${applied?'Applied ✓':'Use Configuration'}</button><span>${applied?'Applied below. You can still edit it.':'Tap to add this exact configuration to the purchase.'}</span></div>
+  </div>`;
+}
+function refreshSavedConfigurationPrompt(prefix){
+  const slot=document.getElementById(prefix+'SavedConfigPrompt');
+  if(slot)slot.innerHTML=savedConfigurationPromptMarkup(prefix);
+}
+function refreshOpenSavedConfigurationPrompts(){
+  document.querySelectorAll('[data-saved-configuration-slot]').forEach(slot=>refreshSavedConfigurationPrompt(slot.dataset.savedConfigurationSlot));
+}
+function handlePurchaseToggle(prefix,show){
+  toggleBox(prefix+'PurchaseBox',show);
+  if(show)refreshSavedConfigurationPrompt(prefix);
+}
+function useSavedDeviceConfiguration(prefix){
+  const configuration=getLatestSavedDeviceConfiguration(),input=document.getElementById(prefix+'Device');
+  if(!configuration||!input)return;
+  input.value=configuration.deviceText;
+  input.dispatchEvent(new Event('input',{bubbles:true}));
+  refreshSavedConfigurationPrompt(prefix);
+  toast('✓ Saved configuration added to this purchase.');
+}
+function purchaseOutcome(prefix,trade=false){const label=trade?'Traded Up To New Hearing Aids':'Purchased Hearing Aids';return `<div class="subbox"><label class="inline-label"><input type="checkbox" id="${prefix}Purchased" onchange="handlePurchaseToggle('${prefix}',this.checked)">${label}</label><div id="${prefix}PurchaseBox" class="hidden"><div id="${prefix}SavedConfigPrompt" class="purchase-config-slot" data-saved-configuration-slot="${prefix}"></div><input type="text" id="${prefix}Device" data-purchase-device="${prefix}" placeholder="Enter manually or use the saved configuration above">${financing(prefix)}${myEssentials(prefix)}</div></div>`}
+window.addEventListener('clinical-assistant:configuration-saved',refreshOpenSavedConfigurationPrompts);
+document.addEventListener('input',e=>{const prefix=e.target?.dataset?.purchaseDevice;if(prefix)refreshSavedConfigurationPrompt(prefix);});
 function trialOutcome(prefix){return `<div class="subbox"><label class="inline-label"><input type="checkbox" id="${prefix}Trial" onchange="toggleBox('${prefix}TrialBox',this.checked)">Trial Accepted</label><div id="${prefix}TrialBox" class="hidden"><input type="text" id="${prefix}TrialDevice" placeholder="Hearing aid model"><label class="inline-label">Trial Follow-Up / Return Date</label><input type="date" id="${prefix}TrialDate"><p class="muted">Trials are documented as a 3-day take-home trial beginning today.</p></div></div>`}
 /* v1.4.4: removed superseded duplicate function declaration */
 
@@ -242,7 +288,7 @@ function restoreSavedOutcomeForEdit(item){
 
 function runHealthCheck(){
   const checks=[];
-  checks.push(['CSS loaded', !!document.querySelector('link[href="css/styles.css"]')]);
+  checks.push(['CSS loaded', !!document.querySelector('link[href^="css/styles.css"]')]);
   checks.push(['JavaScript running', true]);
   checks.push(['Logo path present', !!document.querySelector('img[src="assets/logo.png"]')]);
   checks.push(['Local storage available', (function(){try{localStorage.setItem('__me_test','1');localStorage.removeItem('__me_test');return true;}catch(e){return false;}})()]);
