@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev17';
+  const VERSION='1.9.0-dev18';
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev2.css?v='+encodeURIComponent(VERSION),
@@ -31,7 +31,8 @@
     'js/appearance-overhaul-dev14.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev15.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev16.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev17.js?v='+encodeURIComponent(VERSION)
+    'js/appearance-overhaul-dev17.js?v='+encodeURIComponent(VERSION),
+    'js/appearance-overhaul-dev18.js?v='+encodeURIComponent(VERSION)
   ];
   const RELEASE_NOTE_TEXT=[
     'Appearance Overhaul development foundation',
@@ -45,7 +46,7 @@
     'Polished colored pictogram navigation icons',
     'Unified colored pictograms across Home, Clinical Tools, Settings, About, and References',
     'Final icon cleanup with clearer hearing-aid and About pictograms',
-    'Emoji-inspired hearing-aid pictogram refinement',
+    'Hearing-aid pictogram anatomy refinement',
     'Improved Home section spacing and direct Quick Tool overlays',
     'Removed Spark selection and re-render motion',
     'Stabilized Spark receiver and coupling card geometry',
@@ -67,8 +68,8 @@
     '<li><strong>Home Dashboard artwork</strong> replaces generic decorative geometry with a static, low-contrast sound-field illustration that follows the active theme.</li>',
     '<li><strong>Navigation icon refinement</strong> replaces monochrome line icons with consistent colored pictograms that preserve emoji-like recognition without relying on platform emoji rendering.</li>',
     '<li><strong>Unified pictogram system</strong> extends that same colored illustration language through Home shortcuts and empty states, Clinical Tools, Settings cards, About, and Hearing Aid References while preserving semantic status colors.</li>',
-    '<li><strong>Final pictogram cleanup</strong> improves the Spark Reference hearing-aid illustration, makes the What\'s New rocket immediately recognizable, converts Purpose, Core Features, Keyboard Shortcuts, Portable App, and Contact Developer to the shared illustrated icon language.</li>',
-    '<li><strong>Hearing-aid pictogram refinement</strong> redraws the Spark and Hearing Aid Reference icon around the familiar ear-with-hearing-aid silhouette while retaining the app\'s polished custom illustration style.</li>',
+    '<li><strong>Final pictogram cleanup</strong> makes the What\'s New rocket immediately recognizable and converts Purpose, Core Features, Keyboard Shortcuts, Portable App, and Contact Developer to the shared illustrated icon language.</li>',
+    '<li><strong>Hearing-aid pictogram refinement</strong> corrects the Spark and Hearing Aid Reference illustration to use a conventional ear silhouette with a behind-the-ear device and receiver path.</li>',
     '<li><strong>Quick Tools refinement</strong> keeps Home visible behind tool overlays, removes the intermediate Clinical Tools page flash, smooths modal entrance, and restores consistent spacing before Recent Activity.</li>',
     '<li><strong>Deep working-screen refresh</strong> extends the new visual language through Sycle Notes, Saved Outcomes, Clinical Tools, Spark References, Settings, and About.</li>',
     '<li><strong>Spark interaction simplification</strong> removes selection, press, and page re-render motion so configuration changes stay physically still while selected states remain clear.</li>',
@@ -95,7 +96,7 @@
     document.head.appendChild(link);
   });
   APPEARANCE_SCRIPTS.forEach((src,index)=>{
-    const ids=['appearanceOverhaulScript5','appearanceOverhaulScript6','appearanceOverhaulScript8','appearanceOverhaulScript9','appearanceOverhaulScript11','appearanceOverhaulScript13','appearanceOverhaulScript14','appearanceOverhaulScript15','appearanceOverhaulScript16','appearanceOverhaulScript17'];
+    const ids=['appearanceOverhaulScript5','appearanceOverhaulScript6','appearanceOverhaulScript8','appearanceOverhaulScript9','appearanceOverhaulScript11','appearanceOverhaulScript13','appearanceOverhaulScript14','appearanceOverhaulScript15','appearanceOverhaulScript16','appearanceOverhaulScript17','appearanceOverhaulScript18'];
     const id=ids[index]||('appearanceOverhaulScript'+(index+5));
     if(document.getElementById(id))return;
     const script=document.createElement('script');
