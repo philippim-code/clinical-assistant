@@ -1,0 +1,35 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev19
+   Native hearing-aid emoji inside the polished pictogram containers.
+*/
+html.appearance-overhaul .oa-hearing-aid-emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif !important;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  filter: none !important;
+}
+
+html.appearance-overhaul .home-command-icon.oa-hearing-aid-emoji {
+  font-size: 28px !important;
+}
+
+html.appearance-overhaul #references .ref-image-icon.oa-hearing-aid-emoji {
+  font-size: 38px !important;
+  opacity: 1 !important;
+}
+
+html.appearance-overhaul #references .oa-reference-title-picto.oa-hearing-aid-emoji {
+  font-size: 25px !important;
+}
+
+@media (max-width: 760px) {
+  html.appearance-overhaul .home-command-icon.oa-hearing-aid-emoji {
+    font-size: 26px !important;
+  }
+
+  html.appearance-overhaul #references .ref-image-icon.oa-hearing-aid-emoji {
+    font-size: 35px !important;
+  }
+}
