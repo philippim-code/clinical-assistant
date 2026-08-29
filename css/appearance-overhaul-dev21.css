@@ -1,0 +1,51 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev21
+   Appearance & Experience closed-by-default launcher refinement.
+*/
+html.appearance-overhaul #settings .oa-appearance-settings-launcher {
+  margin-top: 16px;
+}
+
+html.appearance-overhaul .oa-appearance-settings-panel {
+  width: min(920px, calc(100vw - 32px));
+}
+
+html.appearance-overhaul .oa-appearance-settings-body {
+  padding: 20px;
+}
+
+html.appearance-overhaul .oa-appearance-settings-body .settings-group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+html.appearance-overhaul .oa-appearance-settings-body .settings-group > h4 {
+  display: none !important;
+}
+
+html.appearance-overhaul .oa-appearance-settings-body .settings-hint {
+  margin-bottom: 0;
+}
+
+html.appearance-overhaul .oa-appearance-settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 20px 20px;
+}
+
+html.appearance-overhaul .oa-appearance-settings-actions button {
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  html.appearance-overhaul .oa-appearance-settings-body {
+    padding: 16px;
+  }
+
+  html.appearance-overhaul .oa-appearance-settings-actions {
+    padding: 0 16px 16px;
+  }
+}
