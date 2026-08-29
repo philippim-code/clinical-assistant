@@ -1,0 +1,70 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev16
+   Final pictogram cleanup: clearer RIC hearing aid, unmistakable rocket,
+   remaining About icons, and inline About action icon.
+*/
+
+/* Slightly more room for the detailed RIC illustration where it appears in
+   Home/Reference cards without changing card geometry. */
+html.appearance-overhaul [data-oa-color-picto="spark"] svg,
+html.appearance-overhaul [data-oa-color-picto="hearingAid"] svg {
+  overflow: visible;
+}
+
+/* About action button icon follows the same illustrated language while
+   remaining compact enough to read as part of the button label. */
+html.appearance-overhaul .oa-button-picto {
+  display: inline-grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  margin-right: 6px;
+  filter: drop-shadow(0 1px 1px rgba(24,39,44,.10));
+  vertical-align: -4px;
+}
+
+html.appearance-overhaul .oa-button-picto svg {
+  display: block;
+  width: 19px;
+  height: 19px;
+  overflow: visible;
+}
+
+html.appearance-overhaul .oa-button-picto .picto-outline {
+  fill: none;
+  stroke: #415158;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+html.appearance-overhaul[data-appearance="dark"] .oa-button-picto .picto-outline {
+  stroke: #d5dfe2;
+}
+
+/* The primary Contact Developer button has a dark fill, so use a lighter
+   outline on its small illustrated envelope for better contrast. */
+html.appearance-overhaul .about-hero-actions .primary .oa-button-picto .picto-outline {
+  stroke: rgba(255,255,255,.88);
+}
+
+/* Keep the four About overview pictograms visually balanced with the
+   already-converted Privacy / What's New icons. */
+html.appearance-overhaul #about .about-card .about-icon.oa-color-picto svg {
+  width: 30px;
+  height: 30px;
+}
+
+@media (max-width: 520px) {
+  html.appearance-overhaul .oa-button-picto {
+    width: 18px;
+    height: 18px;
+    flex-basis: 18px;
+    margin-right: 5px;
+  }
+
+  html.appearance-overhaul .oa-button-picto svg {
+    width: 18px;
+    height: 18px;
+  }
+}
