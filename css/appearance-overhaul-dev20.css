@@ -1,0 +1,109 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev20
+   Native emoji icon layer over the polished v1.9 interface.
+*/
+
+html.appearance-overhaul .oa-native-emoji,
+html.appearance-overhaul .oa-settings-emoji,
+html.appearance-overhaul .oa-emoji-restored {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif !important;
+  font-style: normal;
+  font-weight: 400;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Primary navigation — keep the refined spacing, restore familiar emoji. */
+html.appearance-overhaul .oa-nav-icon.oa-emoji-restored {
+  width: 22px;
+  height: 22px;
+  flex-basis: 22px;
+  display: inline-grid;
+  place-items: center;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+  color: inherit;
+}
+
+html.appearance-overhaul .oa-nav-icon.oa-emoji-restored .oa-native-emoji {
+  display: block;
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* Shared decorative emoji tiles. */
+html.appearance-overhaul .home-command-icon.oa-emoji-restored,
+html.appearance-overhaul .tool-launch-icon.oa-emoji-restored,
+html.appearance-overhaul .about-icon.oa-emoji-restored,
+html.appearance-overhaul .oa-empty-state-icon.oa-emoji-restored,
+html.appearance-overhaul #references .ref-image-icon.oa-emoji-restored,
+html.appearance-overhaul #references .oa-reference-title-picto.oa-emoji-restored {
+  display: inline-grid;
+  place-items: center;
+  filter: none !important;
+  line-height: 1;
+}
+
+html.appearance-overhaul .home-command-icon.oa-emoji-restored .oa-native-emoji {
+  font-size: 27px;
+}
+
+html.appearance-overhaul .tool-launch-icon.oa-emoji-restored .oa-native-emoji {
+  font-size: 27px;
+}
+
+html.appearance-overhaul .about-icon.oa-emoji-restored .oa-native-emoji {
+  font-size: 28px;
+}
+
+html.appearance-overhaul .oa-empty-state-icon.oa-emoji-restored .oa-native-emoji {
+  font-size: 27px;
+}
+
+html.appearance-overhaul #references .ref-image-icon.oa-emoji-restored .oa-native-emoji {
+  font-size: 38px;
+}
+
+html.appearance-overhaul #references .oa-reference-title-picto.oa-emoji-restored .oa-native-emoji {
+  font-size: 25px;
+}
+
+/* Settings gets native emoji while retaining the newer cards and typography. */
+html.appearance-overhaul #settings .settings-group > h4 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+html.appearance-overhaul #settings .oa-settings-emoji {
+  display: inline-block;
+  flex: 0 0 auto;
+  font-size: 22px;
+  line-height: 1;
+}
+
+html.appearance-overhaul #settings .oa-settings-heading-label {
+  min-width: 0;
+}
+
+/* The mobile office shortcut uses the same familiar map-pin language. */
+html.appearance-overhaul .oa-office-mobile-chip {
+  font-family: inherit;
+}
+
+@media (max-width: 760px) {
+  html.appearance-overhaul .oa-nav-icon.oa-emoji-restored {
+    width: 20px;
+    height: 20px;
+    flex-basis: 20px;
+  }
+
+  html.appearance-overhaul .oa-nav-icon.oa-emoji-restored .oa-native-emoji {
+    font-size: 18px;
+  }
+
+  html.appearance-overhaul .home-command-icon.oa-emoji-restored .oa-native-emoji,
+  html.appearance-overhaul .tool-launch-icon.oa-emoji-restored .oa-native-emoji {
+    font-size: 25px;
+  }
+}
