@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev13';
+  const VERSION='1.9.0-dev14';
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev2.css?v='+encodeURIComponent(VERSION),
@@ -16,7 +16,8 @@
     'css/appearance-overhaul-dev10.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev11.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev12.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev13.css?v='+encodeURIComponent(VERSION)
+    'css/appearance-overhaul-dev13.css?v='+encodeURIComponent(VERSION),
+    'css/appearance-overhaul-dev14.css?v='+encodeURIComponent(VERSION)
   ];
   const APPEARANCE_SCRIPTS=[
     'js/appearance-overhaul-dev5.js?v='+encodeURIComponent(VERSION),
@@ -24,7 +25,8 @@
     'js/appearance-overhaul-dev8.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev9.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev11.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev13.js?v='+encodeURIComponent(VERSION)
+    'js/appearance-overhaul-dev13.js?v='+encodeURIComponent(VERSION),
+    'js/appearance-overhaul-dev14.js?v='+encodeURIComponent(VERSION)
   ];
   const RELEASE_NOTE_TEXT=[
     'Appearance Overhaul development foundation',
@@ -32,10 +34,10 @@
     'Redesigned Home dashboard and appointment cards',
     'Deep visual refresh for Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About',
     'Expanded Home command center with Continue Working, Quick Tools, and Clinical Reference',
-    'Unified SVG navigation icon system',
-    'Intentional sound-field artwork for the Home Dashboard',
     'Office Profiles with current-office header information and Trumbull default',
     'Office Profiles layout and Settings card polish',
+    'Intentional Home Dashboard sound-field artwork',
+    'Polished colored pictogram navigation icons',
     'Improved Home section spacing and direct Quick Tool overlays',
     'Removed Spark selection and re-render motion',
     'Stabilized Spark receiver and coupling card geometry',
@@ -52,10 +54,10 @@
     '<li><strong>Appearance Overhaul development foundation</strong> continues the v1.9 visual refresh while preserving the v1.8 clinical workflows.</li>',
     '<li><strong>New premium clinical design system</strong> applies shared spacing, radius, shadow, typography, surface, status, and motion tokens throughout the app.</li>',
     '<li><strong>Expanded Home command center</strong> adds contextual Continue Working actions, one-tap Quick Tools, direct Spark Reference access, and visibility controls in Appearance & Home.</li>',
-    '<li><strong>Navigation icon overhaul</strong> replaces the remaining emoji navigation with a consistent theme-aware SVG line-icon system.</li>',
-    '<li><strong>Home Dashboard artwork</strong> replaces the generic decorative ring with a restrained sound-wave field that follows the active theme color.</li>',
     '<li><strong>Office Profiles</strong> adds a locally stored current-office selector, manual office management, a subtle iPad/desktop header contact block, and a compact mobile office shortcut. Trumbull is preloaded as the initial office.</li>',
     '<li><strong>Office Profiles polish</strong> aligns Add Office fields and matches the Office Profiles Settings launcher to the same card treatment used by the other Settings sections.</li>',
+    '<li><strong>Home Dashboard artwork</strong> replaces generic decorative geometry with a static, low-contrast sound-field illustration that follows the active theme.</li>',
+    '<li><strong>Navigation icon refinement</strong> replaces monochrome line icons with consistent colored pictograms that preserve emoji-like recognition without relying on platform emoji rendering.</li>',
     '<li><strong>Quick Tools refinement</strong> keeps Home visible behind tool overlays, removes the intermediate Clinical Tools page flash, smooths modal entrance, and restores consistent spacing before Recent Activity.</li>',
     '<li><strong>Deep working-screen refresh</strong> extends the new visual language through Sycle Notes, Saved Outcomes, Clinical Tools, Spark References, Settings, and About.</li>',
     '<li><strong>Spark interaction simplification</strong> removes selection, press, and page re-render motion so configuration changes stay physically still while selected states remain clear.</li>',
@@ -72,7 +74,7 @@
 
   document.documentElement.classList.add('appearance-overhaul');
   APPEARANCE_STYLESHEETS.forEach((href,index)=>{
-    const ids=['appearanceOverhaulStyles','appearanceOverhaulDev2Styles','appearanceOverhaulDev3Styles','appearanceOverhaulDev4Styles','appearanceOverhaulDev5Styles','appearanceOverhaulDev6Styles','appearanceOverhaulDev7Styles','appearanceOverhaulDev8Styles','appearanceOverhaulDev9Styles','appearanceOverhaulDev10Styles','appearanceOverhaulDev11Styles','appearanceOverhaulDev12Styles','appearanceOverhaulDev13Styles'];
+    const ids=['appearanceOverhaulStyles','appearanceOverhaulDev2Styles','appearanceOverhaulDev3Styles','appearanceOverhaulDev4Styles','appearanceOverhaulDev5Styles','appearanceOverhaulDev6Styles','appearanceOverhaulDev7Styles','appearanceOverhaulDev8Styles','appearanceOverhaulDev9Styles','appearanceOverhaulDev10Styles','appearanceOverhaulDev11Styles','appearanceOverhaulDev12Styles','appearanceOverhaulDev13Styles','appearanceOverhaulDev14Styles'];
     const id=ids[index]||('appearanceOverhaulStyles'+index);
     if(document.getElementById(id))return;
     const link=document.createElement('link');
@@ -82,7 +84,7 @@
     document.head.appendChild(link);
   });
   APPEARANCE_SCRIPTS.forEach((src,index)=>{
-    const ids=['appearanceOverhaulScript5','appearanceOverhaulScript6','appearanceOverhaulScript8','appearanceOverhaulScript9','appearanceOverhaulScript11','appearanceOverhaulScript13'];
+    const ids=['appearanceOverhaulScript5','appearanceOverhaulScript6','appearanceOverhaulScript8','appearanceOverhaulScript9','appearanceOverhaulScript11','appearanceOverhaulScript13','appearanceOverhaulScript14'];
     const id=ids[index]||('appearanceOverhaulScript'+(index+5));
     if(document.getElementById(id))return;
     const script=document.createElement('script');
