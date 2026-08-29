@@ -2,7 +2,8 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev19';
+  const VERSION='1.9.0-dev20';
+
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev2.css?v='+encodeURIComponent(VERSION),
@@ -17,10 +18,7 @@
     'css/appearance-overhaul-dev11.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev12.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev13.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev14.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev15.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev16.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev19.css?v='+encodeURIComponent(VERSION)
+    'css/appearance-overhaul-dev20.css?v='+encodeURIComponent(VERSION)
   ];
 
   const APPEARANCE_SCRIPTS=[
@@ -30,62 +28,29 @@
     'js/appearance-overhaul-dev9.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev11.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev13.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev14.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev15.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev16.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev17.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev18.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev19.js?v='+encodeURIComponent(VERSION)
+    'js/appearance-overhaul-dev20.js?v='+encodeURIComponent(VERSION)
   ];
 
   const RELEASE_NOTE_TEXT=[
     'Appearance Overhaul development foundation',
     'New premium clinical design system',
-    'Redesigned Home dashboard and appointment cards',
+    'Redesigned Home dashboard and command center',
     'Deep visual refresh for Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About',
-    'Expanded Home command center with Continue Working, Quick Tools, and Clinical Reference',
     'Office Profiles with current-office header information and Trumbull default',
-    'Office Profiles layout and Settings card polish',
+    'Native emoji iconography across the refreshed interface',
     'Intentional Home Dashboard sound-field artwork',
-    'Polished colored pictogram navigation icons',
-    'Unified colored pictograms across Home, Clinical Tools, Settings, About, and References',
-    'Final icon cleanup with clearer About pictograms',
-    'Native hearing-aid emoji treatment for Spark Reference',
-    'Improved Home section spacing and direct Quick Tool overlays',
-    'Removed Spark selection and re-render motion',
-    'Stabilized Spark receiver and coupling card geometry',
-    'Unified non-interactive Spark configuration status chips',
-    'Flat Saved Outcomes status indicators replacing emoji markers',
-    'Theme-aware About important notice',
-    'Polished empty states and interaction refinement',
-    'Global focus, disabled-state, and action consistency sweep',
-    'Theme-aware dark and Sycle styling improvements',
-    'Reduced-motion accessibility support',
+    'Improved dark mode, Sycle theme, responsive behavior, and reduced-motion support',
     'Bug fixes'
   ];
 
   const RELEASE_NOTES=[
-    '<li><strong>Appearance Overhaul development foundation</strong> continues the v1.9 visual refresh while preserving the v1.8 clinical workflows.</li>',
-    '<li><strong>New premium clinical design system</strong> applies shared spacing, radius, shadow, typography, surface, status, and motion tokens throughout the app.</li>',
-    '<li><strong>Expanded Home command center</strong> adds contextual Continue Working actions, one-tap Quick Tools, direct Spark Reference access, and visibility controls in Appearance & Home.</li>',
-    '<li><strong>Office Profiles</strong> adds a locally stored current-office selector, manual office management, a subtle iPad/desktop header contact block, and a compact mobile office shortcut. Trumbull is preloaded as the initial office.</li>',
-    '<li><strong>Office Profiles polish</strong> aligns Add Office fields and matches the Office Profiles Settings launcher to the same card treatment used by the other Settings sections.</li>',
-    '<li><strong>Home Dashboard artwork</strong> replaces generic decorative geometry with a static, low-contrast sound-field illustration that follows the active theme.</li>',
-    '<li><strong>Navigation icon refinement</strong> replaces monochrome line icons with consistent colored pictograms that preserve emoji-like recognition without relying on platform emoji rendering.</li>',
-    '<li><strong>Unified pictogram system</strong> extends that same colored illustration language through Home shortcuts and empty states, Clinical Tools, Settings cards, About, and Hearing Aid References while preserving semantic status colors.</li>',
-    '<li><strong>Final pictogram cleanup</strong> makes the What\'s New rocket immediately recognizable and converts Purpose, Core Features, Keyboard Shortcuts, Portable App, and Contact Developer to the shared illustrated icon language.</li>',
-    '<li><strong>Spark hearing-aid icon</strong> uses the familiar native hearing-aid emoji inside the polished icon container for immediate recognition.</li>',
-    '<li><strong>Quick Tools refinement</strong> keeps Home visible behind tool overlays, removes the intermediate Clinical Tools page flash, smooths modal entrance, and restores consistent spacing before Recent Activity.</li>',
-    '<li><strong>Deep working-screen refresh</strong> extends the new visual language through Sycle Notes, Saved Outcomes, Clinical Tools, Spark References, Settings, and About.</li>',
-    '<li><strong>Spark interaction simplification</strong> removes selection, press, and page re-render motion so configuration changes stay physically still while selected states remain clear.</li>',
-    '<li><strong>Spark layout stabilization</strong> reserves Clear-button and coupling-size space so Receiver and Coupling cards no longer subtly grow after the first selection.</li>',
-    '<li><strong>Unified Spark status treatment</strong> presents both Incomplete and Configured as flat, non-interactive status chips rather than button-like controls.</li>',
-    '<li><strong>Saved Outcomes status cleanup</strong> replaces yellow and green emoji markers with restrained flat status dots and consistent typography.</li>',
-    '<li><strong>Theme correction</strong> updates the About Data & Privacy important notice so it remains readable and appropriately subdued in light and dark appearances.</li>',
-    '<li><strong>Layout and empty-state polish</strong> aligns About card rows, restores Settings spacing, and adds intentional empty states for key areas.</li>',
-    '<li><strong>Consistency sweep</strong> unifies focus treatment, disabled controls, compact action sizing, and touch behavior.</li>',
-    '<li><strong>Theme-aware styling improvements</strong> further unify Clinical Teal, Sycle, and dark appearances.</li>',
-    '<li><strong>Reduced-motion accessibility support</strong> respects the device motion preference.</li>',
+    '<li><strong>Appearance Overhaul</strong> introduces a premium clinical design system while preserving the established v1.8 clinical workflows.</li>',
+    '<li><strong>Redesigned Home command center</strong> adds contextual Continue Working actions, Quick Tools, direct Spark Reference access, and Home visibility controls.</li>',
+    '<li><strong>Office Profiles</strong> adds locally stored office management with current-office contact information in the app header and a compact mobile shortcut.</li>',
+    '<li><strong>Refreshed working screens</strong> update Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About with consistent cards, spacing, typography, and responsive behavior.</li>',
+    '<li><strong>Native emoji iconography</strong> restores fast, familiar visual recognition throughout navigation, Home shortcuts, Clinical Tools, Settings, About, and Hearing Aid References while retaining the polished v1.9 layout.</li>',
+    '<li><strong>Home Dashboard artwork</strong> adds a static, low-contrast sound-field illustration that follows the active theme.</li>',
+    '<li><strong>Theme and accessibility improvements</strong> refine Clinical Teal, Sycle, dark mode, touch behavior, focus states, and reduced-motion support.</li>',
     '<li><strong>Bug fixes</strong></li>'
   ];
 
@@ -96,8 +61,7 @@
       'appearanceOverhaulStyles','appearanceOverhaulDev2Styles','appearanceOverhaulDev3Styles','appearanceOverhaulDev4Styles',
       'appearanceOverhaulDev5Styles','appearanceOverhaulDev6Styles','appearanceOverhaulDev7Styles','appearanceOverhaulDev8Styles',
       'appearanceOverhaulDev9Styles','appearanceOverhaulDev10Styles','appearanceOverhaulDev11Styles','appearanceOverhaulDev12Styles',
-      'appearanceOverhaulDev13Styles','appearanceOverhaulDev14Styles','appearanceOverhaulDev15Styles','appearanceOverhaulDev16Styles',
-      'appearanceOverhaulDev19Styles'
+      'appearanceOverhaulDev13Styles','appearanceOverhaulDev20Styles'
     ];
     const id=ids[index]||('appearanceOverhaulStyles'+index);
     if(document.getElementById(id))return;
@@ -111,8 +75,7 @@
   APPEARANCE_SCRIPTS.forEach((src,index)=>{
     const ids=[
       'appearanceOverhaulScript5','appearanceOverhaulScript6','appearanceOverhaulScript8','appearanceOverhaulScript9',
-      'appearanceOverhaulScript11','appearanceOverhaulScript13','appearanceOverhaulScript14','appearanceOverhaulScript15',
-      'appearanceOverhaulScript16','appearanceOverhaulScript17','appearanceOverhaulScript18','appearanceOverhaulScript19'
+      'appearanceOverhaulScript11','appearanceOverhaulScript13','appearanceOverhaulScript20'
     ];
     const id=ids[index]||('appearanceOverhaulScript'+(index+5));
     if(document.getElementById(id))return;
