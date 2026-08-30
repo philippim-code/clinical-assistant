@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev29';
+  const VERSION='1.9.0-dev30';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -27,7 +27,8 @@
     'css/appearance-overhaul-dev26.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev27.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev28.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev29.css?v='+encodeURIComponent(VERSION)
+    'css/appearance-overhaul-dev29.css?v='+encodeURIComponent(VERSION),
+    'css/appearance-overhaul-dev30.css?v='+encodeURIComponent(VERSION)
   ];
 
   const APPEARANCE_SCRIPTS=[
@@ -40,13 +41,14 @@
     'js/appearance-overhaul-dev20.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev21.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev22.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev29.js?v='+encodeURIComponent(VERSION)
+    'js/appearance-overhaul-dev29.js?v='+encodeURIComponent(VERSION),
+    'js/appearance-overhaul-dev30.js?v='+encodeURIComponent(VERSION)
   ];
 
   const RELEASE_NOTE_TEXT=[
     'Appearance Overhaul development foundation',
     'New premium clinical design system',
-    'Redesigned Home dashboard and command center with a cleaner at-a-glance overview',
+    'Redesigned Home dashboard with integrated Continue Working actions',
     'Deep visual refresh for Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About',
     'Office Profiles with current-office header information and Trumbull default',
     'Native emoji iconography across the refreshed interface',
@@ -57,7 +59,7 @@
 
   const RELEASE_NOTES=[
     '<li><strong>Appearance Overhaul</strong> introduces a premium clinical design system while preserving the established v1.8 clinical workflows.</li>',
-    '<li><strong>Redesigned Home command center</strong> separates at-a-glance device status from actionable Continue Working cards, while retaining Quick Tools, direct Spark Reference access, and Home visibility controls.</li>',
+    '<li><strong>Redesigned Home command center</strong> integrates unfinished appointments and pending outcomes directly into Home Dashboard alongside Current Office and Current Version shortcuts, while retaining Quick Tools and direct Spark Reference access.</li>',
     '<li><strong>Office Profiles</strong> adds locally stored office management with current-office contact information in the app header and a compact mobile shortcut.</li>',
     '<li><strong>Refreshed working screens</strong> update Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About with consistent cards, spacing, typography, and responsive behavior.</li>',
     '<li><strong>Native emoji iconography</strong> restores fast, familiar visual recognition throughout navigation, Home shortcuts, Clinical Tools, Settings, About, and Hearing Aid References while retaining the polished v1.9 layout.</li>',
@@ -75,7 +77,7 @@
       'appearanceOverhaulDev9Styles','appearanceOverhaulDev10Styles','appearanceOverhaulDev11Styles','appearanceOverhaulDev12Styles',
       'appearanceOverhaulDev13Styles','appearanceOverhaulDev20Styles','appearanceOverhaulDev21Styles','appearanceOverhaulDev22Styles',
       'appearanceOverhaulDev23Styles','appearanceOverhaulDev24Styles','appearanceOverhaulDev25Styles','appearanceOverhaulDev26Styles',
-      'appearanceOverhaulDev27Styles','appearanceOverhaulDev28Styles','appearanceOverhaulDev29Styles'
+      'appearanceOverhaulDev27Styles','appearanceOverhaulDev28Styles','appearanceOverhaulDev29Styles','appearanceOverhaulDev30Styles'
     ];
     const id=ids[index]||('appearanceOverhaulStyles'+index);
     if(document.getElementById(id))return;
@@ -90,7 +92,7 @@
     const ids=[
       'appearanceOverhaulScript5','appearanceOverhaulScript6','appearanceOverhaulScript8','appearanceOverhaulScript9',
       'appearanceOverhaulScript11','appearanceOverhaulScript13','appearanceOverhaulScript20','appearanceOverhaulScript21',
-      'appearanceOverhaulScript22','appearanceOverhaulScript29'
+      'appearanceOverhaulScript22','appearanceOverhaulScript29','appearanceOverhaulScript30'
     ];
     const id=ids[index]||('appearanceOverhaulScript'+(index+5));
     if(document.getElementById(id))return;
