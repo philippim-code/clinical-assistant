@@ -1,0 +1,107 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev31
+   Home Dashboard interaction repair + fuller action copy.
+*/
+
+html.appearance-overhaul #dashboardCards.oa-integrated-dashboard .oa-overview-card {
+  min-height: 138px;
+  padding-right: 42px;
+}
+
+html.appearance-overhaul #dashboardCards.oa-integrated-dashboard .oa-overview-card .number {
+  max-width: calc(100% - 2px);
+  font-size: 18px;
+  line-height: 1.16;
+}
+
+html.appearance-overhaul #dashboardCards.oa-integrated-dashboard .oa-overview-card[data-dashboard-action="office"] .number,
+html.appearance-overhaul #dashboardCards.oa-integrated-dashboard .oa-overview-card[data-dashboard-action="version"] .number {
+  font-size: 18px;
+}
+
+html.appearance-overhaul #dashboardCards.oa-integrated-dashboard .oa-overview-detail {
+  max-width: calc(100% - 2px);
+  padding-top: 9px;
+  color: var(--oa-text-tertiary);
+  font-size: 11px;
+  line-height: 1.42;
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-action.is-actionable {
+  cursor: pointer !important;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-action.is-actionable:hover {
+  border-color: color-mix(in srgb,var(--oa-accent) 38%,var(--oa-border));
+  background: color-mix(in srgb,var(--oa-accent) 6%,var(--oa-surface));
+  box-shadow: var(--oa-shadow-sm);
+  transform: translateY(-2px);
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-action.is-actionable:hover .number {
+  color: var(--oa-accent-strong);
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-action.is-actionable.is-pressed,
+html.appearance-overhaul #dashboardCards .oa-dashboard-action.is-actionable:active {
+  border-color: color-mix(in srgb,var(--oa-accent) 46%,var(--oa-border));
+  background: color-mix(in srgb,var(--oa-accent) 10%,var(--oa-surface));
+  box-shadow: 0 1px 4px color-mix(in srgb,var(--oa-accent) 10%,transparent);
+  transform: scale(.986) !important;
+}
+
+html.appearance-overhaul .oa-dashboard-arrow {
+  right: 16px;
+  transition: color var(--oa-transition-fast), transform var(--oa-transition-fast);
+}
+
+html.appearance-overhaul .oa-dashboard-action.is-actionable:hover .oa-dashboard-arrow {
+  color: var(--oa-accent-strong);
+  transform: translate(2px,-50%);
+}
+
+html.appearance-overhaul .oa-dashboard-action.is-actionable.is-pressed .oa-dashboard-arrow,
+html.appearance-overhaul .oa-dashboard-action.is-actionable:active .oa-dashboard-arrow {
+  color: var(--oa-accent-strong);
+  transform: translate(1px,-50%);
+}
+
+html.appearance-overhaul[data-appearance="dark"] #dashboardCards .oa-dashboard-action.is-actionable:hover {
+  background: color-mix(in srgb,var(--oa-accent) 9%,var(--oa-surface));
+}
+
+html.appearance-overhaul[data-appearance="dark"] #dashboardCards .oa-dashboard-action.is-actionable.is-pressed,
+html.appearance-overhaul[data-appearance="dark"] #dashboardCards .oa-dashboard-action.is-actionable:active {
+  background: color-mix(in srgb,var(--oa-accent) 13%,var(--oa-surface));
+}
+
+@media (max-width: 980px) {
+  html.appearance-overhaul #dashboardCards.oa-integrated-dashboard .oa-overview-card {
+    min-height: 124px;
+  }
+
+  html.appearance-overhaul #dashboardCards.oa-integrated-dashboard .oa-overview-card .number,
+  html.appearance-overhaul #dashboardCards.oa-integrated-dashboard .oa-overview-card[data-dashboard-action="office"] .number,
+  html.appearance-overhaul #dashboardCards.oa-integrated-dashboard .oa-overview-card[data-dashboard-action="version"] .number {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 560px) {
+  html.appearance-overhaul #dashboardCards.oa-integrated-dashboard .oa-overview-card {
+    min-height: 108px;
+  }
+}
+
+/* Keep touch feedback visible even on devices that report no hover support. */
+@media (hover:none) {
+  html.appearance-overhaul #dashboardCards .oa-dashboard-action.is-actionable:hover {
+    transform: none;
+  }
+
+  html.appearance-overhaul #dashboardCards .oa-dashboard-action.is-actionable.is-pressed {
+    transform: scale(.986) !important;
+  }
+}
