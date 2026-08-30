@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev39';
+  const VERSION='1.9.0-dev40';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -38,13 +38,14 @@
     'js/appearance-overhaul-dev13.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev20.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev21.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev22.js?v='+encodeURIComponent(VERSION)
+    'js/appearance-overhaul-dev22.js?v='+encodeURIComponent(VERSION),
+    'js/appearance-overhaul-dev40.js?v='+encodeURIComponent(VERSION)
   ];
 
   const RELEASE_NOTE_TEXT=[
     'Appearance Overhaul development foundation',
     'New premium clinical design system',
-    'Expanded Home command center with contextual Continue Working, Quick Tools, and Clinical Reference',
+    'Home Dashboard with contextual Continue Working cards, Quick Tools, and Clinical Reference',
     'Deep visual refresh for Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About',
     'Office Profiles with current-office header information and Trumbull default',
     'Native emoji iconography across the refreshed interface',
@@ -55,7 +56,7 @@
 
   const RELEASE_NOTES=[
     '<li><strong>Appearance Overhaul</strong> introduces a premium clinical design system while preserving the established v1.8 clinical workflows.</li>',
-    '<li><strong>Expanded Home command center</strong> adds contextual Continue Working shortcuts for unfinished appointments and pending outcomes, plus Quick Tools and direct Spark Reference access.</li>',
+    '<li><strong>Home command center</strong> promotes contextual Continue Working cards for unfinished appointments and pending outcomes directly into Home Dashboard, alongside Quick Tools and direct Spark Reference access.</li>',
     '<li><strong>Office Profiles</strong> adds locally stored office management with current-office contact information in the app header and a compact mobile shortcut.</li>',
     '<li><strong>Refreshed working screens</strong> update Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About with consistent cards, spacing, typography, and responsive behavior.</li>',
     '<li><strong>Native emoji iconography</strong> restores fast, familiar visual recognition throughout navigation, Home shortcuts, Clinical Tools, Settings, About, and Hearing Aid References while retaining the polished v1.9 layout.</li>',
@@ -88,7 +89,7 @@
     const ids=[
       'appearanceOverhaulScript5','appearanceOverhaulScript6','appearanceOverhaulScript8','appearanceOverhaulScript9',
       'appearanceOverhaulScript11','appearanceOverhaulScript13','appearanceOverhaulScript20','appearanceOverhaulScript21',
-      'appearanceOverhaulScript22'
+      'appearanceOverhaulScript22','appearanceOverhaulScript40'
     ];
     const id=ids[index]||('appearanceOverhaulScript'+(index+5));
     if(document.getElementById(id))return;
