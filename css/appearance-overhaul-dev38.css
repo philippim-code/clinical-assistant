@@ -1,0 +1,25 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev38
+   Mouse/touch compatibility feedback for Home Dashboard cards.
+*/
+html.appearance-overhaul #dashboardCards .oa-dashboard-card.is-actionable.oa-compat-hover {
+  border-color: color-mix(in srgb,var(--oa-accent) 32%,var(--oa-border));
+  background: color-mix(in srgb,var(--oa-accent) 4%,var(--oa-surface));
+  box-shadow: var(--oa-shadow-sm);
+  transform: translateY(-1px);
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-card.is-actionable.oa-compat-hover .oa-dashboard-arrow {
+  color: var(--oa-accent-strong);
+  transform: translate(2px,-50%);
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-card.is-actionable.oa-compat-pressed {
+  transform: scale(.992);
+  background: color-mix(in srgb,var(--oa-accent) 7%,var(--oa-surface));
+}
+
+@media (hover:none) {
+  html.appearance-overhaul #dashboardCards .oa-dashboard-card.is-actionable.oa-compat-hover {
+    transform: none;
+  }
+}
