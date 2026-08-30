@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev26';
+  const VERSION='1.9.0-dev27';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -24,7 +24,8 @@
     'css/appearance-overhaul-dev23.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev24.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev25.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev26.css?v='+encodeURIComponent(VERSION)
+    'css/appearance-overhaul-dev26.css?v='+encodeURIComponent(VERSION),
+    'css/appearance-overhaul-dev27.css?v='+encodeURIComponent(VERSION)
   ];
 
   const APPEARANCE_SCRIPTS=[
@@ -70,7 +71,8 @@
       'appearanceOverhaulDev5Styles','appearanceOverhaulDev6Styles','appearanceOverhaulDev7Styles','appearanceOverhaulDev8Styles',
       'appearanceOverhaulDev9Styles','appearanceOverhaulDev10Styles','appearanceOverhaulDev11Styles','appearanceOverhaulDev12Styles',
       'appearanceOverhaulDev13Styles','appearanceOverhaulDev20Styles','appearanceOverhaulDev21Styles','appearanceOverhaulDev22Styles',
-      'appearanceOverhaulDev23Styles','appearanceOverhaulDev24Styles','appearanceOverhaulDev25Styles','appearanceOverhaulDev26Styles'
+      'appearanceOverhaulDev23Styles','appearanceOverhaulDev24Styles','appearanceOverhaulDev25Styles','appearanceOverhaulDev26Styles',
+      'appearanceOverhaulDev27Styles'
     ];
     const id=ids[index]||('appearanceOverhaulStyles'+index);
     if(document.getElementById(id))return;
