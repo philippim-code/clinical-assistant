@@ -1,0 +1,32 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev23
+   Match Appearance & Experience and Home Dashboard launchers to the
+   established Settings card treatment.
+*/
+
+html.appearance-overhaul #settings .oa-appearance-settings-launcher,
+html.appearance-overhaul #settings .oa-home-dashboard-settings-launcher {
+  margin-top: 18px;
+  margin-bottom: 20px;
+  padding: 19px 20px;
+  border: 1px solid var(--oa-border) !important;
+  border-radius: var(--oa-radius-md) !important;
+  background: var(--oa-surface) !important;
+  box-shadow: var(--oa-shadow-sm) !important;
+}
+
+html.appearance-overhaul #settings .oa-appearance-settings-launcher:hover,
+html.appearance-overhaul #settings .oa-home-dashboard-settings-launcher:hover {
+  border-color: var(--oa-border-strong) !important;
+}
+
+/* Prevent the two launchers from visually merging when stacked. */
+html.appearance-overhaul #settings .oa-appearance-settings-launcher + .oa-home-dashboard-settings-launcher {
+  margin-top: 0;
+}
+
+@media (max-width: 760px) {
+  html.appearance-overhaul #settings .oa-appearance-settings-launcher,
+  html.appearance-overhaul #settings .oa-home-dashboard-settings-launcher {
+    padding: 17px 16px;
+  }
+}
