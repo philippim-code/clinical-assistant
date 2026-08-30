@@ -1,0 +1,42 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev36
+   Home Dashboard hit-testing fix + small content-spacing refinement.
+*/
+
+/* The Home hero contains decorative layers. Make every direct child passive,
+   then explicitly re-enable only the Dashboard card surface. This guarantees
+   that pointer/hover/tap events land on the card buttons themselves. */
+html.appearance-overhaul #homeDashboardSection::before,
+html.appearance-overhaul #homeDashboardSection::after,
+html.appearance-overhaul #homeDashboardSection > * {
+  pointer-events: none !important;
+}
+
+html.appearance-overhaul #homeDashboardSection #dashboardCards,
+html.appearance-overhaul #homeDashboardSection #dashboardCards .oa-dashboard-card {
+  pointer-events: auto !important;
+}
+
+/* Keep card contents visually interactive but let the button itself own the
+   hit target everywhere inside the card. */
+html.appearance-overhaul #homeDashboardSection #dashboardCards .oa-dashboard-card * {
+  pointer-events: none !important;
+}
+
+html.appearance-overhaul #homeDashboardSection .oa-home-sound-art,
+html.appearance-overhaul #homeDashboardSection .oa-home-sound-art * {
+  pointer-events: none !important;
+}
+
+/* Preserve the dev33 geometry, with only a slight upward bias for the main
+   emoji/label/title group and a little more air before the helper text. */
+html.appearance-overhaul #dashboardCards .oa-dashboard-content {
+  transform: translateY(-3px);
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-detail {
+  margin-top: 14px;
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-arrow {
+  top: calc(50% - 3px);
+}
