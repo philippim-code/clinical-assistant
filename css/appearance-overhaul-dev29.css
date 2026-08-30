@@ -1,0 +1,110 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev29
+   Home hierarchy cleanup: at-a-glance Dashboard + Continue Working as the
+   single actionable home for unfinished appointments and pending outcomes.
+*/
+
+html.appearance-overhaul #home .hero-panel > p.oa-dashboard-intro {
+  max-width: 720px;
+}
+
+html.appearance-overhaul #dashboardCards.oa-overview-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 11px;
+  margin-top: 20px;
+}
+
+html.appearance-overhaul #dashboardCards .oa-overview-card {
+  min-height: 122px;
+  padding: 15px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0;
+  cursor: default;
+}
+
+/* These are informational cards, not another layer of navigation. */
+html.appearance-overhaul #dashboardCards .oa-overview-card:hover {
+  transform: none;
+  border-color: color-mix(in srgb, var(--oa-border) 85%, transparent);
+  box-shadow: var(--oa-shadow-xs);
+}
+
+html.appearance-overhaul .oa-overview-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+html.appearance-overhaul .oa-overview-emoji {
+  flex: 0 0 auto;
+  font-size: 18px;
+  line-height: 1;
+}
+
+html.appearance-overhaul #dashboardCards .oa-overview-card .label {
+  margin: 0;
+  color: var(--oa-text-secondary);
+  font-size: 10.5px;
+  font-weight: 760;
+  letter-spacing: .045em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+html.appearance-overhaul #dashboardCards .oa-overview-card .number {
+  max-width: 100%;
+  margin: 0 0 3px;
+  overflow: hidden;
+  color: var(--oa-text);
+  font-size: 27px;
+  font-weight: 770;
+  line-height: 1.08;
+  letter-spacing: -.04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html.appearance-overhaul #dashboardCards .oa-overview-card[data-overview="office"] .number,
+html.appearance-overhaul #dashboardCards .oa-overview-card[data-overview="storage"] .number {
+  font-size: 20px;
+  letter-spacing: -.025em;
+}
+
+html.appearance-overhaul #dashboardCards .oa-overview-card[data-overview="version"] .number {
+  font-size: 21px;
+}
+
+html.appearance-overhaul .oa-overview-detail {
+  margin-top: auto;
+  color: var(--oa-text-tertiary);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+html.appearance-overhaul #dashboardCards .oa-overview-card[data-overview="version"] .oa-overview-detail {
+  margin-top: 3px;
+}
+
+html.appearance-overhaul #dashboardCards .oa-overview-card[data-overview="version"] button {
+  margin-top: 8px;
+}
+
+@media (max-width: 980px) {
+  html.appearance-overhaul #dashboardCards.oa-overview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  html.appearance-overhaul #dashboardCards.oa-overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  html.appearance-overhaul #dashboardCards .oa-overview-card {
+    min-height: 96px;
+  }
+}
