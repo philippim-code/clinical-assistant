@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev30';
+  const VERSION='1.9.0-dev31';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -28,7 +28,8 @@
     'css/appearance-overhaul-dev27.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev28.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev29.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev30.css?v='+encodeURIComponent(VERSION)
+    'css/appearance-overhaul-dev30.css?v='+encodeURIComponent(VERSION),
+    'css/appearance-overhaul-dev31.css?v='+encodeURIComponent(VERSION)
   ];
 
   const APPEARANCE_SCRIPTS=[
@@ -42,7 +43,8 @@
     'js/appearance-overhaul-dev21.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev22.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev29.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev30.js?v='+encodeURIComponent(VERSION)
+    'js/appearance-overhaul-dev30.js?v='+encodeURIComponent(VERSION),
+    'js/appearance-overhaul-dev31.js?v='+encodeURIComponent(VERSION)
   ];
 
   const RELEASE_NOTE_TEXT=[
@@ -77,7 +79,8 @@
       'appearanceOverhaulDev9Styles','appearanceOverhaulDev10Styles','appearanceOverhaulDev11Styles','appearanceOverhaulDev12Styles',
       'appearanceOverhaulDev13Styles','appearanceOverhaulDev20Styles','appearanceOverhaulDev21Styles','appearanceOverhaulDev22Styles',
       'appearanceOverhaulDev23Styles','appearanceOverhaulDev24Styles','appearanceOverhaulDev25Styles','appearanceOverhaulDev26Styles',
-      'appearanceOverhaulDev27Styles','appearanceOverhaulDev28Styles','appearanceOverhaulDev29Styles','appearanceOverhaulDev30Styles'
+      'appearanceOverhaulDev27Styles','appearanceOverhaulDev28Styles','appearanceOverhaulDev29Styles','appearanceOverhaulDev30Styles',
+      'appearanceOverhaulDev31Styles'
     ];
     const id=ids[index]||('appearanceOverhaulStyles'+index);
     if(document.getElementById(id))return;
@@ -92,7 +95,7 @@
     const ids=[
       'appearanceOverhaulScript5','appearanceOverhaulScript6','appearanceOverhaulScript8','appearanceOverhaulScript9',
       'appearanceOverhaulScript11','appearanceOverhaulScript13','appearanceOverhaulScript20','appearanceOverhaulScript21',
-      'appearanceOverhaulScript22','appearanceOverhaulScript29','appearanceOverhaulScript30'
+      'appearanceOverhaulScript22','appearanceOverhaulScript29','appearanceOverhaulScript30','appearanceOverhaulScript31'
     ];
     const id=ids[index]||('appearanceOverhaulScript'+(index+5));
     if(document.getElementById(id))return;
