@@ -1,0 +1,81 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev41
+   Match transplanted Continue Working cards to the native Home Dashboard card shell.
+   Visual-only: preserves dev40 behavior and click handling.
+*/
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card {
+  position: relative;
+  min-height: 156px;
+  min-width: 0;
+  padding: 17px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--oa-border) 85%, transparent);
+  border-radius: var(--oa-radius-md);
+  background: color-mix(in srgb, var(--oa-surface) 94%, transparent);
+  box-shadow: var(--oa-shadow-xs);
+  cursor: pointer;
+  transition: transform var(--oa-transition), box-shadow var(--oa-transition), border-color var(--oa-transition), background var(--oa-transition-fast);
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card:hover {
+  border-color: color-mix(in srgb, var(--oa-accent) 26%, var(--oa-border));
+  background: color-mix(in srgb, var(--oa-surface) 94%, transparent);
+  box-shadow: var(--oa-shadow-sm);
+  transform: translateY(-2px);
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card:active {
+  transform: translateY(0) scale(.992);
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card .home-command-icon {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card .home-command-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card .home-command-copy strong {
+  margin-bottom: 4px;
+  color: var(--oa-text);
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card .home-command-copy span {
+  color: var(--oa-text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card .home-command-arrow {
+  margin-left: auto;
+  color: var(--oa-text-tertiary);
+  font-size: 20px;
+}
+
+html.appearance-overhaul[data-appearance="dark"] #dashboardCards > .oa-dashboard-continue-card {
+  background: color-mix(in srgb, var(--oa-surface) 96%, transparent);
+}
+
+@media (max-width: 680px) {
+  html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card {
+    min-height: 132px;
+  }
+}
+
+@media (hover: none) {
+  html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card:hover {
+    transform: none;
+    box-shadow: var(--oa-shadow-xs);
+  }
+}
