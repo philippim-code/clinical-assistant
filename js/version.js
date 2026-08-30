@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev37';
+  const VERSION='1.9.0-dev38';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -28,8 +28,7 @@
     'css/appearance-overhaul-dev27.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev28.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev33.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev36.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev37.css?v='+encodeURIComponent(VERSION)
+    'css/appearance-overhaul-dev38.css?v='+encodeURIComponent(VERSION)
   ];
 
   const APPEARANCE_SCRIPTS=[
@@ -43,7 +42,7 @@
     'js/appearance-overhaul-dev21.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev22.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev33.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev37.js?v='+encodeURIComponent(VERSION)
+    'js/appearance-overhaul-dev38.js?v='+encodeURIComponent(VERSION)
   ];
 
   const RELEASE_NOTE_TEXT=[
@@ -78,8 +77,7 @@
       'appearanceOverhaulDev9Styles','appearanceOverhaulDev10Styles','appearanceOverhaulDev11Styles','appearanceOverhaulDev12Styles',
       'appearanceOverhaulDev13Styles','appearanceOverhaulDev20Styles','appearanceOverhaulDev21Styles','appearanceOverhaulDev22Styles',
       'appearanceOverhaulDev23Styles','appearanceOverhaulDev24Styles','appearanceOverhaulDev25Styles','appearanceOverhaulDev26Styles',
-      'appearanceOverhaulDev27Styles','appearanceOverhaulDev28Styles','appearanceOverhaulDev33Styles','appearanceOverhaulDev36Styles',
-      'appearanceOverhaulDev37Styles'
+      'appearanceOverhaulDev27Styles','appearanceOverhaulDev28Styles','appearanceOverhaulDev33Styles','appearanceOverhaulDev38Styles'
     ];
     const id=ids[index]||('appearanceOverhaulStyles'+index);
     if(document.getElementById(id))return;
@@ -94,7 +92,7 @@
     const ids=[
       'appearanceOverhaulScript5','appearanceOverhaulScript6','appearanceOverhaulScript8','appearanceOverhaulScript9',
       'appearanceOverhaulScript11','appearanceOverhaulScript13','appearanceOverhaulScript20','appearanceOverhaulScript21',
-      'appearanceOverhaulScript22','appearanceOverhaulScript33','appearanceOverhaulScript37'
+      'appearanceOverhaulScript22','appearanceOverhaulScript33','appearanceOverhaulScript38'
     ];
     const id=ids[index]||('appearanceOverhaulScript'+(index+5));
     if(document.getElementById(id))return;
