@@ -1,0 +1,69 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev25
+   Stable primary navigation + Option B pending pill.
+*/
+
+/* On iPad/desktop, every navigation item owns an equal-width lane. This keeps
+   the full menu completely stationary when the Saved Outcomes indicator is
+   inserted or removed. */
+@media (min-width: 900px) {
+  html.appearance-overhaul .tabs .tab-btn {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+  }
+}
+
+/* Option B: a compact, descriptive workflow pill instead of a bare count. */
+html.appearance-overhaul .pending-outcome-nav-badge {
+  min-width: 0 !important;
+  height: 20px !important;
+  margin-left: 3px !important;
+  padding: 0 7px !important;
+  gap: 3px;
+  border-color: #dfc36d !important;
+  background: #fff4cd !important;
+  color: #74530b !important;
+  font-size: 10.5px !important;
+  font-weight: 780 !important;
+  white-space: nowrap;
+}
+
+html.appearance-overhaul .pending-outcome-nav-badge::after {
+  content: " pending";
+  font-size: 9px;
+  font-weight: 690;
+  letter-spacing: .01em;
+  opacity: .86;
+}
+
+html.appearance-overhaul .saved-outcomes-nav-badge-host.active .pending-outcome-nav-badge {
+  border-color: #d2af4d !important;
+  background: #f7dfa3 !important;
+  color: #664600 !important;
+}
+
+html.appearance-overhaul[data-appearance="dark"] .pending-outcome-nav-badge {
+  border-color: #6e5b2c !important;
+  background: #3b321f !important;
+  color: #f1d78d !important;
+}
+
+html.appearance-overhaul[data-appearance="dark"] .saved-outcomes-nav-badge-host.active .pending-outcome-nav-badge {
+  border-color: #846d32 !important;
+  background: #4b3f23 !important;
+  color: #f5dc95 !important;
+}
+
+/* Keep the mobile scroller compact: use the same pill treatment but shorten
+   the descriptor so narrow navigation remains easy to scan. */
+@media (max-width: 899px) {
+  html.appearance-overhaul .pending-outcome-nav-badge {
+    height: 18px !important;
+    margin-left: 2px !important;
+    padding: 0 5px !important;
+    font-size: 10px !important;
+  }
+
+  html.appearance-overhaul .pending-outcome-nav-badge::after {
+    content: "";
+  }
+}
