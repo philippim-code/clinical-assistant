@@ -1,0 +1,72 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev42
+   Refine the two transplanted Home Dashboard action cards to match the native
+   Dashboard cards more closely. Visual-only; dev40 click behavior is unchanged.
+*/
+
+/* Put the emoji in the same upper-left visual anchor occupied by the large
+   number on the native Completed / Current Version cards. */
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card {
+  display: block;
+  position: relative;
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card .home-command-icon {
+  position: absolute;
+  top: 17px;
+  left: 17px;
+  width: 42px;
+  height: 42px;
+  margin: 0;
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card .home-command-copy {
+  position: absolute;
+  top: 72px;
+  left: 17px;
+  right: 42px;
+  min-width: 0;
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card .home-command-copy strong {
+  display: block;
+  margin: 0 0 5px;
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card .home-command-copy span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card .home-command-arrow {
+  position: absolute;
+  top: 50%;
+  right: 17px;
+  margin: 0;
+  transform: translateY(-50%);
+  transition: transform var(--oa-transition-fast), color var(--oa-transition-fast);
+}
+
+/* Match the exact hover response used by the native Dashboard cards. This
+   intentionally overrides dev41's hover:none exception so iPad trackpad hover
+   behaves the same across all four cards. */
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--oa-accent) 26%, var(--oa-border));
+  background: color-mix(in srgb, var(--oa-surface) 94%, transparent);
+  box-shadow: var(--oa-shadow-sm);
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card:hover .home-command-arrow {
+  color: var(--oa-accent-strong);
+  transform: translate(2px,-50%);
+}
+
+html.appearance-overhaul #dashboardCards > .oa-dashboard-continue-card:active {
+  transform: translateY(0) scale(.992);
+}
+
+html.appearance-overhaul[data-appearance="dark"] #dashboardCards > .oa-dashboard-continue-card:hover {
+  background: color-mix(in srgb, var(--oa-surface) 96%, transparent);
+}
