@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev24';
+  const VERSION='1.9.0-dev25';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -22,7 +22,8 @@
     'css/appearance-overhaul-dev21.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev22.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev23.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev24.css?v='+encodeURIComponent(VERSION)
+    'css/appearance-overhaul-dev24.css?v='+encodeURIComponent(VERSION),
+    'css/appearance-overhaul-dev25.css?v='+encodeURIComponent(VERSION)
   ];
 
   const APPEARANCE_SCRIPTS=[
@@ -68,7 +69,7 @@
       'appearanceOverhaulDev5Styles','appearanceOverhaulDev6Styles','appearanceOverhaulDev7Styles','appearanceOverhaulDev8Styles',
       'appearanceOverhaulDev9Styles','appearanceOverhaulDev10Styles','appearanceOverhaulDev11Styles','appearanceOverhaulDev12Styles',
       'appearanceOverhaulDev13Styles','appearanceOverhaulDev20Styles','appearanceOverhaulDev21Styles','appearanceOverhaulDev22Styles',
-      'appearanceOverhaulDev23Styles','appearanceOverhaulDev24Styles'
+      'appearanceOverhaulDev23Styles','appearanceOverhaulDev24Styles','appearanceOverhaulDev25Styles'
     ];
     const id=ids[index]||('appearanceOverhaulStyles'+index);
     if(document.getElementById(id))return;
