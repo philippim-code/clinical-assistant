@@ -1,0 +1,17 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev28
+   Saved Outcomes pending indicator spacing refinement.
+*/
+
+/* Keep the dev27 non-shifting layout, but bring the quiet pending badge
+   closer to the Saved Outcomes label so it reads as one visual group. */
+@media (min-width: 900px) {
+  html.appearance-overhaul .saved-outcomes-nav-badge-host .pending-outcome-nav-badge {
+    right: 25px !important;
+  }
+}
+
+@media (max-width: 899px) {
+  html.appearance-overhaul .saved-outcomes-nav-badge-host .pending-outcome-nav-badge {
+    right: 15px !important;
+  }
+}
