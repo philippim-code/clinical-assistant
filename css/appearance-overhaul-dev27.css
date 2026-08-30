@@ -1,0 +1,90 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev27
+   Saved Outcomes pending indicator: stable, quiet Option B.
+*/
+
+/* Keep the Saved Outcomes content geometry identical whether a pending badge
+   exists or not. The badge lives in permanently reserved space on the right
+   and never participates in the tab's flex layout. */
+html.appearance-overhaul .tabs .saved-outcomes-nav-badge-host {
+  position: relative !important;
+  padding-right: 48px !important;
+}
+
+html.appearance-overhaul .saved-outcomes-nav-badge-host .pending-outcome-nav-badge {
+  position: absolute !important;
+  top: 50% !important;
+  right: 11px !important;
+  transform: translateY(-50%) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  min-width: 27px !important;
+  height: 18px !important;
+  margin: 0 !important;
+  padding: 0 6px !important;
+  border: 1px solid #e5d39b !important;
+  border-radius: 999px !important;
+  background: #fff8e7 !important;
+  color: #76570f !important;
+  box-shadow: none !important;
+  font-size: 10px !important;
+  font-weight: 760 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+}
+
+/* Quiet workflow cue: tiny amber dot + count. */
+html.appearance-overhaul .pending-outcome-nav-badge::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  flex: 0 0 5px;
+  border-radius: 50%;
+  background: #d39b19;
+}
+
+/* Retire the descriptive text from dev25/dev26. */
+html.appearance-overhaul .pending-outcome-nav-badge::after {
+  content: "" !important;
+  display: none !important;
+}
+
+html.appearance-overhaul .saved-outcomes-nav-badge-host.active .pending-outcome-nav-badge {
+  border-color: #ddc77e !important;
+  background: #fff3cf !important;
+  color: #684a08 !important;
+}
+
+html.appearance-overhaul[data-appearance="dark"] .pending-outcome-nav-badge {
+  border-color: #5e512d !important;
+  background: #302b1d !important;
+  color: #ead38c !important;
+}
+
+html.appearance-overhaul[data-appearance="dark"] .pending-outcome-nav-badge::before {
+  background: #d5a532;
+}
+
+html.appearance-overhaul[data-appearance="dark"] .saved-outcomes-nav-badge-host.active .pending-outcome-nav-badge {
+  border-color: #73602e !important;
+  background: #3c321d !important;
+  color: #f0d993 !important;
+}
+
+/* Narrow layouts keep the same stable-label behavior, with a slightly tighter
+   reserved slot so horizontal navigation stays compact. */
+@media (max-width: 899px) {
+  html.appearance-overhaul .tabs .saved-outcomes-nav-badge-host {
+    padding-right: 42px !important;
+  }
+
+  html.appearance-overhaul .saved-outcomes-nav-badge-host .pending-outcome-nav-badge {
+    right: 8px !important;
+    min-width: 25px !important;
+    height: 17px !important;
+    padding: 0 5px !important;
+    font-size: 9.5px !important;
+  }
+}
