@@ -1,0 +1,100 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev34
+   Dashboard spacing refinement + defensive pointer layering.
+*/
+
+html.appearance-overhaul #home .hero-panel,
+html.appearance-overhaul #homeDashboardSection {
+  isolation: isolate;
+}
+
+html.appearance-overhaul #home .hero-panel::before,
+html.appearance-overhaul #home .hero-panel::after,
+html.appearance-overhaul #homeDashboardSection::before,
+html.appearance-overhaul #homeDashboardSection::after,
+html.appearance-overhaul .oa-home-sound-art,
+html.appearance-overhaul .oa-home-sound-art * {
+  pointer-events: none !important;
+}
+
+html.appearance-overhaul #home .hero-panel #dashboardCards {
+  position: relative;
+  z-index: 50 !important;
+  pointer-events: auto !important;
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-card {
+  position: relative;
+  z-index: 51 !important;
+  min-height: 132px;
+  padding: 0 42px 0 16px;
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Main icon/label/title cluster sits slightly above true center, leaving a
+   more intentional visual break before the supporting description. */
+html.appearance-overhaul #dashboardCards .oa-dashboard-content {
+  position: absolute;
+  left: 16px;
+  right: 42px;
+  top: 44%;
+  transform: translateY(-50%);
+  min-width: 0;
+  pointer-events: none;
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-head {
+  margin-bottom: 7px;
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-detail {
+  position: absolute;
+  left: 16px;
+  right: 42px;
+  bottom: 14px;
+  margin: 0;
+  pointer-events: none;
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-arrow {
+  top: 44%;
+  right: 15px;
+  transform: translateY(-50%);
+  pointer-events: none !important;
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-card.is-actionable:hover .oa-dashboard-arrow,
+html.appearance-overhaul #dashboardCards .oa-dashboard-card.is-actionable.oa-hovered .oa-dashboard-arrow {
+  color: var(--oa-accent-strong);
+  transform: translate(2px,-50%);
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-card.is-actionable.oa-hovered {
+  border-color: color-mix(in srgb,var(--oa-accent) 32%,var(--oa-border));
+  background: color-mix(in srgb,var(--oa-accent) 4%,var(--oa-surface));
+  box-shadow: var(--oa-shadow-sm);
+  transform: translateY(-1px);
+}
+
+html.appearance-overhaul #dashboardCards .oa-dashboard-card.is-actionable.oa-pressed {
+  border-color: color-mix(in srgb,var(--oa-accent) 38%,var(--oa-border));
+  background: color-mix(in srgb,var(--oa-accent) 7%,var(--oa-surface));
+  transform: scale(.992);
+}
+
+@media (max-width: 560px) {
+  html.appearance-overhaul #dashboardCards .oa-dashboard-card {
+    min-height: 110px;
+  }
+
+  html.appearance-overhaul #dashboardCards .oa-dashboard-content,
+  html.appearance-overhaul #dashboardCards .oa-dashboard-arrow {
+    top: 43%;
+  }
+
+  html.appearance-overhaul #dashboardCards .oa-dashboard-detail {
+    bottom: 12px;
+  }
+}
