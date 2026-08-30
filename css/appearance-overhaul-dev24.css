@@ -1,0 +1,72 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev24
+   Saved Outcomes pending indicator refinement.
+*/
+
+/* The pending count is a workflow state, not an error. Keep it attached to
+   the Saved Outcomes label instead of floating above the navigation. */
+html.appearance-overhaul .pending-outcome-nav-badge {
+  position: static !important;
+  top: auto !important;
+  right: auto !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 20px !important;
+  height: 19px !important;
+  margin: 0 0 0 1px !important;
+  padding: 0 6px !important;
+  border: 1px solid #e4c56c !important;
+  border-radius: 999px !important;
+  background: #fff2c2 !important;
+  color: #76540a !important;
+  box-shadow: none !important;
+  font-size: 11px !important;
+  font-weight: 760 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  transform: none !important;
+  pointer-events: none;
+}
+
+/* A slightly richer amber on the active tab keeps the count readable without
+   competing with the active navigation treatment. */
+html.appearance-overhaul .saved-outcomes-nav-badge-host.active .pending-outcome-nav-badge {
+  border-color: #d9b653 !important;
+  background: #f7dda0 !important;
+  color: #694800 !important;
+}
+
+html.appearance-overhaul[data-appearance="dark"] .pending-outcome-nav-badge {
+  border-color: #66552a !important;
+  background: #3a311d !important;
+  color: #f0d589 !important;
+}
+
+html.appearance-overhaul[data-appearance="dark"] .saved-outcomes-nav-badge-host.active .pending-outcome-nav-badge {
+  border-color: #806a32 !important;
+  background: #4a3d20 !important;
+  color: #f6dc91 !important;
+}
+
+/* dev2 reserved extra vertical room for the old floating red bubble. The new
+   inline badge no longer needs it, so restore the balanced navigation inset. */
+html.appearance-overhaul .tabs {
+  padding: 5px !important;
+}
+
+@media (max-width: 600px) {
+  html.appearance-overhaul .pending-outcome-nav-badge {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    min-width: 19px !important;
+    height: 18px !important;
+    padding: 0 5px !important;
+    font-size: 10px !important;
+  }
+
+  html.appearance-overhaul .tabs {
+    padding: 5px !important;
+  }
+}
