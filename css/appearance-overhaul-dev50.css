@@ -1,0 +1,36 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev50
+   Final appearance-polish pass before release candidate testing.
+*/
+
+/* Keep all Home Dashboard actions on one shared baseline. */
+html.appearance-overhaul #dashboardCards > .dashboard-card {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html.appearance-overhaul #dashboardCards > .dashboard-card .oa-dashboard-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+html.appearance-overhaul #dashboardCards > .dashboard-card .oa-dashboard-actions button {
+  margin: 0 !important;
+}
+
+/* Restore the softer v1.8-style outcome accent instead of the saturated stripe. */
+html.appearance-overhaul .outcome-card {
+  border-left-color: color-mix(in srgb, var(--oa-accent) 46%, var(--oa-border)) !important;
+}
+
+html.appearance-overhaul .outcome-card.closed {
+  border-left-color: color-mix(in srgb, var(--oa-success) 46%, var(--oa-border)) !important;
+}
+
+/* Current Version is informational; only its What's New button is actionable. */
+html.appearance-overhaul #dashboardCards > .dashboard-card[data-oa-current-version] {
+  cursor: default !important;
+}
