@@ -342,13 +342,13 @@
           <p class="muted" style="margin-top:0">Select a hearing-aid platform to open its product reference.</p>
           <div class="ref-product-grid">
             <article class="ref-product-card" data-ref-product="spark" role="button" tabindex="0">${placeholder('Spark · Silver Gray')}<h3>Spark</h3><p>MEMINI E RIC and MEMINI E AI RIC</p></article>
-            <article class="ref-product-card" data-ref-product="genius" role="button" tabindex="0">${placeholder('Genius','Product reference coming soon.')}<h3>Genius</h3><p>Genius product reference</p><span class="ref-soon">Coming Soon</span></article>
+            <article class="ref-product-card" data-ref-product="genius" role="button" tabindex="0">${placeholder('Genius · Silver')}<h3>Genius</h3><p>MEENERGY RIC T R 5W</p></article>
           </div>
         </div>
       </details>
     </div>`;
     root.querySelector('[data-ref-product="spark"]').addEventListener('click',renderSparkLanding);
-    root.querySelector('[data-ref-product="genius"]').addEventListener('click',renderGeniusPlaceholder);
+    root.querySelector('[data-ref-product="genius"]').addEventListener('click',()=>typeof window.renderGeniusReference==='function'?window.renderGeniusReference():renderGeniusPlaceholder());
     root.querySelectorAll('[data-ref-product]').forEach(card=>card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}}));
     notifyRendered();
   }
@@ -431,6 +431,8 @@
   const previousRenderDashboard=window.renderDashboard;if(typeof previousRenderDashboard==='function')window.renderDashboard=function(){const result=previousRenderDashboard();applyVersion();return result;};
   const previousRenderAbout=window.renderAbout;if(typeof previousRenderAbout==='function')window.renderAbout=function(){const result=previousRenderAbout();applyVersion();return result;};
   function init(){installStyles();renderHome();applyVersion();}
+  window.renderHearingAidReferencesHome=renderHome;
+  window.renderSparkReference=renderSparkLanding;
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   window.addEventListener('pageshow',applyVersion);
 })();

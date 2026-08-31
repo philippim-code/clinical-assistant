@@ -47,8 +47,10 @@ function savedConfigurationPromptMarkup(prefix){
   if(!configuration)return '';
   const input=document.getElementById(prefix+'Device');
   const applied=Boolean(input&&input.value.trim()===configuration.deviceText);
+  const source=String(configuration.source||'Hearing Aid Reference').trim();
+  const sourceLabel=/Reference$/i.test(source)?source:`${source} Reference`;
   return `<div class="purchase-config-prompt" data-purchase-config-card>
-    <div class="purchase-config-head"><div><span>Latest Saved Configuration</span><strong>Ready from Spark Reference</strong></div><small>${escapeHtml(savedConfigurationTime(configuration.savedAt))}</small></div>
+    <div class="purchase-config-head"><div><span>Latest Saved Configuration</span><strong>Ready from ${escapeHtml(sourceLabel)}</strong></div><small>${escapeHtml(savedConfigurationTime(configuration.savedAt))}</small></div>
     <div class="purchase-config-text">${escapeHtml(configuration.deviceText)}</div>
     <div class="purchase-config-actions"><button type="button" class="tiny ${applied?'success-outline':''}" onclick="useSavedDeviceConfiguration('${prefix}')" ${applied?'disabled':''}>${applied?'Applied ✓':'Use Configuration'}</button><span>${applied?'Applied below. You can still edit it.':'Tap to add this exact configuration to the purchase.'}</span></div>
   </div>`;
