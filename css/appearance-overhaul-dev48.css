@@ -1,0 +1,137 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev48
+   Header spacing refinement + one-time Sycle Notes documentation acknowledgment.
+*/
+
+/* Bring the two brand lines back toward the tighter legacy lockup. */
+html.appearance-overhaul .header h1 {
+  line-height: 1.04 !important;
+}
+
+html.appearance-overhaul .header h2 {
+  margin: -1px 0 0 !important;
+  line-height: 1.15 !important;
+}
+
+/* The permanent documentation banner is replaced by the first-use acknowledgment. */
+html.appearance-overhaul .container > .warning {
+  display: none !important;
+}
+
+/* ---------- Documentation acknowledgment ---------- */
+html.appearance-overhaul .oa-doc-ack-overlay {
+  position: fixed;
+  z-index: 10020;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(15, 28, 32, .48);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+html.appearance-overhaul .oa-doc-ack-overlay.hidden {
+  display: none !important;
+}
+
+html.appearance-overhaul .oa-doc-ack-panel {
+  width: min(100%, 520px);
+  padding: 26px;
+  border: 1px solid var(--oa-border);
+  border-radius: var(--oa-radius-xl);
+  background: var(--oa-surface);
+  box-shadow: var(--oa-shadow-lg);
+}
+
+html.appearance-overhaul .oa-doc-ack-eyebrow {
+  margin-bottom: 6px;
+  color: var(--oa-accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+html.appearance-overhaul .oa-doc-ack-panel h3 {
+  margin: 0;
+  color: var(--oa-text);
+  font-size: 23px;
+  font-weight: 760;
+  letter-spacing: -.025em;
+}
+
+html.appearance-overhaul .oa-doc-ack-copy {
+  margin-top: 14px;
+  color: var(--oa-text-secondary);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+html.appearance-overhaul .oa-doc-ack-copy p {
+  margin: 0 0 12px;
+}
+
+html.appearance-overhaul .oa-doc-ack-copy p:last-child {
+  margin-bottom: 0;
+}
+
+html.appearance-overhaul .oa-doc-ack-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 22px;
+}
+
+html.appearance-overhaul .oa-doc-ack-actions .primary {
+  min-width: 132px;
+  margin: 0;
+}
+
+body.oa-doc-ack-open {
+  overflow: hidden !important;
+}
+
+/* Compact reset control inside Appearance & Experience settings. */
+html.appearance-overhaul .oa-documentation-setting {
+  margin-top: 18px;
+  padding-top: 17px;
+  border-top: 1px solid var(--oa-border);
+}
+
+html.appearance-overhaul .oa-documentation-setting h4 {
+  margin: 0 0 4px;
+}
+
+html.appearance-overhaul .oa-documentation-setting p {
+  margin: 0 0 10px;
+  font-size: 13px;
+}
+
+html.appearance-overhaul .oa-documentation-setting button {
+  margin-top: 0;
+}
+
+html.appearance-overhaul .oa-documentation-setting button:disabled {
+  opacity: .52;
+  cursor: default;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 560px) {
+  html.appearance-overhaul .oa-doc-ack-overlay {
+    padding: 16px;
+  }
+
+  html.appearance-overhaul .oa-doc-ack-panel {
+    padding: 22px 20px;
+    border-radius: var(--oa-radius-lg);
+  }
+
+  html.appearance-overhaul .oa-doc-ack-panel h3 {
+    font-size: 21px;
+  }
+
+  html.appearance-overhaul .oa-doc-ack-actions .primary {
+    width: 100%;
+  }
+}
