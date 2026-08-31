@@ -1,0 +1,105 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev46
+   Restore the Home Dashboard to the compact v1.8 stat-card presentation.
+   Dashboard content/logic comes from the stable base renderDashboard().
+*/
+
+/* The old Dashboard did not need a separate Continue Working strip. */
+html.appearance-overhaul #homeContinueSection {
+  display: none !important;
+}
+
+/* Match the v1.8 hero/dashboard proportions while preserving v1.9 theme tokens. */
+html.appearance-overhaul #homeDashboardSection.hero-panel {
+  padding: 20px !important;
+  border: 1px solid var(--oa-border) !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, var(--oa-surface) 0%, var(--oa-surface-tint) 100%) !important;
+  box-shadow: var(--oa-shadow-sm) !important;
+}
+
+html.appearance-overhaul #homeDashboardSection.hero-panel h3 {
+  margin: 0 !important;
+  color: var(--oa-accent) !important;
+  font-size: 18px !important;
+  font-weight: 720 !important;
+  letter-spacing: .01em !important;
+}
+
+html.appearance-overhaul #homeDashboardSection.hero-panel > p {
+  margin: 6px 0 0 !important;
+  max-width: none !important;
+  color: var(--oa-text-secondary) !important;
+  font-size: 13px !important;
+}
+
+html.appearance-overhaul #dashboardCards.dashboard-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0,1fr)) !important;
+  gap: 14px !important;
+  margin-top: 12px !important;
+}
+
+html.appearance-overhaul #dashboardCards > .dashboard-card {
+  min-height: 0 !important;
+  padding: 16px !important;
+  overflow: visible !important;
+  border: 1px solid var(--oa-border) !important;
+  border-radius: 14px !important;
+  background: var(--oa-surface) !important;
+  box-shadow: var(--oa-shadow-xs) !important;
+  transform: none;
+  transition: transform 150ms ease, box-shadow 150ms ease !important;
+}
+
+html.appearance-overhaul #dashboardCards > .dashboard-card:hover {
+  transform: translateY(-1px) !important;
+  border-color: var(--oa-border) !important;
+  background: var(--oa-surface) !important;
+  box-shadow: var(--oa-shadow-md) !important;
+}
+
+html.appearance-overhaul #dashboardCards > .dashboard-card .number {
+  margin: 0 !important;
+  color: var(--oa-accent) !important;
+  font-size: 30px !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  letter-spacing: 0 !important;
+}
+
+html.appearance-overhaul #dashboardCards > .dashboard-card .label {
+  margin-top: 4px !important;
+  color: var(--oa-text-secondary) !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+html.appearance-overhaul #dashboardCards > .dashboard-card .muted {
+  margin-top: 2px !important;
+  color: var(--oa-text-secondary) !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+html.appearance-overhaul #dashboardCards > .dashboard-card button {
+  margin-top: 12px !important;
+}
+
+html.appearance-overhaul #dashboardCards > .dashboard-card .tiny {
+  padding: 7px 10px !important;
+  font-size: 13px !important;
+}
+
+@media (max-width: 980px) {
+  html.appearance-overhaul #dashboardCards.dashboard-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+}
+
+@media (max-width: 560px) {
+  html.appearance-overhaul #dashboardCards.dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
