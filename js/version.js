@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev45';
+  const VERSION='1.9.0-dev46';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -27,9 +27,7 @@
     'css/appearance-overhaul-dev26.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev27.css?v='+encodeURIComponent(VERSION),
     'css/appearance-overhaul-dev28.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev41.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev42.css?v='+encodeURIComponent(VERSION),
-    'css/appearance-overhaul-dev44.css?v='+encodeURIComponent(VERSION)
+    'css/appearance-overhaul-dev46.css?v='+encodeURIComponent(VERSION)
   ];
 
   const APPEARANCE_SCRIPTS=[
@@ -41,16 +39,14 @@
     'js/appearance-overhaul-dev13.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev20.js?v='+encodeURIComponent(VERSION),
     'js/appearance-overhaul-dev21.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev22.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev40.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev43.js?v='+encodeURIComponent(VERSION),
-    'js/appearance-overhaul-dev44.js?v='+encodeURIComponent(VERSION)
+    'js/appearance-overhaul-dev22.js?v='+encodeURIComponent(VERSION)
   ];
 
   const RELEASE_NOTE_TEXT=[
     'Appearance Overhaul development foundation',
     'New premium clinical design system',
-    'Unified Home Dashboard with contextual work, Current Office, Current Version, Quick Tools, and Clinical Reference',
+    'Classic Home Dashboard restored with Unfinished Appointment, Pending Saved Outcomes, Completed, and Current Version',
+    'Expanded Home command center with Quick Tools and Clinical Reference',
     'Deep visual refresh for Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About',
     'Office Profiles with current-office header information and Trumbull default',
     'Native emoji iconography across the refreshed interface',
@@ -61,7 +57,8 @@
 
   const RELEASE_NOTES=[
     '<li><strong>Appearance Overhaul</strong> introduces a premium clinical design system while preserving the established v1.8 clinical workflows.</li>',
-    '<li><strong>Unified Home Dashboard</strong> brings unfinished appointments, pending outcomes, Current Office, and Current Version into one consistent card system while retaining direct shortcuts, Quick Tools, and Spark Reference access.</li>',
+    '<li><strong>Classic Home Dashboard</strong> restores the compact v1.8 stat-card layout with Unfinished Appointment, Pending Saved Outcomes, Completed, and Current Version.</li>',
+    '<li><strong>Home command center</strong> retains Quick Tools and direct Spark Reference access without replacing the classic Dashboard.</li>',
     '<li><strong>Office Profiles</strong> adds locally stored office management with current-office contact information in the app header and a compact mobile shortcut.</li>',
     '<li><strong>Refreshed working screens</strong> update Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About with consistent cards, spacing, typography, and responsive behavior.</li>',
     '<li><strong>Native emoji iconography</strong> restores fast, familiar visual recognition throughout navigation, Home shortcuts, Clinical Tools, Settings, About, and Hearing Aid References while retaining the polished v1.9 layout.</li>',
@@ -79,8 +76,7 @@
       'appearanceOverhaulDev9Styles','appearanceOverhaulDev10Styles','appearanceOverhaulDev11Styles','appearanceOverhaulDev12Styles',
       'appearanceOverhaulDev13Styles','appearanceOverhaulDev20Styles','appearanceOverhaulDev21Styles','appearanceOverhaulDev22Styles',
       'appearanceOverhaulDev23Styles','appearanceOverhaulDev24Styles','appearanceOverhaulDev25Styles','appearanceOverhaulDev26Styles',
-      'appearanceOverhaulDev27Styles','appearanceOverhaulDev28Styles','appearanceOverhaulDev41Styles','appearanceOverhaulDev42Styles',
-      'appearanceOverhaulDev44Styles'
+      'appearanceOverhaulDev27Styles','appearanceOverhaulDev28Styles','appearanceOverhaulDev46Styles'
     ];
     const id=ids[index]||('appearanceOverhaulStyles'+index);
     if(document.getElementById(id))return;
@@ -95,7 +91,7 @@
     const ids=[
       'appearanceOverhaulScript5','appearanceOverhaulScript6','appearanceOverhaulScript8','appearanceOverhaulScript9',
       'appearanceOverhaulScript11','appearanceOverhaulScript13','appearanceOverhaulScript20','appearanceOverhaulScript21',
-      'appearanceOverhaulScript22','appearanceOverhaulScript40','appearanceOverhaulScript43','appearanceOverhaulScript44'
+      'appearanceOverhaulScript22'
     ];
     const id=ids[index]||('appearanceOverhaulScript'+(index+5));
     if(document.getElementById(id))return;
