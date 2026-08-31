@@ -1,0 +1,15 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev51
+   Restore distinct amber Pending status pills across Saved Outcomes and Recent Activity.
+*/
+
+html.appearance-overhaul .status-pending {
+  background: #fff4c7 !important;
+  color: #7c5d00 !important;
+  border-color: #e7cf76 !important;
+}
+
+html.appearance-overhaul[data-appearance="dark"] .status-pending {
+  background: #3a3117 !important;
+  color: #f0d26f !important;
+  border-color: #6d5b24 !important;
+}
