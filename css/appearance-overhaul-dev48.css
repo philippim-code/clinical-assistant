@@ -1,15 +1,15 @@
 /* Miracle-Ear Clinical Assistant — v1.9.0-dev48
-   Header spacing refinement + one-time Sycle Notes documentation acknowledgment.
+   One-time Sycle Notes documentation acknowledgment.
 */
 
-/* Bring the two brand lines back toward the tighter legacy lockup. */
+/* Restore the original v1.8 spacing between the two brand lines. */
 html.appearance-overhaul .header h1 {
-  line-height: 1.04 !important;
+  line-height: normal !important;
 }
 
 html.appearance-overhaul .header h2 {
-  margin: -1px 0 0 !important;
-  line-height: 1.15 !important;
+  margin: 3px 0 0 !important;
+  line-height: normal !important;
 }
 
 /* The permanent documentation banner is replaced by the first-use acknowledgment. */
