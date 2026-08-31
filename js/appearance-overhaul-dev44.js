@@ -1,6 +1,5 @@
-/* Miracle-Ear Clinical Assistant — v1.9.0-dev44
-   Unify all four Home Dashboard cards around the original stat-card anatomy
-   while preserving the current v1.9 actions and Office Profile behavior.
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev45
+   Unified Home Dashboard card anatomy with refined compact typography.
 */
 (function(){
   'use strict';
@@ -98,20 +97,20 @@
     const draft=currentDraft();
     const pending=pendingOutcomes();
     const office=currentOfficeName();
-    const version=window.CLINICAL_ASSISTANT_VERSION||'1.9.0-dev44';
+    const version=window.CLINICAL_ASSISTANT_VERSION||'1.9.0-dev45';
 
     dashboard.className='dashboard-grid oa-unified-dashboard';
     dashboard.innerHTML=[
       cardMarkup({
         kind:'draft',cue:'📝',
-        primary:draft?appointmentName(draft.appointment):'None',
+        primary:draft?appointmentName(draft.appointment):'0',
         label:'Unfinished Appointment',
         context:draft?'Unfinished appointment saved locally':'Nothing unfinished on this device',
         button:draft?'Resume':'Start Appointment'
       }),
       cardMarkup({
         kind:'outcomes',cue:'💾',
-        primary:pending.length?`${pending.length} Pending`:'0 Pending',
+        primary:String(pending.length),
         label:'Pending Saved Outcomes',
         context:pending.length?`${pending.length} ${pending.length===1?'outcome is':'outcomes are'} waiting for completion`:'Everything is up to date',
         button:pending.length?'Review':'Open Saved Outcomes'

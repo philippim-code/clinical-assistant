@@ -1,5 +1,5 @@
-/* Miracle-Ear Clinical Assistant — v1.9.0-dev44
-   Unified Home Dashboard card language: old stat-card hierarchy + new actions.
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev45
+   Refine unified Home Dashboard typography and spacing.
 */
 
 html.appearance-overhaul #dashboardCards.oa-unified-dashboard {
@@ -46,13 +46,13 @@ html.appearance-overhaul .oa-dashboard-primary {
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: 7px;
+  margin-bottom: 0;
 }
 
 html.appearance-overhaul .oa-dashboard-cue {
   flex: 0 0 auto;
-  font-size: 24px;
+  font-size: 21px;
   line-height: 1;
 }
 
@@ -60,32 +60,33 @@ html.appearance-overhaul .oa-dashboard-primary-text {
   min-width: 0;
   overflow: hidden;
   color: var(--oa-accent-strong);
-  font-size: clamp(25px,2.35vw,34px);
-  font-weight: 780;
-  line-height: 1.05;
-  letter-spacing: -.045em;
+  font-size: clamp(22px,2vw,30px);
+  font-weight: 775;
+  line-height: 1.06;
+  letter-spacing: -.04em;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 html.appearance-overhaul .oa-dashboard-unified-card[data-dashboard-kind="version"] .oa-dashboard-primary-text {
-  font-size: clamp(22px,2.05vw,31px);
+  font-size: clamp(20px,1.8vw,27px);
 }
 
 html.appearance-overhaul .oa-dashboard-unified-card .label {
-  margin-top: 2px;
+  margin-top: 8px;
   color: var(--oa-text-secondary);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 760;
+  line-height: 1.25;
   letter-spacing: .035em;
   text-transform: uppercase;
 }
 
 html.appearance-overhaul .oa-dashboard-context {
-  min-height: 34px;
+  min-height: 31px;
   margin-top: 5px;
   color: var(--oa-text-tertiary);
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.4;
 }
 
