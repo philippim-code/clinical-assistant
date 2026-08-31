@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.9.0-dev51';
+  const VERSION='1.9.0';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -49,7 +49,7 @@
   ];
 
   const RELEASE_NOTE_TEXT=[
-    'Appearance Overhaul development foundation',
+    'Appearance Overhaul',
     'New premium clinical design system',
     'Classic Home Dashboard restored with Unfinished Appointment, Pending Saved Outcomes, Completed, and Current Version',
     'Home Dashboard actions aligned consistently across all four cards',
@@ -57,7 +57,7 @@
     'Expanded Home command center with Quick Tools and Clinical Reference',
     'Restored Miracle-Ear brand header with fuller logo, teal wordmark, teal divider, and original brand-line spacing',
     'One-time Sycle Notes documentation acknowledgment replaces the persistent documentation banner',
-    'Softer Saved Outcome accent styling',
+    'Softer Saved Outcome accent styling with distinct amber Pending status pills',
     'Deep visual refresh for Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About',
     'Office Profiles with current-office header information and Trumbull default',
     'Native emoji iconography across the refreshed interface',
@@ -73,7 +73,7 @@
     '<li><strong>Home command center</strong> retains Quick Tools and direct Spark Reference access without replacing the classic Dashboard.</li>',
     '<li><strong>Brand header</strong> restores the fuller Miracle-Ear logo treatment, teal Miracle-Ear wordmark, white header surface, full-width teal divider, and original v1.8 spacing between the brand lines.</li>',
     '<li><strong>Documentation acknowledgment</strong> replaces the persistent safety banner with a one-time acknowledgment on first entry to Sycle Notes. The acknowledgment is stored locally and can be reset from Appearance & Experience settings.</li>',
-    '<li><strong>Saved Outcomes</strong> uses a softer, more subtle left-edge status accent inspired by the previous version.</li>',
+    '<li><strong>Saved Outcomes</strong> uses a softer, more subtle left-edge accent and distinct amber Pending status pills in Saved Outcomes and Recent Activity.</li>',
     '<li><strong>Office Profiles</strong> adds locally stored office management with current-office contact information in the app header and a compact mobile shortcut.</li>',
     '<li><strong>Refreshed working screens</strong> update Sycle Notes, Saved Outcomes, Clinical Tools, References, Settings, and About with consistent cards, spacing, typography, and responsive behavior.</li>',
     '<li><strong>Native emoji iconography</strong> restores fast, familiar visual recognition throughout navigation, Home shortcuts, Clinical Tools, Settings, About, and Hearing Aid References while retaining the polished v1.9 layout.</li>',
@@ -130,6 +130,8 @@
     const heading=document.querySelector('#aboutWhatsNew h3');
     const headingText="What's New in v"+VERSION;
     if(heading&&heading.textContent!==headingText)heading.textContent=headingText;
+    const dateBadge=document.querySelector('#aboutWhatsNew .about-section-head > .badge');
+    if(dateBadge&&dateBadge.textContent!=='August 31, 2026')dateBadge.textContent='August 31, 2026';
     const list=document.querySelector('#aboutWhatsNew .changelog-list');
     const notesMarkup=RELEASE_NOTES.join('');
     if(list&&list.innerHTML!==notesMarkup)list.innerHTML=notesMarkup;

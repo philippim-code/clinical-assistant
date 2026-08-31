@@ -1,4 +1,16 @@
-Miracle-Ear Clinical Assistant v1.8.0
+Miracle-Ear Clinical Assistant v1.9.0
+
+v1.9.0
+August 31, 2026
+
+- Added the Appearance Overhaul with a premium clinical design system across the app.
+- Restored the classic Home Dashboard structure while adding Quick Tools, Clinical Reference, and refined responsive styling.
+- Added Office Profiles with locally stored office details displayed in the app header.
+- Added a one-time Sycle Notes Documentation Acknowledgment that can be reset from Settings.
+- Restored the fuller Miracle-Ear header treatment with teal branding and divider styling.
+- Refined Saved Outcomes and Recent Activity with softer card accents and distinct amber Pending status pills.
+- Added improved dark mode, Sycle theme support, native emoji iconography, motion refinements, and accessibility polish.
+- Bug fixes.
 
 v1.8.0
 August 28, 2026
