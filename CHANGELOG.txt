@@ -1,3 +1,16 @@
+Miracle-Ear Clinical Assistant v1.10.0-dev1
+
+v1.10.0-dev1
+August 31, 2026
+
+- Added the first Genius Reference development preview for MEENERGY RIC T R 5W.
+- Added verified treatment-level specifications for ME5, ME4, ME3, and ME2.
+- Added independent left and right EarWear 3.0 receiver, coupling, and optional concha-lock selections.
+- Added live product and component previews using the supplied Genius image catalog.
+- Added saved Genius configurations to Sycle purchase-note documentation.
+- Completed the receiver-image catalog for every supported side, length, and power combination.
+- Bug fixes.
+
 Miracle-Ear Clinical Assistant v1.9.0
 
 v1.9.0
