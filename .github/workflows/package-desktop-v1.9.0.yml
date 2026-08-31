@@ -1,0 +1,53 @@
+name: Package Clinical Assistant v1.9.0 Desktop Update
+
+on:
+  push:
+    branches:
+      - desktop-package-v1.9.0
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out released main build
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Build desktop update package
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p desktop-package/App
+          rsync -a ./ desktop-package/App/ \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='vercel.json' \
+            --exclude='Trigger Vercel development deployment' \
+            --exclude='Clinical_Assistant_iOS_Icon_Cache_Fix.zip'
+          cat > desktop-package/UPDATE_INSTRUCTIONS.txt <<'EOF'
+          Miracle-Ear Clinical Assistant v1.9.0 — Desktop Update
+          ======================================================
+
+          1. Close Clinical Assistant before updating.
+          2. Optional but recommended: export Saved Outcomes as a backup.
+          3. Open your existing Clinical Assistant folder (the folder that contains App, Data, and Backups).
+          4. Replace ONLY the existing App folder with the App folder included in this update.
+          5. Do NOT delete or replace Data or Backups.
+          6. Keep your existing launcher/shortcut in place.
+          7. Start Clinical Assistant using the same launcher/shortcut you already use.
+          8. Confirm the app reports Version 1.9.0.
+
+          This package was created from the same GitHub main release used for the live v1.9.0 app.
+          EOF
+          printf 'Miracle-Ear Clinical Assistant v1.9.0\nReleased August 31, 2026\n' > desktop-package/VERSION.txt
+
+      - name: Upload desktop update
+        uses: actions/upload-artifact@v4
+        with:
+          name: Clinical_Assistant_v1.9.0_Desktop_Update
+          path: desktop-package/
+          if-no-files-found: error
+          retention-days: 30
