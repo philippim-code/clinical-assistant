@@ -1,0 +1,83 @@
+/* Miracle-Ear Clinical Assistant — v1.9.0-dev47
+   Restore the stronger v1.8-inspired brand header while preserving the v1.9 layout.
+*/
+
+html.appearance-overhaul .header {
+  position: relative;
+  isolation: isolate;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding-top: 22px !important;
+  padding-bottom: 18px !important;
+  gap: 18px !important;
+}
+
+/* Full-bleed white header background + teal divider without changing the
+   existing max-width/alignment of the header content or Office Profile block. */
+html.appearance-overhaul .header::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: #fff;
+  border-bottom: 3px solid #008c95;
+  box-shadow: 0 2px 8px rgba(22,36,42,.05);
+  pointer-events: none;
+}
+
+html.appearance-overhaul .header .logo {
+  width: 85px !important;
+  height: 85px !important;
+  padding: 0 !important;
+  object-fit: contain;
+  border-radius: 12px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html.appearance-overhaul .header h1 {
+  margin: 0 !important;
+  color: #008c95 !important;
+  font-size: 34px !important;
+  font-weight: 760 !important;
+  letter-spacing: -.03em !important;
+}
+
+html.appearance-overhaul .header h2 {
+  margin: 3px 0 0 !important;
+  color: var(--oa-text-secondary) !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+}
+
+html.appearance-overhaul[data-appearance="dark"] .header::before {
+  background: var(--oa-surface);
+  box-shadow: 0 2px 10px rgba(0,0,0,.22);
+}
+
+@media (max-width: 850px) {
+  html.appearance-overhaul .header {
+    padding-top: 18px !important;
+    padding-bottom: 16px !important;
+    gap: 14px !important;
+  }
+
+  html.appearance-overhaul .header .logo {
+    width: 65px !important;
+    height: 65px !important;
+    border-radius: 10px !important;
+  }
+
+  html.appearance-overhaul .header h1 {
+    font-size: 29px !important;
+  }
+
+  html.appearance-overhaul .header h2 {
+    font-size: 16px !important;
+  }
+}
