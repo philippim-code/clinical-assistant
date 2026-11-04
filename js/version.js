@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.10.0-dev1';
+  const VERSION='1.10.0-dev2';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -59,11 +59,9 @@
   ];
 
   const RELEASE_NOTES=[
-    '<li><strong>Genius Reference</strong> adds the first development preview of the MEENERGY RIC T R 5W product reference.</li>',
-    '<li><strong>Treatment levels</strong> cover ME5, ME4, ME3, and ME2 with verified frequency-channel, compression-control, and hearing-program specifications.</li>',
-    '<li><strong>EarWear 3.0 fitting components</strong> include S, M, and P receivers in lengths 0 through 5, six coupling families, and receiver-matched concha locks.</li>',
-    '<li><strong>Per-ear configuration</strong> supports unilateral and bilateral receiver, coupling, and optional retention selections with live visual previews.</li>',
-    '<li><strong>Sycle Notes handoff</strong> saves a complete Genius configuration for purchase documentation and copies a concise clinical note.</li>',
+    '<li><strong>Cleaner product artwork</strong> blends known white image canvases into the Genius interface in light mode.</li>',
+    '<li><strong>Faster selections</strong> use idle image preloading and a cache-first path for static product artwork.</li>',
+    '<li><strong>Genius Reference</strong> retains the complete MEENERGY RIC T R 5W configuration workflow and Sycle Notes handoff.</li>',
     '<li><strong>Bug fixes</strong></li>'
   ];
 
@@ -116,7 +114,7 @@
     const headingText="What's New in v"+VERSION;
     if(heading&&heading.textContent!==headingText)heading.textContent=headingText;
     const dateBadge=document.querySelector('#aboutWhatsNew .about-section-head > .badge');
-    if(dateBadge&&dateBadge.textContent!=='August 31, 2026')dateBadge.textContent='August 31, 2026';
+    if(dateBadge&&dateBadge.textContent!=='November 4, 2026')dateBadge.textContent='November 4, 2026';
     const list=document.querySelector('#aboutWhatsNew .changelog-list');
     const notesMarkup=RELEASE_NOTES.join('');
     if(list&&list.innerHTML!==notesMarkup)list.innerHTML=notesMarkup;

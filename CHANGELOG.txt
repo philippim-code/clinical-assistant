@@ -1,3 +1,14 @@
+Miracle-Ear Clinical Assistant v1.10.0-dev2
+
+v1.10.0-dev2
+November 4, 2026
+
+- Removed visible white image canvases from Genius catalog artwork in light mode.
+- Added cache-first loading for static images.
+- Added idle preloading for Genius product and component images.
+- Improved iPad selection responsiveness.
+- Bug fixes.
+
 Miracle-Ear Clinical Assistant v1.10.0-dev1
 
 v1.10.0-dev1

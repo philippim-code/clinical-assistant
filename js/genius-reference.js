@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.10.0-dev1';
+  const VERSION='1.10.0-dev2';
   const BASE='assets/genius/catalog/';
   const SAVED_CONFIGURATION_STORAGE_KEY='meClinicalAssistantSavedDeviceConfiguration';
   const ears=['left','right'];
@@ -60,6 +60,8 @@
     retentionSelections:{left:false,right:false}
   };
   let sectionObserver=null;
+  const preloadedCatalogImages=[];
+  let catalogPreloadStarted=false;
 
   function asset(path){return `${BASE}${path}?v=${encodeURIComponent(VERSION)}`;}
   function root(){return document.getElementById('references');}
@@ -218,7 +220,34 @@
     return `<nav class="ref-sticky-nav" aria-label="Genius reference sections"><div class="ref-sticky-links"><button type="button" class="ref-nav-link active" data-genius-scroll="features">Features</button><button type="button" class="ref-nav-link" data-genius-scroll="colors">Colors</button><button type="button" class="ref-nav-link" data-genius-scroll="receivers">Receivers</button><button type="button" class="ref-nav-link" data-genius-scroll="couplings">Couplings</button><button type="button" class="ref-nav-link" data-genius-scroll="retention">Retention</button><button type="button" class="ref-nav-link" data-genius-scroll="accessories">Accessories</button></div><div class="ref-nav-model" title="${modelName()}">${modelName()}</div></nav>`;
   }
   function catalogImage(src,alt,className='ref-catalog-image',loading='eager'){
-    return `<img class="${className}" src="${src}" alt="${alt}" decoding="async" loading="${loading}">`;
+    const whiteMatteClass=/\/hearing-aids\/|\.jpe?g(?:\?|$)/i.test(src)?' genius-white-matte':'';
+    return `<img class="${className}${whiteMatteClass}" src="${src}" alt="${alt}" decoding="async" loading="${loading}">`;
+  }
+  function catalogAssetUrls(){
+    const urls=new Set();
+    geniusData.colors.forEach(color=>urls.add(asset(`hearing-aids/${color.file}`)));
+    ears.forEach(ear=>geniusData.receivers.powers.forEach(power=>geniusData.receivers.lengths.forEach(length=>urls.add(asset(`receivers/${sideCode(ear)}-${length}-${power}.png`)))));
+    geniusData.couplings.forEach(coupling=>coupling.sizes.forEach(size=>urls.add(asset(`couplings/${coupling.id}-${size.id}.${coupling.extension}`))));
+    geniusData.receivers.powers.forEach(power=>urls.add(asset(`retention-locks/${power}.jpg`)));
+    geniusData.accessories.forEach(accessory=>urls.add(asset(`accessories/${accessory.file}`)));
+    return [...urls];
+  }
+  function preloadCatalogAssets(){
+    if(catalogPreloadStarted)return;
+    catalogPreloadStarted=true;
+    const pending=catalogAssetUrls();
+    const schedule=window.requestIdleCallback
+      ? callback=>window.requestIdleCallback(callback,{timeout:750})
+      : callback=>window.setTimeout(callback,32);
+    const loadBatch=()=>{
+      pending.splice(0,6).forEach(src=>{
+        const image=new Image();
+        image.decoding='async';image.src=src;preloadedCatalogImages.push(image);
+        if(image.decode)image.decode().catch(()=>{});
+      });
+      if(pending.length)schedule(loadBatch);
+    };
+    schedule(loadBatch);
   }
   function emptyReceiverImage(ear){
     return `<div class="genius-image-unavailable"><span>${sideCode(ear)}</span><strong>Image pending</strong><small>${receiverShortLabel(ear)} receiver configuration remains available.</small></div>`;
@@ -289,7 +318,7 @@
       <div class="ref-section" data-genius-section="retention"><div class="ref-section-title-row"><h4>Concha Locks</h4><span class="ref-optional-label">Optional</span></div><p class="muted">Concha locks are matched automatically to each receiver's S, M, or P power. Configure each ear independently.</p><div class="genius-retention-grid">${ears.map(retentionCard).join('')}</div><div class="ref-selection-summary"><strong>${retentionLabel()}</strong></div></div>
       <div class="ref-section" data-genius-section="accessories"><h4>Charger &amp; Maintenance</h4><p class="muted">Compatible charging and wax-management accessories supplied for this reference.</p><div class="ref-accessory-grid">${geniusData.accessories.map(item=>`<div class="ref-accessory-card"><div class="ref-image-slot ref-has-catalog-image">${catalogImage(asset(`accessories/${item.file}`),item.name,'ref-catalog-image','lazy')}</div><h5>${item.name}</h5><p>${item.type}</p></div>`).join('')}</div></div>
     </div>`;
-    wireProduct(container);notifyRendered();
+    wireProduct(container);preloadCatalogAssets();notifyRendered();
   }
 
   function renderReferenceHome(){

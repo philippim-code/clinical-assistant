@@ -9,7 +9,15 @@
 }
 
 #references .genius-reference-shell .ref-color-chip {
-  background: #fff !important;
+  background: transparent !important;
+}
+
+html.appearance-overhaul:not([data-appearance="dark"]) #references .genius-white-matte {
+  mix-blend-mode: multiply;
+}
+
+html.appearance-overhaul[data-appearance="dark"] #references .genius-white-matte {
+  mix-blend-mode: normal;
 }
 
 #references .genius-spec-grid {
