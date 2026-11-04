@@ -1,15 +1,15 @@
-const CACHE_NAME='clinical-assistant-v1.10.0-dev1';
+const CACHE_NAME='clinical-assistant-v1.10.0-dev2';
 const APP_ASSETS=[
   './index.html',
-  './css/styles.css?v=1.10.0-dev1',
-  './css/genius-reference.css?v=1.10.0-dev1',
-  './js/version.js?v=1.10.0-dev1',
-  './js/app-core.js?v=1.10.0-dev1',
-  './js/smart-notes.js?v=1.10.0-dev1',
-  './js/references.js?v=1.10.0-dev1',
-  './js/reference-images.js?v=1.10.0-dev1',
-  './js/genius-reference.js?v=1.10.0-dev1',
-  './js/app-enhancements.js?v=1.10.0-dev1',
+  './css/styles.css?v=1.10.0-dev2',
+  './css/genius-reference.css?v=1.10.0-dev2',
+  './js/version.js?v=1.10.0-dev2',
+  './js/app-core.js?v=1.10.0-dev2',
+  './js/smart-notes.js?v=1.10.0-dev2',
+  './js/references.js?v=1.10.0-dev2',
+  './js/reference-images.js?v=1.10.0-dev2',
+  './js/genius-reference.js?v=1.10.0-dev2',
+  './js/app-enhancements.js?v=1.10.0-dev2',
   './manifest.json',
   './clinical-assistant-icon-v2.png',
   './icon-192.png',
@@ -49,6 +49,20 @@ self.addEventListener('activate',event=>{
 
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET')return;
+  const requestUrl=new URL(event.request.url);
+  const isStaticImage=requestUrl.origin===self.location.origin&&/\.(png|jpe?g|webp|gif|svg|ico)$/i.test(requestUrl.pathname);
+  if(isStaticImage){
+    event.respondWith(
+      caches.match(event.request).then(cached=>cached||fetch(event.request).then(response=>{
+        if(response&&response.ok){
+          const copy=response.clone();
+          caches.open(CACHE_NAME).then(cache=>cache.put(event.request,copy));
+        }
+        return response;
+      }))
+    );
+    return;
+  }
   event.respondWith(
     fetch(event.request,{cache:'no-store'}).then(response=>{
       if(response&&response.ok){
