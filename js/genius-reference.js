@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.10.0-dev2';
+  const VERSION='1.10.0-dev3';
   const BASE='assets/genius/catalog/';
   const SAVED_CONFIGURATION_STORAGE_KEY='meClinicalAssistantSavedDeviceConfiguration';
   const ears=['left','right'];
