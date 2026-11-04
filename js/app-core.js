@@ -1,15 +1,15 @@
 const APP_VERSION=window.CLINICAL_ASSISTANT_VERSION;
 let editingOutcomeId=null;
-let currentAppointment='';let replacedItems=[];
+let currentAppointment='';let replacedItems=[];let recentlySavedOutcomeId=null;
 const SAVED_DEVICE_CONFIGURATION_STORAGE_KEY='meClinicalAssistantSavedDeviceConfiguration';
-const DEFAULT_SETTINGS={finance:['PatientFi','Powerpay','Paymonthly/Care Credit','HFD'],adjustments:['Increased speech 1 click AU','Ran feedback test']};
+const DEFAULT_SETTINGS={finance:['PatientFi','Powerpay','Paymonthly/Care Credit','HFD'],adjustments:['Increased speech 1 click AU','Ran feedback test'],insuranceGuide:['United Health Care - United Healthcare Hearing','Aetna - Nations Hearing','CT Care - Nations Hearing','BCBS - Hearing Care Solutions OR TruHearing','Cigna - Hearing Select','WellCare - Hear USA','Humana - Hear USA','Care Partners - Hearing Care Solutions','Anthem - State of CT Blue Care'],officeLocation:'Trumbull',officeNumber:'CF299117'};
 function getSettings(){try{return Object.assign({},DEFAULT_SETTINGS,JSON.parse(localStorage.getItem('meClinicalSettings')||'{}'))}catch(e){return DEFAULT_SETTINGS}}
-function saveSettings(){const finance=document.getElementById('settingsFinance').value.split(/\n/).map(x=>x.trim()).filter(Boolean);const adjustments=document.getElementById('settingsAdjustments').value.split(/\n/).map(x=>x.trim()).filter(Boolean);localStorage.setItem('meClinicalSettings',JSON.stringify({finance:finance.length?finance:DEFAULT_SETTINGS.finance,adjustments:adjustments.length?adjustments:DEFAULT_SETTINGS.adjustments}));document.getElementById('settingsStatus').textContent='Settings saved. Reload the appointment type to see updated dropdowns/presets.';toast('✓ Settings saved.')}
+function saveSettings(){const finance=document.getElementById('settingsFinance').value.split(/\n/).map(x=>x.trim()).filter(Boolean);const adjustments=document.getElementById('settingsAdjustments').value.split(/\n/).map(x=>x.trim()).filter(Boolean);const insuranceGuide=document.getElementById('settingsInsuranceGuide').value.split(/\n/).map(x=>x.trim()).filter(Boolean);const officeLocation=document.getElementById('settingsOfficeLocation').value.trim();const officeNumber=document.getElementById('settingsOfficeNumber').value.trim();localStorage.setItem('meClinicalSettings',JSON.stringify({finance:finance.length?finance:DEFAULT_SETTINGS.finance,adjustments:adjustments.length?adjustments:DEFAULT_SETTINGS.adjustments,insuranceGuide:insuranceGuide.length?insuranceGuide:DEFAULT_SETTINGS.insuranceGuide,officeLocation:officeLocation||DEFAULT_SETTINGS.officeLocation,officeNumber}));document.getElementById('settingsStatus').textContent='Settings saved on this device.';refreshCurrentEquipmentCard();toast('✓ Settings saved.')}
 function resetSettings(){if(!confirm('Reset settings to defaults?'))return;localStorage.removeItem('meClinicalSettings');renderSettings();toast('✓ Settings reset.')}
-function renderSettings(){const s=getSettings();const f=document.getElementById('settingsFinance');const a=document.getElementById('settingsAdjustments');if(f)f.value=s.finance.join('\n');if(a)a.value=s.adjustments.join('\n');}
+function renderSettings(){const s=getSettings();const f=document.getElementById('settingsFinance');const a=document.getElementById('settingsAdjustments');const insurance=document.getElementById('settingsInsuranceGuide');const location=document.getElementById('settingsOfficeLocation');const officeNumber=document.getElementById('settingsOfficeNumber');if(f)f.value=s.finance.join('\n');if(a)a.value=s.adjustments.join('\n');if(insurance)insurance.value=(s.insuranceGuide||DEFAULT_SETTINGS.insuranceGuide).join('\n');if(location)location.value=s.officeLocation||DEFAULT_SETTINGS.officeLocation;if(officeNumber)officeNumber.value=s.officeNumber||'';}
 function financeOptions(prefix){return getSettings().finance.map(x=>`<label class="inline-label"><input type="radio" name="${prefix}Finance" value="${x.replace(/"/g,'&quot;')}">${x}</label>`).join('')}
 function adjustmentPresetPills(id){return getSettings().adjustments.map(x=>`<span class="preset" onclick="setText('${id}','${x.replace(/'/g,"&#39;")}')">${x}</span>`).join('')}
-function showTab(tabId,button){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(tabId).classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));button.classList.add('active');if(tabId==='home')renderDashboard();if(tabId==='notes')refreshOpenSavedConfigurationPrompts();if(tabId==='outcomes')renderOutcomes();if(tabId==='tools')renderReferrals();if(tabId==='settings')renderSettings();if(tabId==='about')renderAbout();}
+function showTab(tabId,button){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(tabId).classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));button.classList.add('active');if(tabId==='home')renderDashboard();if(tabId==='notes'){refreshOpenSavedConfigurationPrompts();refreshCurrentEquipmentCard();}if(tabId==='outcomes')renderOutcomes();if(tabId==='tools')renderReferrals();if(tabId==='settings')renderSettings();if(tabId==='about')renderAbout();}
 function severityForPTA(value){const n=parseFloat(value);if(isNaN(n))return{label:'Not entered',cls:'severity-invalid'};if(n<25)return{label:'No Loss',cls:'severity-normal'};if(n<=40)return{label:'Mild',cls:'severity-mild'};if(n<=55)return{label:'Moderate',cls:'severity-moderate'};if(n<=69)return{label:'Moderate to Severe',cls:'severity-modsev'};if(n<=95)return{label:'Severe to Profound',cls:'severity-severe'};return{label:'Unaidable',cls:'severity-profound'}}
 function updateStandalonePTA(){const r=severityForPTA(document.getElementById('toolRightPTA').value),l=severityForPTA(document.getElementById('toolLeftPTA').value);document.getElementById('toolPTAResult').innerHTML=`Right: <span class="${r.cls}">${r.label}</span> &nbsp; | &nbsp; Left: <span class="${l.cls}">${l.label}</span>`}
 function setText(id,value){document.getElementById(id).value=value;markNoteAsNotGenerated()}
@@ -19,8 +19,9 @@ function toggleSection(id,box){document.getElementById('card_'+id).classList.tog
 function checkGroup(cls,on){document.querySelectorAll('.'+cls).forEach(b=>b.checked=on);markNoteAsNotGenerated()}
 function toggleBox(id,show){document.getElementById(id).classList.toggle('hidden',!show)}
 function otoscopy(prefix){return `<div class="subbox"><div class="row-title">Otoscopy</div><label class="inline-label"><input type="radio" name="${prefix}OtoStatus" value="normal" onchange="toggleBox('${prefix}OtoAbnormalBox',false)">Normal AU</label><label class="inline-label"><input type="radio" name="${prefix}OtoStatus" value="abnormal" onchange="toggleBox('${prefix}OtoAbnormalBox',true)">Abnormal</label><div id="${prefix}OtoAbnormalBox" class="hidden"><div class="grid-2"><div><label class="inline-label">Ear</label><select id="${prefix}OtoEar"><option value="">Select ear...</option><option value="AD">Right / AD</option><option value="AS">Left / AS</option><option value="AU">Both / AU</option></select></div><div><label class="inline-label">Finding</label><input type="text" id="${prefix}OtoDetails" placeholder="ex. excessive cerumen, drainage, redness"></div></div><span class="required">Ear and finding are required when abnormal is selected.</span></div><label class="inline-label">Additional Otoscopy Note <span class="muted">(optional)</span></label><input type="text" id="${prefix}OtoCustom" placeholder="ex. minor cerumen buildup AU"></div>`}
-function renderEvaluation(prefix,opts={}){return section(prefix+'Eval','Evaluation',`${otoscopy(prefix)}${cb(prefix+'FDA','Patient Denies All FDA Questions')}${cb(prefix+'Test','Tested AC + BC and Entered into NOAH')}${hearingLoss(prefix)}${medReferral(prefix)}`)}
-function concernSection(prefix,title='Patient Concern / Reason for Visit',placeholder='ex. Patient states hearing aids are not working.'){return section(prefix+'Concern',title,`<label class="inline-label">Concern / Reported Difficulty</label><textarea id="${prefix}ConcernText" placeholder="${placeholder}"></textarea>`)}
+function annualHearingComparison(){return `<div class="subbox"><div class="row-title">Comparison with Previous Evaluation</div><label class="inline-label"><input type="radio" name="rtHearingChange" value="stable" onchange="toggleBox('rtProgressionDetails',false)">Hearing loss is stable</label><label class="inline-label"><input type="radio" name="rtHearingChange" value="progression" onchange="toggleBox('rtProgressionDetails',true)">Significant progression in hearing loss</label><div id="rtProgressionDetails" class="hidden"><label class="inline-label" for="rtProgressionSummary">Comparison details <span class="muted">(optional)</span></label><input type="text" id="rtProgressionSummary" placeholder="e.g., increased thresholds in the right ear at 2–4 kHz"></div></div>`}
+function renderEvaluation(prefix,opts={}){return section(prefix+'Eval','Evaluation',`${otoscopy(prefix)}${cb(prefix+'FDA','Patient Denies All FDA Questions')}${cb(prefix+'Test','Tested AC + BC and Entered into NOAH')}${hearingLoss(prefix)}${prefix==='rt'?annualHearingComparison():''}${medReferral(prefix)}`)}
+function concernSection(prefix,title='Patient Concern / Reason for Visit',placeholder='ex. Hearing aids are not working.'){return section(prefix+'Concern',title,`<label class="inline-label">Concern / Reported Difficulty</label><textarea id="${prefix}ConcernText" placeholder="${placeholder}"></textarea>`)}
 function cb(id,label,checked=false){return `<label class="inline-label"><input type="checkbox" id="${id}" ${checked?'checked':''}>${label}</label>`}
 /* v1.4.4: removed superseded duplicate function declaration */
 
@@ -36,6 +37,23 @@ function getLatestSavedDeviceConfiguration(){
     const deviceText=String(value.deviceText||value.fullText||'').trim().replace(/[.]$/,'');
     return deviceText?{...value,deviceText}:null;
   }catch(e){return null;}
+}
+function refreshCurrentEquipmentCard(){
+  const card=document.getElementById('currentEquipmentSummary');if(!card)return;
+  const configuration=getLatestSavedDeviceConfiguration();
+  const settings=getSettings();
+  const office=[settings.officeLocation,settings.officeNumber].filter(Boolean).join(' · ');
+  const officeLine=office?`<p class="muted current-office-meta">Office: ${escapeHtml(office)}</p>`:'';
+  if(!configuration){card.innerHTML=`<p class="muted">No Spark or Genius configuration saved yet. Choose Save Configuration in either reference menu to populate this card.</p>${officeLine}`;return;}
+  const source=String(configuration.source||'Hearing Aid Reference');
+  card.innerHTML=`<div class="current-equipment-meta"><span class="badge">${escapeHtml(source)}</span><span class="muted">${escapeHtml(savedConfigurationTime(configuration.savedAt))}</span></div><p class="current-equipment-details">${escapeHtml(configuration.deviceText)}</p>${officeLine}`;
+}
+function addCurrentEquipmentToNote(){
+  const configuration=getLatestSavedDeviceConfiguration();if(!configuration){toast('Save a Spark or Genius configuration first.');return;}
+  const output=document.getElementById('output');if(!output)return;
+  const entry=`Current equipment: ${configuration.deviceText}.`;
+  output.value=output.value.trim()?`${output.value.trim()} ${entry}`:entry;
+  markNoteAsNotGenerated();output.focus();
 }
 function savedConfigurationTime(value){
   const date=new Date(value||'');
@@ -80,7 +98,7 @@ document.addEventListener('input',e=>{const prefix=e.target?.dataset?.purchaseDe
 function trialOutcome(prefix){return `<div class="subbox"><label class="inline-label"><input type="checkbox" id="${prefix}Trial" onchange="toggleBox('${prefix}TrialBox',this.checked)">Trial Accepted</label><div id="${prefix}TrialBox" class="hidden"><input type="text" id="${prefix}TrialDevice" placeholder="Hearing aid model"><label class="inline-label">Trial Follow-Up / Return Date</label><input type="date" id="${prefix}TrialDate"><p class="muted">Trials are documented as a 3-day take-home trial beginning today.</p></div></div>`}
 /* v1.4.4: removed superseded duplicate function declaration */
 
-function renderRetest(){return concernSection('rt','Patient Concern / Reported Difficulty','ex. Patient reports trouble with clarity in background noise.')+renderHearingAidService('rt')+renderEvaluation('rt')+section('rtDemo','Demonstration',`${cb('rtDemoTech','Demoed New Tech')}${cou('rt')}`)+section('rtTreatment','Treatment Outcome',`${cb('rtBetter','Recommended Better Treatment')}${cb('rtWarranty','Warranty / Trade-In Discussion')}${purchaseOutcome('rt',true)}${trialOutcome('rt')}<div class="subbox"><label class="inline-label"><input type="checkbox" id="rtRejected" onchange="toggleBox('rtRejectedBox',this.checked)">Did Not Trade In</label><div id="rtRejectedBox" class="hidden"><input type="text" id="rtRejectedReason" placeholder="ex. price concern, wants to think it over, not ready to upgrade"></div></div>`)+section('rtFollow','Counseling / Wrap Up',`${cb('rtRealistic','Counseled on Realistic Expectations')}${cb('rtWearCounsel','Counseled on Importance of Daily Full-Time Wear')}${cb('rtCleaningSet','Cleaning Set for 3 Months')}${cb('rtSatisfied','Patient Satisfied')}`)}
+function renderRetest(){return concernSection('rt','Patient Concern / Reported Difficulty','ex. Difficulty hearing in background noise.')+renderHearingAidService('rt')+renderEvaluation('rt')+section('rtDemo','Demonstration',`${cb('rtDemoTech','Demoed New Tech')}${cou('rt')}`)+section('rtTreatment','Treatment Outcome',`${cb('rtBetter','Recommended Better Treatment')}${cb('rtWarranty','Warranty / Trade-In Discussion')}${purchaseOutcome('rt',true)}${trialOutcome('rt')}<div class="subbox"><label class="inline-label"><input type="checkbox" id="rtRejected" onchange="toggleBox('rtRejectedBox',this.checked)">Did Not Trade In</label><div id="rtRejectedBox" class="hidden"><input type="text" id="rtRejectedReason" placeholder="ex. price concern, wants to think it over, not ready to upgrade"></div></div>`)+section('rtFollow','Counseling / Wrap Up',`${cb('rtRealistic','Counseled on Realistic Expectations')}${cb('rtWearCounsel','Counseled on Importance of Daily Full-Time Wear')}${cb('rtCleaningSet','Cleaning Set for 3 Months')}${cb('rtSatisfied','Patient Satisfied')}`)}
 function computer(prefix){return `<div class="subbox"><label class="inline-label"><input type="checkbox" id="${prefix}Connected">Connected to Computer</label><label class="inline-label"><input type="checkbox" id="${prefix}Firmware">Firmware Updated</label><label class="inline-label">Average Wear Time</label><input type="number" id="${prefix}WT" placeholder="ex. 10"><label class="inline-label"><input type="radio" name="${prefix}Prog" value="no" onchange="toggleBox('${prefix}AdjBox',false)">No Programming Changes</label><label class="inline-label"><input type="radio" name="${prefix}Prog" value="yes" onchange="toggleBox('${prefix}AdjBox',this.checked)">Programming Changes</label><div id="${prefix}AdjBox" class="hidden"><input type="text" id="${prefix}Adj" placeholder="ex. Increased speech 1 click AU"><div class="pill-row">${adjustmentPresetPills(prefix+'Adj')}</div></div></div>`}
 function renderRetestUnder(){return renderRetest()}
 function renderRetestOver(){return renderRetest()}
@@ -117,17 +135,17 @@ function fragmentText(text){return lowerFirst(text)}
 /* v1.4.4: removed superseded duplicate function declaration */
 
 function medText(prefix){if(!checked(prefix+'Med'))return'';let r=fragmentText(val(prefix+'MedReason')),destination=val(prefix+'MedDestinationName');if(!destination)return r?'Med referred due to '+r:'Med referral recommended; reason not entered';let text=r?'Med referral recommended due to '+r:'Med referral recommended; reason not entered';return text+'. Referred to '+destination}
-function concernText(prefix){if(!checked('sec_'+prefix+'Concern'))return'';return fragmentText(val(prefix+'ConcernText'))}
+function concernText(prefix){if(!checked('sec_'+prefix+'Concern'))return'';return fragmentText(val(prefix+'ConcernText')).replace(/^patient reports\s*[:,.-]?\s*/i,'').trim()}
 function otoscopyText(prefix){
   const status=radio(prefix+'OtoStatus');
   const custom=fragmentText(val(prefix+'OtoCustom'));
   let base='';
-  if(status==='normal')base='Otoscopy normal AU';
+  if(status==='normal')base='Otoscopy was normal AU';
   else if(status==='abnormal'){
     const ear=val(prefix+'OtoEar'),details=fragmentText(val(prefix+'OtoDetails'));
-    if(ear&&details)base=`Otoscopy abnormal ${ear}: ${details}`;
-    else if(details)base=`Otoscopy abnormal: ${details}`;
-    else base='Otoscopy abnormal';
+    if(ear&&details)base=`Otoscopy showed ${details} ${ear}`;
+    else if(details)base=`Otoscopy showed ${details}`;
+    else base='Otoscopy showed an abnormal finding';
   }
   if(custom)return base?`${base}; ${custom}`:`Otoscopy: ${custom}`;
   return base;
@@ -164,7 +182,7 @@ function hearingAidServiceParts(prefix){let arr=[];if(!checked('sec_'+prefix+'Se
 function evaluationParts(prefix,extra={}){let arr=[];arr.push(otoscopyText(prefix));if(checked(prefix+'FDA'))arr.push('Patient denies all FDA questions');if(checked(prefix+'Test'))arr.push('Tested AC + BC and entered into NOAH');arr.push(hlText(prefix));arr.push(medText(prefix));if(extra.trouble&&checked(prefix+'Trouble'))arr.push('Patient states trouble with clarity');return arr.filter(Boolean)}
 /* v1.4.4: removed superseded duplicate function declaration */
 
-function generateRetest(){let arr=[];arr.push(concernText('rt'));arr.push(...hearingAidServiceParts('rt'));if(checked('sec_rtEval'))arr.push(...evaluationParts('rt'));if(checked('sec_rtDemo')){if(checked('rtDemoTech'))arr.push('Demoed new tech');arr.push(couText('rt'))}if(checked('sec_rtTreatment')){if(checked('rtBetter'))arr.push('Recommended better treatment');if(checked('rtWarranty'))arr.push('Went over warranty / trade-in discussion');arr.push(purchaseText('rt',true));arr.push(trialText('rt'));if(checked('rtRejected')){const reason=fragmentText(document.getElementById('rtRejectedReason')?.value);arr.push(reason?'Did not trade in: '+reason:'Did not trade in')}}if(checked('sec_rtFollow')){if(checked('rtRealistic'))arr.push('Counseled on realistic expectations');if(checked('rtWearCounsel'))arr.push('Counseled on importance of daily full-time wear');if(checked('rtCleaningSet'))arr.push('Cleaning set for 3 months');if(checked('rtSatisfied'))arr.push('Patient satisfied')}return arr.filter(Boolean)}
+function generateRetest(){let arr=[];arr.push(concernText('rt'));arr.push(...hearingAidServiceParts('rt'));if(checked('sec_rtEval')){arr.push(...evaluationParts('rt'));const change=radio('rtHearingChange');if(change==='stable')arr.push('Hearing loss is stable compared with the previous evaluation');if(change==='progression'){const details=fragmentText(val('rtProgressionSummary'));arr.push(details?`Significant progression in hearing loss compared with the previous evaluation: ${details}`:'Significant progression in hearing loss compared with the previous evaluation')}}if(checked('sec_rtDemo')){if(checked('rtDemoTech'))arr.push('Demoed new tech');arr.push(couText('rt'))}if(checked('sec_rtTreatment')){if(checked('rtBetter'))arr.push('Recommended better treatment');if(checked('rtWarranty'))arr.push('Went over warranty / trade-in discussion');arr.push(purchaseText('rt',true));arr.push(trialText('rt'));if(checked('rtRejected')){const reason=fragmentText(document.getElementById('rtRejectedReason')?.value);arr.push(reason?'Did not trade in: '+reason:'Did not trade in')}}if(checked('sec_rtFollow')){if(checked('rtRealistic'))arr.push('Counseled on realistic expectations');if(checked('rtWearCounsel'))arr.push('Counseled on importance of daily full-time wear');if(checked('rtCleaningSet'))arr.push('Cleaning set for 3 months');if(checked('rtSatisfied'))arr.push('Patient satisfied')}return arr.filter(Boolean)}
 function generateRetestUnder(){return generateRetest()}
 function generateRetestOver(){return generateRetest()}
 /* v1.4.4: removed superseded duplicate function declaration */
@@ -400,13 +418,13 @@ function saveOutcome(){
   const existingIndex=editingOutcomeId?items.findIndex(x=>x.id===editingOutcomeId):-1;
   if(existingIndex>=0){
     const existing=items[existingIndex];
-    items[existingIndex]={...existing,label:capFirst(label||'Unnamed patient'),appointment:appointmentLabel(),appointmentKey:currentAppointment,reminder:capFirst(reminder),note,state:appointmentState,savedAt:new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}),savedDate:new Date().toLocaleDateString()};
+    const updated={...existing,label:capFirst(label||'Unnamed patient'),appointment:appointmentLabel(),appointmentKey:currentAppointment,reminder:capFirst(reminder),note,state:appointmentState,savedAt:new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}),savedDate:new Date().toLocaleDateString()};items.splice(existingIndex,1);items.unshift(updated);recentlySavedOutcomeId=existing.id;
     setSavedOutcomes(items);editingOutcomeId=null;clearActiveDraft('Outcome updated. No unfinished appointment.');toast('✓ Saved outcome updated. Form cleared.');clearAll();document.getElementById('copyStatus').textContent='Saved outcome updated. Form cleared.';
   }else{
-    items.unshift({id:Date.now().toString(),label:capFirst(label||'Unnamed patient'),appointment:appointmentLabel(),appointmentKey:currentAppointment,reminder:capFirst(reminder),note,state:appointmentState,status:'pending',closed:false,savedAt:new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}),savedDate:new Date().toLocaleDateString()});
+    const newId=Date.now().toString();recentlySavedOutcomeId=newId;items.unshift({id:newId,label:capFirst(label||'Unnamed patient'),appointment:appointmentLabel(),appointmentKey:currentAppointment,reminder:capFirst(reminder),note,state:appointmentState,status:'pending',closed:false,savedAt:new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}),savedDate:new Date().toLocaleDateString()});
     setSavedOutcomes(items);clearActiveDraft('Outcome saved. No unfinished appointment.');toast('✓ Outcome saved. Form cleared.');clearAll();document.getElementById('copyStatus').textContent='Outcome saved to Saved Outcomes. Form cleared.';
   }
-  showTab('outcomes',document.querySelectorAll('.tab-btn')[2]);renderOutcomes();renderDashboard();
+  showTab('outcomes',document.querySelectorAll('.tab-btn')[2]);renderOutcomes();renderDashboard();setTimeout(()=>{const saved=document.getElementById('outcomeCard_'+recentlySavedOutcomeId);if(saved)saved.scrollIntoView({behavior:'smooth',block:'start'});},80);
 }
 function renderOutcomes(){
   const list=document.getElementById('outcomeList');
@@ -424,7 +442,7 @@ function renderOutcomes(){
   function card(item){
     const status=getOutcomeStatus(item);
     const statusLabel=status==='draft'?'Draft':status==='closed'?'Completed':'Pending';
-    return `<div class="outcome-card ${status==='draft'?'draft':''} ${status==='closed'?'closed':''}"><div class="outcome-head"><div><div class="outcome-title">${escapeHtml(item.label)} <span class="badge">${escapeHtml(item.appointment)}</span> <span class="badge status-${status}">${statusLabel}</span></div><div class="muted">Saved ${escapeHtml(item.savedAt)}${item.savedDate?` • ${escapeHtml(item.savedDate)}`:''}</div>${item.reminder?`<div class="outcome-reminder"><span class="reminder-icon">●</span><strong>Reminder:</strong> ${escapeHtml(item.reminder)}</div>`:''}</div></div><div class="outcome-note" id="outcomeNote_${item.id}">${escapeHtml(item.note)}</div><div class="outcome-actions"><button class="tiny info" onclick="copyOutcome('${item.id}',this)">Copy</button><button class="tiny secondary" onclick="editOutcome('${item.id}')">${status==='draft'?'Resume':'Edit'}</button><button class="tiny success-outline" onclick="setSingleOutcomeStatus('${item.id}','${status==='closed'?'pending':'closed'}')">${status==='closed'?'Mark Pending':'Mark Complete'}</button><button class="tiny danger-outline" onclick="deleteOutcome('${item.id}')">Delete</button></div></div>`;
+    return `<div class="outcome-card ${status==='draft'?'draft':''} ${status==='closed'?'closed':status==='pending'?'pending':''}" id="outcomeCard_${escapeHtml(item.id)}"><div class="outcome-head"><div><div class="outcome-title">${escapeHtml(item.label)} <span class="badge">${escapeHtml(item.appointment)}</span> <span class="badge status-${status}">${statusLabel}</span></div><div class="muted">Saved ${escapeHtml(item.savedAt)}${item.savedDate?` • ${escapeHtml(item.savedDate)}`:''}</div>${item.reminder?`<div class="outcome-reminder"><span class="reminder-icon">●</span><strong>Reminder:</strong> ${escapeHtml(item.reminder)}</div>`:''}</div></div><div class="outcome-note" id="outcomeNote_${item.id}">${escapeHtml(item.note)}</div><div class="outcome-actions"><button class="tiny info" onclick="copyOutcome('${item.id}',this)">Copy</button><button class="tiny secondary" onclick="editOutcome('${item.id}')">${status==='draft'?'Resume':'Edit'}</button><button class="tiny success-outline" onclick="setSingleOutcomeStatus('${item.id}','${status==='closed'?'pending':'closed'}')">${status==='closed'?'Mark Pending':'Mark Complete'}</button><button class="tiny danger-outline" onclick="deleteOutcome('${item.id}')">Delete</button></div></div>`;
   }
   let html='';
   if(pending.length){html+=`<h3 style="margin-top:22px">🟡 Pending (${pending.length})</h3>`+pending.map(card).join('');}
@@ -938,7 +956,7 @@ function hearingLoss(prefix){
           </select>
         </div>
       </div>
-      <input type="text" id="${prefix}OtherHL" placeholder="Other hearing loss type if needed...">
+      <input type="text" id="${prefix}OtherHL" placeholder="Describe other hearing loss type..." oninput="selectOtherHearingType('${prefix}')">
     </div>`;
   }
 
@@ -979,11 +997,16 @@ function hearingLoss(prefix){
           </select>
         </div>
       </div>
-      <input type="text" id="haeOtherHL" placeholder="Other hearing loss type if needed...">
+      <input type="text" id="haeOtherHL" placeholder="Describe other hearing loss type..." oninput="selectOtherHearingType('hae')">
     </div>
   </div>`;
 }
 
+function selectOtherHearingType(prefix){
+  if(prefix==='hae'){setHaeHearingStatus('loss');const type=document.getElementById('haeType');if(type)type.value='other';}
+  else{const type=document.getElementById(prefix+'Type');const checkbox=document.getElementById(prefix+'HL');if(type)type.value='other';if(checkbox)checkbox.checked=true;}
+  markNoteAsNotGenerated();saveDraftDebounced();
+}
 function setHaeHearingStatus(status){
   const details=document.getElementById('haeHearingDetails');
   const lossBox=document.getElementById('haeHearingLossBox');
@@ -1205,7 +1228,7 @@ function renderHae(){
     </div>
   </div>`;
 
-  return concernSection('hae','Patient Concern / Reason for Visit','ex. Patient reports difficulty understanding speech, especially in background noise.')
+  return concernSection('hae','Patient Concern / Reason for Visit','ex. Difficulty understanding speech, especially in background noise.')
     +renderEvaluation('hae')
     +section('haeDemo','Demonstration',
       `${cb('haeDemoTech','Demoed New Tech')}${cou('hae')}${cb('haeClarity','Significant Improvement in Clarity and Understanding')}`)
@@ -1267,6 +1290,7 @@ function normalizeFragmentAfterComma(text){
   return text.charAt(0).toLowerCase()+text.slice(1);
 }
 
+window.addEventListener('clinical-assistant:configuration-saved',refreshCurrentEquipmentCard);
 function generateNote(){
   let arr=[];
   if(currentAppointment==='hae')arr=generateHae();
@@ -1313,6 +1337,7 @@ window.addEventListener('load',()=>{
   renderDashboard();
   renderOutcomes();
   renderAbout();
+  refreshCurrentEquipmentCard();
 });
 
 /* v1.4.4: removed superseded duplicate function declaration */
