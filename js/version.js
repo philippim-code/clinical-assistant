@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.10.0-dev2';
+  const VERSION='1.10.0-dev3';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -49,19 +49,22 @@
   ];
 
   const RELEASE_NOTE_TEXT=[
-    'Genius Reference development preview',
-    'MEENERGY RIC T R 5W configuration for ME5, ME4, ME3, and ME2',
-    'Verified treatment-level specifications and common product features',
-    'EarWear 3.0 receivers, couplings, concha locks, charger, and wax-guard reference',
-    'Independent left and right fitting selections with live configuration summaries',
-    'Saved Genius configurations available in Sycle purchase-note workflows',
+    'Binaural fit mode in Spark and Genius configuration menus',
+    'Current Equipment card populated from the latest saved Spark or Genius configuration',
+    'Editable insurance vendor guide and office location details in Settings',
+    'Annual retest stability and progression comparison options',
+    'Saved outcomes show distinct status colors and return to the newly saved outcome',
+    'Clinical note wording fixes for patient concerns, otoscopy, and other hearing loss types',
     'Bug fixes'
   ];
 
   const RELEASE_NOTES=[
-    '<li><strong>Cleaner product artwork</strong> blends known white image canvases into the Genius interface in light mode.</li>',
-    '<li><strong>Faster selections</strong> use idle image preloading and a cache-first path for static product artwork.</li>',
-    '<li><strong>Genius Reference</strong> retains the complete MEENERGY RIC T R 5W configuration workflow and Sycle Notes handoff.</li>',
+    '<li><strong>Binaural fit</strong> keeps receiver and coupling selections matched across both ears in Spark and Genius.</li>',
+    '<li><strong>Current Equipment</strong> shows the latest saved Spark or Genius configuration and can add it to a patient note.</li>',
+    '<li><strong>Settings</strong> now includes an editable insurance vendor guide and office location/number fields.</li>',
+    '<li><strong>Annual Retest</strong> supports stable hearing or significant progression with optional comparison details.</li>',
+    '<li><strong>Saved Outcomes</strong> use distinct pending/completed backgrounds and scroll to the saved outcome.</li>',
+    '<li><strong>Note wording</strong> was refined for patient concerns and otoscopy; entering an other hearing-loss type now selects that type automatically.</li>',
     '<li><strong>Bug fixes</strong></li>'
   ];
 
@@ -114,7 +117,7 @@
     const headingText="What's New in v"+VERSION;
     if(heading&&heading.textContent!==headingText)heading.textContent=headingText;
     const dateBadge=document.querySelector('#aboutWhatsNew .about-section-head > .badge');
-    if(dateBadge&&dateBadge.textContent!=='November 4, 2026')dateBadge.textContent='November 4, 2026';
+    if(dateBadge&&dateBadge.textContent!=='November 3, 2026')dateBadge.textContent='November 3, 2026';
     const list=document.querySelector('#aboutWhatsNew .changelog-list');
     const notesMarkup=RELEASE_NOTES.join('');
     if(list&&list.innerHTML!==notesMarkup)list.innerHTML=notesMarkup;
