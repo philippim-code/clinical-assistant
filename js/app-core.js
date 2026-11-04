@@ -140,7 +140,7 @@ function otoscopyText(prefix){
   const status=radio(prefix+'OtoStatus');
   const custom=fragmentText(val(prefix+'OtoCustom'));
   let base='';
-  if(status==='normal')base='Otoscopy was normal AU';
+  if(status==='normal')base='Otoscopy normal AU';
   else if(status==='abnormal'){
     const ear=val(prefix+'OtoEar'),details=fragmentText(val(prefix+'OtoDetails'));
     if(ear&&details)base=`Otoscopy showed ${details} ${ear}`;
@@ -1040,38 +1040,18 @@ function setHaeHearingStatus(status){
 
 function hlText(prefix){
   if(prefix==='hae'){
-    const status=radio('haeHearingStatus');
-    if(status==='noLoss')return'No hearing loss identified';
-    if(status!=='loss')return'';
-
-    let lat=val('haeLat');
-    let type=val('haeType');
-    const other=val('haeOtherHL');
-
-    if(!lat&&!type)return'Hearing loss type/laterality not selected';
-    if(!type)type='hearing loss';
-    if(type==='other')type=other||'hearing loss';
-
-    return lat==='Bilateral'
-      ? `Bilateral ${type} hearing loss`
-      : (lat?`${type} hearing loss ${lat}`:`${type} hearing loss`);
+    const status=radio('haeHearingStatus'),other=val('haeOtherHL');
+    if(status==='noLoss'&&!other)return'No hearing loss identified';
+    if(status!=='loss'&&!other)return'';
+    let lat=val('haeLat'),type=val('haeType');if(other)type=other;
+    if(!lat&&!type)return'Hearing loss type/laterality not selected';if(!type)type='hearing loss';
+    return lat==='Bilateral'?`Bilateral ${type} hearing loss`:(lat?`${type} hearing loss ${lat}`:`${type} hearing loss`);
   }
-
-  if(!checked(prefix+'HL'))return'';
-  let lat=document.getElementById(prefix+'Lat').value;
-  let type=document.getElementById(prefix+'Type').value;
-  const other=val(prefix+'OtherHL');
-
-  if(!lat&&!type)return'Hearing loss type/laterality not selected';
-  if(!lat)lat='';
-  if(!type)type='hearing loss';
-  if(type==='other')type=other||'hearing loss';
-  if(type==='normal hearing'){
-    return lat==='Bilateral'?'Normal hearing bilaterally':(lat?`Normal hearing ${lat}`:'Normal hearing');
-  }
-  return lat==='Bilateral'
-    ? `Bilateral ${type} hearing loss`
-    : (lat?`${type} hearing loss ${lat}`:`${type} hearing loss`);
+  const other=val(prefix+'OtherHL');if(!checked(prefix+'HL')&&!other)return'';
+  let lat=val(prefix+'Lat'),type=val(prefix+'Type');if(other)type=other;
+  if(!lat&&!type)return'Hearing loss type/laterality not selected';if(!type)type='hearing loss';
+  if(type==='normal hearing')return lat==='Bilateral'?'Normal hearing bilaterally':(lat?`Normal hearing ${lat}`:'Normal hearing');
+  return lat==='Bilateral'?`Bilateral ${type} hearing loss`:(lat?`${type} hearing loss ${lat}`:`${type} hearing loss`);
 }
 
 /* v1.4.4: removed superseded duplicate function declaration */
