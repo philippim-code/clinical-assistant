@@ -238,3 +238,6 @@ html.appearance-overhaul[data-appearance="dark"] #references .genius-retention-e
     height: 132px;
   }
 }
+
+/* Keep reused Genius images visually stable during selector rerenders. */
+#references .genius-reference-shell img[data-genius-image]{transition:none!important;animation:none!important}

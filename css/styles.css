@@ -409,3 +409,66 @@ body.clinical-tool-open{overflow:hidden}
 @media(max-width:520px){.tool-launch-card{align-items:stretch;flex-direction:column}.tool-launch-action{width:100%}.clinical-tool-overlay{align-items:stretch;padding:0}.clinical-tool-panel{max-height:none;height:100%;border:0;border-radius:0;padding:16px}.clinical-tool-panel-head{top:-16px;margin:-16px -16px 14px;padding:14px 16px}.referral-card-head{flex-direction:column}.referral-actions>*{flex:1 1 120px;justify-content:center;text-align:center;min-height:40px}}
 
 .current-equipment-card{margin-top:16px;padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:#f7fbfc}.current-equipment-card h4{margin:0;color:var(--teal)}.current-equipment-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px}.current-equipment-details{margin:10px 0;white-space:pre-wrap}.current-office-meta{margin:8px 0 0}.ref-binaural-toggle{margin:0 0 12px}.outcome-card.pending{background:#fffaf0}.outcome-card.closed{background:#eff8f1}
+
+
+/* v1.10.0-dev5 */
+.programming-changes-field-wrap{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+textarea.programming-changes-field{flex:1 1 100%;width:100%;min-height:150px;height:150px;max-height:60vh;resize:vertical;overflow-y:auto;white-space:pre-wrap}
+.programming-expand-btn{margin-top:0}
+.programming-expand-overlay{position:fixed;inset:0;z-index:1700;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(10,24,28,.58)}
+.programming-expand-panel{width:min(1000px,96vw);height:min(82vh,850px);padding:18px;background:var(--surface,#fff);border:1px solid var(--border);border-radius:16px;box-shadow:0 18px 48px rgba(0,0,0,.25);display:flex;flex-direction:column}
+.programming-expand-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}
+.programming-expand-heading h3{margin:0}
+.programming-expand-heading button{margin:0}
+textarea.programming-expand-textarea{flex:1;width:100%;min-height:0;height:auto;resize:vertical;white-space:pre-wrap}
+.outcomes-back-to-top{position:fixed;right:22px;bottom:calc(22px + env(safe-area-inset-bottom));z-index:1200;display:none;align-items:center;gap:7px;margin:0;padding:11px 15px;border:1px solid var(--border);border-radius:999px;background:var(--teal);color:#fff;box-shadow:0 5px 18px rgba(0,0,0,.22);font-size:14px}
+.outcomes-back-to-top.visible{display:flex}
+.insurance-guide-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.insurance-guide-toolbar p{margin:0}
+.insurance-guide-toolbar button{margin:0;flex:0 0 auto}
+.insurance-guide-table,.equipment-sheet-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.insurance-guide-table th,.insurance-guide-table td,.equipment-sheet-table th,.equipment-sheet-table td{padding:12px 14px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.insurance-guide-table th{background:var(--teal-light);color:var(--teal-dark);font-size:13px}
+.insurance-guide-table td{color:var(--text);font-size:14px}
+.insurance-guide-editor{margin-top:14px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface,#f7fbfc)}
+.insurance-editor-heading{display:grid;gap:3px;margin-bottom:12px}
+.insurance-editor-heading h4{margin:0}
+.insurance-editor-rows{display:grid;gap:10px}
+.insurance-editor-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;align-items:end;gap:10px;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--card,#fff)}
+.insurance-editor-row label{display:block;font-size:13px;font-weight:700}
+.insurance-editor-row input{margin-top:6px}
+.insurance-editor-row button{margin:0;white-space:nowrap}
+.insurance-editor-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.insurance-editor-actions button{margin:0}
+.insurance-editor-spacer{flex:1}
+.equipment-sheet-controls{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:12px 0 16px}
+.equipment-sheet-controls label{flex:1 1 260px;font-weight:700}
+.equipment-sheet-controls button{margin:0}
+.equipment-print-sheet{max-width:860px;padding:22px;border:1px solid var(--border);border-radius:14px;background:var(--card,#fff);color:var(--text)}
+.equipment-sheet-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:2px solid var(--teal)}
+.equipment-sheet-kicker,.equipment-sheet-date span{display:block;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.equipment-sheet-heading h2{margin:3px 0 0;color:var(--text);font-size:22px}
+.equipment-sheet-date{text-align:right;color:var(--muted);font-size:10px}
+.equipment-sheet-date time{display:block;margin-top:3px;font-size:10px}
+.equipment-sheet-table{margin-top:10px}
+.equipment-sheet-table th{width:34%;color:var(--muted);font-size:12px;font-weight:700}
+.equipment-sheet-table td{color:var(--text);font-size:13px}
+.equipment-sheet-footer{margin:15px 0 0;color:var(--muted);font-size:9px}
+.equipment-empty{padding:14px;border-radius:10px;background:var(--surface,#f7fbfc)}
+@media(max-width:700px){
+  .outcomes-back-to-top{right:12px;bottom:calc(12px + env(safe-area-inset-bottom))}
+  .insurance-guide-toolbar{align-items:flex-start;flex-direction:column}
+  .insurance-editor-row{grid-template-columns:1fr}
+  .equipment-print-sheet{padding:15px}
+  .equipment-sheet-table th,.equipment-sheet-table td{padding:9px 8px}
+}
+@media print{
+  @page{margin:12mm}
+  body.equipment-print-mode *{visibility:hidden!important}
+  body.equipment-print-mode [data-equipment-print-sheet],body.equipment-print-mode [data-equipment-print-sheet] *{visibility:visible!important}
+  body.equipment-print-mode [data-equipment-print-sheet]{position:fixed!important;inset:0 auto auto 0!important;width:100%!important;max-width:none!important;margin:0!important;padding:10mm!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;color:#111!important}
+  body.equipment-print-mode .equipment-sheet-controls,body.equipment-print-mode .ref-accordion summary,body.equipment-print-mode .equipment-sheet-footer{display:none!important}
+  body.equipment-print-mode .equipment-sheet-heading{border-bottom-color:#111}
+  body.equipment-print-mode .equipment-sheet-heading h2,body.equipment-print-mode .equipment-sheet-table th,body.equipment-print-mode .equipment-sheet-table td{color:#111}
+  body.equipment-print-mode .equipment-sheet-table th,body.equipment-print-mode .equipment-sheet-table td{border-color:#bbb}
+}

@@ -14,8 +14,8 @@
 <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
 <link rel="apple-touch-icon" sizes="192x192" href="assets/icon-192.png" />
 <link rel="manifest" href="manifest.json" />
-<link rel="stylesheet" href="css/styles.css?v=1.10.0-dev4" />
-<link rel="stylesheet" href="css/genius-reference.css?v=1.10.0-dev4" />
+<link rel="stylesheet" href="css/styles.css?v=1.10.0-dev5" />
+<link rel="stylesheet" href="css/genius-reference.css?v=1.10.0-dev5" />
 </head>
 <body>
 <div id="splash" class="splash"><div class="splash-card"><img src="assets/logo.png" class="splash-logo" alt="Miracle-Ear Logo"><div class="splash-title">Miracle-Ear</div><div class="splash-subtitle">Clinical Assistant <span data-app-version></span></div></div></div>
@@ -52,7 +52,7 @@
     <div id="homeRecent"><p class="muted">No saved activity yet.</p></div>
   </div>
 </div>
-<div id="notes" class="tab-panel"><h3>Select Appointment Type</h3><div class="appt-grid"><div class="appt-card" onclick="loadAppointment('hae',this)">HAE</div><div class="appt-card" onclick="loadAppointment('aftercare',this)">Aftercare</div><div class="appt-card" onclick="loadAppointment('delivery',this)">Delivery</div><div class="appt-card" onclick="loadAppointment('retest',this)">Annual Retest</div></div><div class="section active-patient-panel"><h3>Current Patient / Quick Label</h3><div class="grid-2"><div><label class="inline-label">Patient label <span class="muted">(initials, first name, or appointment time)</span></label><input type="text" id="currentPatientLabel" placeholder="ex. 10:30 AM - J.S."></div><div><label class="inline-label">Optional reminder/status</label><input type="text" id="currentPatientReminder" placeholder="ex. Needs closeout, waiting on payment"></div></div><p class="muted">Used when saving to Saved Outcomes. Keep identifiers minimal if possible.</p><div class="current-equipment-card"><div><h4>Current Equipment</h4><p class="muted">Review the latest saved Spark or Genius configuration before adding it to this note.</p></div><div id="currentEquipmentSummary"><p class="muted">No configuration saved yet.</p></div><button type="button" class="tiny secondary" onclick="addCurrentEquipmentToNote()">Add Current Equipment to Note</button></div></div><div class="layout"><div class="section" id="workflow"><h3>Workflow</h3><p>Select an appointment type above.</p></div><div><div class="section"><h3>Additional Details</h3><textarea id="details" placeholder="Add any extra details here..."></textarea></div><div class="section"><h3>Generated Note</h3><p class="muted">Generate the note, then edit it freely before copying or saving. Saved Outcomes preserves the text exactly as shown here.</p><textarea id="output" placeholder="Click Generate Note when finished..."></textarea><button class="success" onclick="generateNote()">✓ Generate & Copy Note</button><button class="primary" onclick="saveOutcome()">💾 Save Outcome</button><button class="danger-outline" onclick="clearAll()">Clear</button><div class="muted" id="copyStatus"></div></div></div></div></div>
+<div id="notes" class="tab-panel"><h3>Select Appointment Type</h3><div class="appt-grid"><div class="appt-card" onclick="loadAppointment('hae',this)">HAE</div><div class="appt-card" onclick="loadAppointment('aftercare',this)">Aftercare</div><div class="appt-card" onclick="loadAppointment('delivery',this)">Delivery</div><div class="appt-card" onclick="loadAppointment('retest',this)">Annual Retest</div></div><div class="section active-patient-panel"><h3>Current Patient / Quick Label</h3><div class="grid-2"><div><label class="inline-label">Patient label <span class="muted">(initials, first name, or appointment time)</span></label><input type="text" id="currentPatientLabel" placeholder="ex. 10:30 AM - J.S."></div><div><label class="inline-label">Optional reminder/status</label><input type="text" id="currentPatientReminder" placeholder="ex. Needs closeout, waiting on payment"></div></div><p class="muted">Used when saving to Saved Outcomes. Keep identifiers minimal if possible.</p></div><div class="layout"><div class="section" id="workflow"><h3>Workflow</h3><p>Select an appointment type above.</p></div><div><div class="section"><h3>Additional Details</h3><textarea id="details" placeholder="Add any extra details here..."></textarea></div><div class="section"><h3>Generated Note</h3><p class="muted">Generate the note, then edit it freely before copying or saving. Saved Outcomes preserves the text exactly as shown here.</p><textarea id="output" placeholder="Click Generate Note when finished..."></textarea><button class="success" onclick="generateNote()">✓ Generate & Copy Note</button><button class="primary" onclick="saveOutcome()">💾 Save Outcome</button><button class="danger-outline" onclick="clearAll()">Clear</button><div class="muted" id="copyStatus"></div></div></div></div></div>
 
 <div id="outcomes" class="tab-panel"><div class="section"><h3>Saved Outcomes</h3><p class="muted">Saved outcomes stay on this computer/browser using local storage. Use initials, first name, appointment time, or another minimal identifier if possible.</p><div class="grid-2 outcomes-toolbar-grid"><div class="outcomes-search"><label class="inline-label">Search Saved Outcomes</label><input type="text" id="outcomeSearch" placeholder="Search patient label, appointment type, reminder, or note..." oninput="renderOutcomes()"></div><div class="toolbar-actions outcomes-actions"><button class="info" onclick="exportTodaysOutcomes()">Export Saved Outcomes</button><button class="success-outline" onclick="markAllOutcomesComplete()">Mark All Complete</button><button class="danger-outline" onclick="clearCompletedOutcomes()">Clear Completed</button></div></div><div id="outcomeSummary" class="result-box">No saved outcomes yet.</div><div id="outcomeList" style="margin-top:14px;"><p>No saved outcomes yet.</p></div></div></div>
 <div id="tools" class="tab-panel">
@@ -108,12 +108,10 @@
 <label class="inline-label"><input type="checkbox" id="homeShowRecent" checked> Recent Activity</label>
 </div>
 </div>
-<div class="settings-group" data-settings-office-profiles><h4>Office Profiles</h4><p class="muted">Saved on this device for quick reference.</p><div class="grid-2"><div><label class="inline-label" for="settingsOfficeLocation">Office</label><input type="text" id="settingsOfficeLocation" placeholder="Trumbull"></div><div><label class="inline-label" for="settingsOfficeNumber">Office Number</label><input type="text" id="settingsOfficeNumber" placeholder="CF299117"></div></div></div>
 <div class="settings-group" data-settings-financing><h4>Financing Companies</h4><p class="muted">Customize the financing companies available in documentation workflows.</p><label class="inline-label">Companies <span class="muted">one per line</span></label><textarea id="settingsFinance" placeholder="PatientFi
 Powerpay
 Paymonthly/Care Credit
 HFD"></textarea></div>
-<div class="settings-group" data-settings-insurance-guide><h4>Insurance Guide</h4><p class="muted">Edit the plan-to-vendor reference. Use one mapping per line; changes are stored on this device.</p><label class="inline-label" for="settingsInsuranceGuide">Insurance plan - vendor</label><textarea id="settingsInsuranceGuide" placeholder="United Health Care - United Healthcare Hearing"></textarea></div>
 <div class="settings-group" data-settings-programming-presets><h4>Common Programming Presets</h4><label class="inline-label">Presets <span class="muted">one per line</span></label><textarea id="settingsAdjustments" placeholder="Increased speech 1 click AU
 Ran feedback test"></textarea></div><button class="primary" onclick="saveSettings()">Save Settings</button><button class="danger-outline" onclick="resetSettings()">Reset Defaults</button><div class="result-box" id="settingsStatus">Settings ready.</div></div></div>
 <div id="about" class="tab-panel">
@@ -208,12 +206,12 @@ Ran feedback test"></textarea></div><button class="primary" onclick="saveSetting
 <div class="footer">Miracle-Ear Clinical Assistant <span data-app-version></span> | Ctrl + Enter = Generate & Copy Note | Ctrl + S = Save Outcome</div>
 </div>
 <div id="toast" class="toast"></div>
-<script src="js/version.js?v=1.10.0-dev4"></script>
-<script src="js/app-core.js?v=1.10.0-dev4"></script>
-<script src="js/smart-notes.js?v=1.10.0-dev4"></script>
-<script src="js/references.js?v=1.10.0-dev4"></script>
-<script src="js/reference-images.js?v=1.10.0-dev4"></script>
-<script src="js/genius-reference.js?v=1.10.0-dev4"></script>
-<script src="js/app-enhancements.js?v=1.10.0-dev4"></script>
+<script src="js/version.js?v=1.10.0-dev5"></script>
+<script src="js/app-core.js?v=1.10.0-dev5"></script>
+<script src="js/smart-notes.js?v=1.10.0-dev5"></script>
+<script src="js/references.js?v=1.10.0-dev5"></script>
+<script src="js/reference-images.js?v=1.10.0-dev5"></script>
+<script src="js/genius-reference.js?v=1.10.0-dev5"></script>
+<script src="js/app-enhancements.js?v=1.10.0-dev5"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.10.0-dev4';
+  const VERSION='1.10.0-dev5';
   const BASE='assets/genius/catalog/';
   const SAVED_CONFIGURATION_STORAGE_KEY='meClinicalAssistantSavedDeviceConfiguration';
   const ears=['left','right'];
@@ -62,6 +62,7 @@
   };
   let sectionObserver=null;
   const preloadedCatalogImages=[];
+  const catalogImageCache=new Map();
   let catalogPreloadStarted=false;
 
   function asset(path){return `${BASE}${path}?v=${encodeURIComponent(VERSION)}`;}
@@ -205,7 +206,7 @@
   function saveConfiguration(button){
     if(!configurationComplete())return;
     const text=clinicalNoteText();
-    const record={source:'Genius Reference',platform:'Genius',family:geniusData.family,model:modelName(),deviceText:text.replace(/[.]$/,''),fullText:text,receivers:{left:{...state.receiverSelections.left},right:{...state.receiverSelections.right}},couplings:{left:{...state.couplingSelections.left},right:{...state.couplingSelections.right}},savedAt:new Date().toISOString()};
+    const record={source:'Genius Reference',platform:'Genius',family:geniusData.family,model:modelName(),color:selectedColor()?.name||'',patientName:String(document.getElementById('currentPatientLabel')?.value||'').trim(),retention:ears.filter(ear=>state.retentionSelections[ear]).map(ear=>state.receiverSelections[ear].power+' Concha Lock '+earName(ear)).join(', '),deviceText:text.replace(/[.]$/,''),fullText:text,receivers:{left:{...state.receiverSelections.left},right:{...state.receiverSelections.right}},couplings:{left:{...state.couplingSelections.left},right:{...state.couplingSelections.right}},savedAt:new Date().toISOString()};
     let saved=false;
     try{
       localStorage.setItem(SAVED_CONFIGURATION_STORAGE_KEY,JSON.stringify(record));
@@ -228,7 +229,7 @@
   }
   function catalogImage(src,alt,className='ref-catalog-image',loading='eager'){
     const whiteMatteClass=/\/hearing-aids\/|\.jpe?g(?:\?|$)/i.test(src)?' genius-white-matte':'';
-    return `<img class="${className}${whiteMatteClass}" src="${src}" alt="${alt}" decoding="async" loading="${loading}">`;
+    return `<img class="${className}${whiteMatteClass}" data-genius-image="${src}" src="${src}" alt="${alt}" decoding="async" loading="${loading}">`;
   }
   function catalogAssetUrls(){
     const urls=new Set();
@@ -248,13 +249,24 @@
       : callback=>window.setTimeout(callback,32);
     const loadBatch=()=>{
       pending.splice(0,6).forEach(src=>{
+        if(catalogImageCache.has(src))return;
         const image=new Image();
-        image.decoding='async';image.src=src;preloadedCatalogImages.push(image);
-        if(image.decode)image.decode().catch(()=>{});
+        image.decoding='async';
+        try{image.fetchPriority='high';}catch(e){}
+        const ready=new Promise(resolve=>{
+          const finish=()=>{
+            const decoded=typeof image.decode==='function'?image.decode().catch(()=>{}):Promise.resolve();
+            decoded.finally(()=>resolve(image));
+          };
+          if(image.complete&&image.naturalWidth)finish();
+          else{image.onload=finish;image.onerror=()=>resolve(null);}
+        });
+        catalogImageCache.set(src,{image,ready});
+        image.src=src;preloadedCatalogImages.push(image);
       });
       if(pending.length)schedule(loadBatch);
     };
-    schedule(loadBatch);
+    loadBatch();
   }
   function emptyReceiverImage(ear){
     return `<div class="genius-image-unavailable"><span>${sideCode(ear)}</span><strong>Image pending</strong><small>${receiverShortLabel(ear)} receiver configuration remains available.</small></div>`;
@@ -311,6 +323,7 @@
   function renderProduct(){
     const container=root();if(!container)return;
     if(sectionObserver){sectionObserver.disconnect();sectionObserver=null;}
+    const retainedImages=new Map([...container.querySelectorAll('img[data-genius-image]')].map(image=>[image.dataset.geniusImage,image]));
     const color=selectedColor(),heroColor=color||geniusData.colors.find(item=>item.id==='silver'),complete=configurationComplete(),hasSelection=hasAnySelection();
     container.innerHTML=`<div class="ref-shell genius-reference-shell">
       ${breadcrumbs()}
@@ -325,6 +338,7 @@
       <div class="ref-section" data-genius-section="retention"><div class="ref-section-title-row"><h4>Concha Locks</h4><span class="ref-optional-label">Optional</span></div><p class="muted">Concha locks are matched automatically to each receiver's S, M, or P power. Configure each ear independently.</p><div class="genius-retention-grid">${ears.map(retentionCard).join('')}</div><div class="ref-selection-summary"><strong>${retentionLabel()}</strong></div></div>
       <div class="ref-section" data-genius-section="accessories"><h4>Charger &amp; Maintenance</h4><p class="muted">Compatible charging and wax-management accessories supplied for this reference.</p><div class="ref-accessory-grid">${geniusData.accessories.map(item=>`<div class="ref-accessory-card"><div class="ref-image-slot ref-has-catalog-image">${catalogImage(asset(`accessories/${item.file}`),item.name,'ref-catalog-image','lazy')}</div><h5>${item.name}</h5><p>${item.type}</p></div>`).join('')}</div></div>
     </div>`;
+    container.querySelectorAll('img[data-genius-image]').forEach(image=>{const src=image.dataset.geniusImage,old=retainedImages.get(src),cached=catalogImageCache.get(src)?.image;if(old&&old.complete&&old.naturalWidth){old.className=image.className;old.alt=image.alt;old.loading=image.loading;old.dataset.geniusImage=src;image.replaceWith(old);}else if(cached&&cached.complete&&cached.naturalWidth){const clone=cached.cloneNode(false);clone.className=image.className;clone.alt=image.alt;clone.loading=image.loading;clone.dataset.geniusImage=src;image.replaceWith(clone);}});
     wireProduct(container);preloadCatalogAssets();notifyRendered();
   }
 

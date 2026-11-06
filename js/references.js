@@ -288,7 +288,7 @@
   function legacyCopy(text){const area=document.createElement('textarea');area.value=text;area.setAttribute('readonly','');area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();area.setSelectionRange(0,text.length);let copied=false;try{copied=document.execCommand('copy')}catch(_){copied=false}area.remove();return copied;}
   function saveConfigurationForWorkflow(button){
     if(!configurationComplete())return;
-    const text=clinicalNoteText(),record={source:'Spark Reference',platform:'Spark',family:activeFamily().title,model:activeFamily().modelName(state.level),deviceText:text.replace(/[.]$/,''),fullText:text,receivers:{left:{...state.receiverSelections.left},right:{...state.receiverSelections.right}},couplings:{left:{...state.couplingSelections.left},right:{...state.couplingSelections.right}},savedAt:new Date().toISOString()};
+    const text=clinicalNoteText(),record={source:'Spark Reference',platform:'Spark',family:activeFamily().title,model:activeFamily().modelName(state.level),color:selectedColor()?.name||'',patientName:String(document.getElementById('currentPatientLabel')?.value||'').trim(),retention:state.retention?state.retention+' Retention Lock':'',deviceText:text.replace(/[.]$/,''),fullText:text,receivers:{left:{...state.receiverSelections.left},right:{...state.receiverSelections.right}},couplings:{left:{...state.couplingSelections.left},right:{...state.couplingSelections.right}},savedAt:new Date().toISOString()};
     let saved=false;
     try{localStorage.setItem(SPARK_SAVED_CONFIGURATION_STORAGE_KEY,JSON.stringify(record));saved=true;window.dispatchEvent(new CustomEvent('clinical-assistant:configuration-saved',{detail:record}));}catch(e){saved=false;}
     const finish=(copied)=>{
@@ -336,6 +336,133 @@
     resetConfiguration(state.family);renderSparkProduct();if(typeof window.toast==='function')window.toast('Configuration reset.');
   }
 
+const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
+  const DEFAULT_INSURANCE_GUIDE=[
+    {company:'United Health Care',vendor:'United Healthcare Hearing'},
+    {company:'Aetna',vendor:'Nations Hearing'},
+    {company:'CT Care',vendor:'Nations Hearing'},
+    {company:'BCBS',vendor:'Hearing Care Solutions OR TruHearing'},
+    {company:'Cigna',vendor:'Hearing Select'},
+    {company:'WellCare',vendor:'Hear USA'},
+    {company:'Humana',vendor:'Hear USA'},
+    {company:'Care Partners',vendor:'Hearing Care Solutions'},
+    {company:'Anthem',vendor:'State of CT Blue Care'}
+  ];
+  let equipmentPrintHandlerInstalled=false;
+
+  function referenceEscape(value){
+    return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  }
+  function readInsuranceMappings(){
+    try{
+      const stored=localStorage.getItem(INSURANCE_GUIDE_KEY);
+      if(stored!==null){
+        const rows=JSON.parse(stored);
+        if(Array.isArray(rows))return rows.filter(row=>row&&typeof row==='object').map(row=>({company:String(row.company||'').trim(),vendor:String(row.vendor||'').trim()}));
+      }
+    }catch(e){}
+    let legacy=[];
+    try{legacy=JSON.parse(localStorage.getItem('meClinicalSettings')||'{}').insuranceGuide||[];}catch(e){}
+    const migrated=Array.isArray(legacy)&&legacy.length?legacy.map(line=>{
+      const text=String(line||'');
+      const split=text.indexOf(' - ');
+      return split<0?{company:text.trim(),vendor:''}:{company:text.slice(0,split).trim(),vendor:text.slice(split+3).trim()};
+    }):DEFAULT_INSURANCE_GUIDE.map(row=>({...row}));
+    try{localStorage.setItem(INSURANCE_GUIDE_KEY,JSON.stringify(migrated));}catch(e){}
+    return migrated;
+  }
+  function renderInsuranceGuide(root){
+    const section=root.querySelector('#insuranceGuideSection');if(!section)return;
+    const tbody=section.querySelector('#insuranceGuideRows');
+    const rows=readInsuranceMappings();
+    if(tbody)tbody.innerHTML=rows.length?rows.map(row=>'<tr><td>'+referenceEscape(row.company)+'</td><td>'+referenceEscape(row.vendor)+'</td></tr>').join(''):'<tr><td colspan="2" class="muted">No insurance mappings saved.</td></tr>';
+    const edit=section.querySelector('[data-insurance-edit]');
+    const editor=section.querySelector('#insuranceGuideEditor');
+    if(edit&&editor&&!editor.dataset.bound){editor.dataset.bound='1';edit.addEventListener('click',()=>renderInsuranceEditor(root,readInsuranceMappings()));}
+  }
+  function editorInsuranceRows(editor){
+    return [...editor.querySelectorAll('.insurance-editor-row')].map(row=>({
+      company:row.querySelector('[data-insurance-company]')?.value.trim()||'',
+      vendor:row.querySelector('[data-insurance-vendor]')?.value.trim()||''
+    }));
+  }
+  function renderInsuranceEditor(root,rows){
+    const editor=root.querySelector('#insuranceGuideEditor');if(!editor)return;
+    editor.hidden=false;
+    const body=rows.map((row,index)=>'<div class="insurance-editor-row"><label>Health Insurance Company<input type="text" data-insurance-company value="'+referenceEscape(row.company)+'" placeholder="e.g. United Health Care"></label><label>Vendor<input type="text" data-insurance-vendor value="'+referenceEscape(row.vendor)+'" placeholder="e.g. Nations Hearing"></label><button type="button" class="tiny danger-outline" data-insurance-remove="'+index+'" aria-label="Remove mapping">Remove</button></div>').join('');
+    editor.innerHTML='<div class="insurance-editor-heading"><h4>Edit Insurance Guide</h4><span class="muted">Enter the health insurance company and its vendor in separate fields.</span></div><div class="insurance-editor-rows">'+body+'</div><div class="insurance-editor-actions"><button type="button" class="secondary" data-insurance-add>Add Company and Vendor</button><span class="insurance-editor-spacer"></span><button type="button" class="secondary" data-insurance-cancel>Cancel</button><button type="button" class="primary" data-insurance-save>Save Guide</button></div>';
+    editor.querySelector('[data-insurance-add]')?.addEventListener('click',()=>renderInsuranceEditor(root,editorInsuranceRows(editor).concat([{company:'',vendor:''}])));
+    editor.querySelectorAll('[data-insurance-remove]').forEach(button=>button.addEventListener('click',()=>{
+      const next=editorInsuranceRows(editor);next.splice(Number(button.dataset.insuranceRemove),1);renderInsuranceEditor(root,next);
+    }));
+    editor.querySelector('[data-insurance-cancel]')?.addEventListener('click',()=>{editor.hidden=true;});
+    editor.querySelector('[data-insurance-save]')?.addEventListener('click',()=>{
+      const mappings=editorInsuranceRows(editor).filter(row=>row.company||row.vendor);
+      if(mappings.some(row=>!row.company||!row.vendor)){if(typeof window.toast==='function')window.toast('Complete both fields for each insurance mapping.');return;}
+      try{localStorage.setItem(INSURANCE_GUIDE_KEY,JSON.stringify(mappings));}catch(e){if(typeof window.toast==='function')window.toast('Could not save the Insurance Guide on this device.');return;}
+      editor.hidden=true;renderInsuranceGuide(root);if(typeof window.toast==='function')window.toast('Insurance Guide saved on this device.');
+    });
+  }
+  function readSavedEquipmentConfiguration(){
+    try{
+      const config=JSON.parse(localStorage.getItem('meClinicalAssistantSavedDeviceConfiguration')||'null');
+      return config&&typeof config==='object'&&String(config.deviceText||config.fullText||'').trim()?config:null;
+    }catch(e){return null;}
+  }
+  function equipmentReceiver(item){
+    if(!item||(!item.length&&!item.power))return 'Not recorded';
+    return String(item.length||'')+String(item.power||'');
+  }
+  function equipmentCoupling(item,platform){
+    if(!item||(!item.type&&!item.size))return 'Not recorded';
+    const types=platform==='Genius'?{open:'Open Tip',tulip:'Tulip Tip',round:'Round Tip',vented:'Vented Sleeve',closed:'Closed Sleeve',power:'Power Sleeve'}:{cap:'Cap',open:'Open Dome',vented:'Vented Dome',power:'Power Dome'};
+    const name=types[item.type]||String(item.type||'');
+    let size=String(item.size||'');
+    size=size.replace(/(\d+)\s*mm/i,'$1 mm');
+    if(size&&size!=='One Size')return name+' · '+size.toUpperCase().replace(' MM',' mm');
+    return size?name+' · '+size:name;
+  }
+  function equipmentRow(label,value){
+    return '<tr><th scope="row">'+referenceEscape(label)+'</th><td>'+referenceEscape(value||'Not recorded')+'</td></tr>';
+  }
+  function renderEquipmentSheet(root){
+    const section=root.querySelector('#currentEquipmentSection');if(!section)return;
+    const container=section.querySelector('#equipmentSheetContainer');if(!container)return;
+    const config=readSavedEquipmentConfiguration();
+    if(!config){
+      container.innerHTML='<p class="muted equipment-empty">Save a Spark or Genius configuration first. The latest saved configuration will appear here.</p>';
+      return;
+    }
+    const patientName=String(config.patientName||document.getElementById('currentPatientLabel')?.value||'').trim();
+    const dateText=new Date().toLocaleDateString([], {year:'numeric',month:'short',day:'numeric'});
+    const platform=String(config.platform||config.source||'Hearing Aid');
+    const model=String(config.model||config.family||config.deviceText||'Hearing aid');
+    const rows=[
+      equipmentRow('Platform',platform),
+      equipmentRow('Model',model),
+      equipmentRow('Color',config.color||'Not recorded'),
+      equipmentRow('Left receiver (AS)',equipmentReceiver(config.receivers?.left)),
+      equipmentRow('Right receiver (AD)',equipmentReceiver(config.receivers?.right)),
+      equipmentRow('Left coupling (AS)',equipmentCoupling(config.couplings?.left,config.platform)),
+      equipmentRow('Right coupling (AD)',equipmentCoupling(config.couplings?.right,config.platform)),
+      equipmentRow('Retention',config.retention||'Not selected'),
+      equipmentRow('Saved configuration',config.deviceText||config.fullText||'')
+    ].join('');
+    container.innerHTML='<div class="equipment-sheet-controls"><label for="equipmentPatientName">Patient name<input type="text" id="equipmentPatientName" value="'+referenceEscape(patientName)+'" placeholder="Enter patient name"></label><button type="button" class="primary" data-equipment-print>Print Equipment Sheet</button></div><article class="equipment-print-sheet" data-equipment-print-sheet><header class="equipment-sheet-heading"><div><span class="equipment-sheet-kicker">Patient</span><h2 data-equipment-patient>'+referenceEscape(patientName||'Patient name')+'</h2></div><div class="equipment-sheet-date"><span>Prepared</span><time>'+referenceEscape(dateText)+'</time></div></header><table class="equipment-sheet-table"><tbody>'+rows+'</tbody></table><p class="equipment-sheet-footer">Miracle-Ear Clinical Assistant · Current Equipment</p></article>';
+    const nameInput=container.querySelector('#equipmentPatientName');
+    nameInput?.addEventListener('input',()=>{const label=container.querySelector('[data-equipment-patient]');if(label)label.textContent=nameInput.value.trim()||'Patient name';});
+    container.querySelector('[data-equipment-print]')?.addEventListener('click',()=>{
+      if(!nameInput?.value.trim()){nameInput?.focus();if(typeof window.toast==='function')window.toast('Enter the patient name before printing.');return;}
+      const today=container.querySelector('.equipment-sheet-date time');if(today)today.textContent=new Date().toLocaleDateString([], {year:'numeric',month:'short',day:'numeric'});
+      document.body.classList.add('equipment-print-mode');
+      if(!equipmentPrintHandlerInstalled){
+        window.addEventListener('afterprint',()=>document.body.classList.remove('equipment-print-mode'));
+        equipmentPrintHandlerInstalled=true;
+      }
+      window.print();
+    });
+  }
+
   function renderHome(){
     state.view='home';
     if(sectionObserver){sectionObserver.disconnect();sectionObserver=null;}
@@ -351,7 +478,23 @@
           </div>
         </div>
       </details>
+      <details class='ref-accordion' id='insuranceGuideSection'>
+        <summary>🛡️ Insurance Guide</summary>
+        <div class='ref-accordion-body'>
+          <div class='insurance-guide-toolbar'><p class='muted'>Health insurance companies and their hearing-aid vendors.</p><button type='button' class='secondary' data-insurance-edit>Edit Guide</button></div>
+          <table class='insurance-guide-table'><thead><tr><th scope='col'>Health Insurance Company</th><th scope='col'>Vendor</th></tr></thead><tbody id='insuranceGuideRows'></tbody></table>
+          <div id='insuranceGuideEditor' class='insurance-guide-editor' hidden></div>
+        </div>
+      </details>
+      <details class='ref-accordion' id='currentEquipmentSection'>
+        <summary>🦻 Current Equipment</summary>
+        <div class='ref-accordion-body'>
+          <p class='muted'>Print a quick patient record from the latest saved Spark or Genius configuration.</p>
+          <div id='equipmentSheetContainer'></div>
+        </div>
+      </details>
     </div>`;
+    renderInsuranceGuide(root);renderEquipmentSheet(root);
     root.querySelector('[data-ref-product="spark"]').addEventListener('click',renderSparkLanding);
     root.querySelector('[data-ref-product="genius"]').addEventListener('click',()=>typeof window.renderGeniusReference==='function'?window.renderGeniusReference():renderGeniusPlaceholder());
     root.querySelectorAll('[data-ref-product]').forEach(card=>card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}}));

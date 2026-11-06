@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.10.0-dev4';
+  const VERSION='1.10.0-dev5';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -49,22 +49,26 @@
   ];
 
   const RELEASE_NOTE_TEXT=[
-    'Binaural fit mode in Spark and Genius configuration menus',
-    'Current Equipment card populated from the latest saved Spark or Genius configuration',
-    'Editable insurance vendor guide and office location details in Settings',
-    'Annual retest stability and progression comparison options',
-    'Saved outcomes show distinct status colors and return to the newly saved outcome',
-    'Clinical note wording fixes for patient concerns, otoscopy, and other hearing loss types',
+    'Binaural receiver and coupling fit controls in Spark and Genius',
+    'Printable Current Equipment sheet from the latest saved configuration',
+    'Editable two-column Insurance Guide in References',
+    'Office numbers managed inside Office Profiles',
+    'Pending and completed outcomes use distinct backgrounds and return to the top after saving',
+    'Programming Changes can expand for longer adjustments',
+    'Annual retest stable/progression options and concise clinical note wording',
+    'Genius image selection stability',
     'Bug fixes'
   ];
 
   const RELEASE_NOTES=[
-    '<li><strong>Binaural fit</strong> keeps receiver and coupling selections matched across both ears in Spark and Genius.</li>',
-    '<li><strong>Current Equipment</strong> shows the latest saved Spark or Genius configuration and can add it to a patient note.</li>',
-    '<li><strong>Settings</strong> now includes an editable insurance vendor guide and office location/number fields.</li>',
-    '<li><strong>Annual Retest</strong> supports stable hearing or significant progression with optional comparison details.</li>',
-    '<li><strong>Saved Outcomes</strong> use distinct pending/completed backgrounds and scroll to the saved outcome.</li>',
-    '<li><strong>Note wording</strong> was refined for patient concerns and otoscopy; entering an other hearing-loss type now selects that type automatically.</li>',
+    '<li><strong>Binaural fit</strong> has separate controls for matching receivers and couplings in Spark and Genius.</li>',
+    '<li><strong>Current Equipment</strong> in References creates a printable patient sheet from the latest saved Spark or Genius configuration, with patient name and today\'s date.</li>',
+    '<li><strong>Insurance Guide</strong> now shows health insurance companies and vendors in separate columns, with editable company/vendor fields saved on this device.</li>',
+    '<li><strong>Office Profiles</strong> now stores an office number alongside each office, and the duplicate settings card has been combined.</li>',
+    '<li><strong>Saved Outcomes</strong> use distinct pending/completed backgrounds, return to the top after saving, and include a back-to-top button while scrolling.</li>',
+    '<li><strong>Programming Changes</strong> uses a taller text area that can be expanded for longer adjustments.</li>',
+    '<li><strong>Annual Retest</strong> supports stable hearing or significant progression. Note wording removes automatic “Patient reports,” keeps concise otoscopy phrasing, and adds custom hearing-loss descriptions without changing the selected type.</li>',
+    '<li><strong>Genius</strong> keeps loaded product images in place during selections to prevent the white flash.</li>',
     '<li><strong>Bug fixes</strong></li>'
   ];
 
@@ -117,7 +121,7 @@
     const headingText="What's New in v"+VERSION;
     if(heading&&heading.textContent!==headingText)heading.textContent=headingText;
     const dateBadge=document.querySelector('#aboutWhatsNew .about-section-head > .badge');
-    if(dateBadge&&dateBadge.textContent!=='November 3, 2026')dateBadge.textContent='November 3, 2026';
+    if(dateBadge&&dateBadge.textContent!=='November 6, 2026')dateBadge.textContent='November 6, 2026';
     const list=document.querySelector('#aboutWhatsNew .changelog-list');
     const notesMarkup=RELEASE_NOTES.join('');
     if(list&&list.innerHTML!==notesMarkup)list.innerHTML=notesMarkup;

@@ -4,12 +4,25 @@ let currentAppointment='';let replacedItems=[];let recentlySavedOutcomeId=null;
 const SAVED_DEVICE_CONFIGURATION_STORAGE_KEY='meClinicalAssistantSavedDeviceConfiguration';
 const DEFAULT_SETTINGS={finance:['PatientFi','Powerpay','Paymonthly/Care Credit','HFD'],adjustments:['Increased speech 1 click AU','Ran feedback test'],insuranceGuide:['United Health Care - United Healthcare Hearing','Aetna - Nations Hearing','CT Care - Nations Hearing','BCBS - Hearing Care Solutions OR TruHearing','Cigna - Hearing Select','WellCare - Hear USA','Humana - Hear USA','Care Partners - Hearing Care Solutions','Anthem - State of CT Blue Care'],officeLocation:'Trumbull',officeNumber:'CF299117'};
 function getSettings(){try{return Object.assign({},DEFAULT_SETTINGS,JSON.parse(localStorage.getItem('meClinicalSettings')||'{}'))}catch(e){return DEFAULT_SETTINGS}}
-function saveSettings(){const finance=document.getElementById('settingsFinance').value.split(/\n/).map(x=>x.trim()).filter(Boolean);const adjustments=document.getElementById('settingsAdjustments').value.split(/\n/).map(x=>x.trim()).filter(Boolean);const insuranceGuide=document.getElementById('settingsInsuranceGuide').value.split(/\n/).map(x=>x.trim()).filter(Boolean);const officeLocation=document.getElementById('settingsOfficeLocation').value.trim();const officeNumber=document.getElementById('settingsOfficeNumber').value.trim();localStorage.setItem('meClinicalSettings',JSON.stringify({finance:finance.length?finance:DEFAULT_SETTINGS.finance,adjustments:adjustments.length?adjustments:DEFAULT_SETTINGS.adjustments,insuranceGuide:insuranceGuide.length?insuranceGuide:DEFAULT_SETTINGS.insuranceGuide,officeLocation:officeLocation||DEFAULT_SETTINGS.officeLocation,officeNumber}));document.getElementById('settingsStatus').textContent='Settings saved on this device.';refreshCurrentEquipmentCard();toast('✓ Settings saved.')}
+function saveSettings(){
+  const finance=document.getElementById('settingsFinance').value.split(/\n/).map(x=>x.trim()).filter(Boolean);
+  const adjustments=document.getElementById('settingsAdjustments').value.split(/\n/).map(x=>x.trim()).filter(Boolean);
+  const existing=getSettings();
+  localStorage.setItem('meClinicalSettings',JSON.stringify({...existing,finance:finance.length?finance:DEFAULT_SETTINGS.finance,adjustments:adjustments.length?adjustments:DEFAULT_SETTINGS.adjustments}));
+  const status=document.getElementById('settingsStatus');if(status)status.textContent='Settings saved on this device.';
+  toast('✓ Settings saved.');
+}
 function resetSettings(){if(!confirm('Reset settings to defaults?'))return;localStorage.removeItem('meClinicalSettings');renderSettings();toast('✓ Settings reset.')}
-function renderSettings(){const s=getSettings();const f=document.getElementById('settingsFinance');const a=document.getElementById('settingsAdjustments');const insurance=document.getElementById('settingsInsuranceGuide');const location=document.getElementById('settingsOfficeLocation');const officeNumber=document.getElementById('settingsOfficeNumber');if(f)f.value=s.finance.join('\n');if(a)a.value=s.adjustments.join('\n');if(insurance)insurance.value=(s.insuranceGuide||DEFAULT_SETTINGS.insuranceGuide).join('\n');if(location)location.value=s.officeLocation||DEFAULT_SETTINGS.officeLocation;if(officeNumber)officeNumber.value=s.officeNumber||'';}
+function renderSettings(){
+  const s=getSettings();
+  const finance=document.getElementById('settingsFinance');
+  const adjustments=document.getElementById('settingsAdjustments');
+  if(finance)finance.value=s.finance.join('\n');
+  if(adjustments)adjustments.value=s.adjustments.join('\n');
+}
 function financeOptions(prefix){return getSettings().finance.map(x=>`<label class="inline-label"><input type="radio" name="${prefix}Finance" value="${x.replace(/"/g,'&quot;')}">${x}</label>`).join('')}
 function adjustmentPresetPills(id){return getSettings().adjustments.map(x=>`<span class="preset" onclick="setText('${id}','${x.replace(/'/g,"&#39;")}')">${x}</span>`).join('')}
-function showTab(tabId,button){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(tabId).classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));button.classList.add('active');if(tabId==='home')renderDashboard();if(tabId==='notes'){refreshOpenSavedConfigurationPrompts();refreshCurrentEquipmentCard();}if(tabId==='outcomes')renderOutcomes();if(tabId==='tools')renderReferrals();if(tabId==='settings')renderSettings();if(tabId==='about')renderAbout();}
+function showTab(tabId,button){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(tabId).classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));button.classList.add('active');if(tabId==='home')renderDashboard();if(tabId==='notes'){refreshOpenSavedConfigurationPrompts();}if(tabId==='outcomes')renderOutcomes();if(tabId==='tools')renderReferrals();if(tabId==='settings')renderSettings();if(tabId==='about')renderAbout();updateOutcomesBackToTop();}
 function severityForPTA(value){const n=parseFloat(value);if(isNaN(n))return{label:'Not entered',cls:'severity-invalid'};if(n<25)return{label:'No Loss',cls:'severity-normal'};if(n<=40)return{label:'Mild',cls:'severity-mild'};if(n<=55)return{label:'Moderate',cls:'severity-moderate'};if(n<=69)return{label:'Moderate to Severe',cls:'severity-modsev'};if(n<=95)return{label:'Severe to Profound',cls:'severity-severe'};return{label:'Unaidable',cls:'severity-profound'}}
 function updateStandalonePTA(){const r=severityForPTA(document.getElementById('toolRightPTA').value),l=severityForPTA(document.getElementById('toolLeftPTA').value);document.getElementById('toolPTAResult').innerHTML=`Right: <span class="${r.cls}">${r.label}</span> &nbsp; | &nbsp; Left: <span class="${l.cls}">${l.label}</span>`}
 function setText(id,value){document.getElementById(id).value=value;markNoteAsNotGenerated()}
@@ -37,23 +50,6 @@ function getLatestSavedDeviceConfiguration(){
     const deviceText=String(value.deviceText||value.fullText||'').trim().replace(/[.]$/,'');
     return deviceText?{...value,deviceText}:null;
   }catch(e){return null;}
-}
-function refreshCurrentEquipmentCard(){
-  const card=document.getElementById('currentEquipmentSummary');if(!card)return;
-  const configuration=getLatestSavedDeviceConfiguration();
-  const settings=getSettings();
-  const office=[settings.officeLocation,settings.officeNumber].filter(Boolean).join(' · ');
-  const officeLine=office?`<p class="muted current-office-meta">Office: ${escapeHtml(office)}</p>`:'';
-  if(!configuration){card.innerHTML=`<p class="muted">No Spark or Genius configuration saved yet. Choose Save Configuration in either reference menu to populate this card.</p>${officeLine}`;return;}
-  const source=String(configuration.source||'Hearing Aid Reference');
-  card.innerHTML=`<div class="current-equipment-meta"><span class="badge">${escapeHtml(source)}</span><span class="muted">${escapeHtml(savedConfigurationTime(configuration.savedAt))}</span></div><p class="current-equipment-details">${escapeHtml(configuration.deviceText)}</p>${officeLine}`;
-}
-function addCurrentEquipmentToNote(){
-  const configuration=getLatestSavedDeviceConfiguration();if(!configuration){toast('Save a Spark or Genius configuration first.');return;}
-  const output=document.getElementById('output');if(!output)return;
-  const entry=`Current equipment: ${configuration.deviceText}.`;
-  output.value=output.value.trim()?`${output.value.trim()} ${entry}`:entry;
-  markNoteAsNotGenerated();output.focus();
 }
 function savedConfigurationTime(value){
   const date=new Date(value||'');
@@ -99,7 +95,7 @@ function trialOutcome(prefix){return `<div class="subbox"><label class="inline-l
 /* v1.4.4: removed superseded duplicate function declaration */
 
 function renderRetest(){return concernSection('rt','Patient Concern / Reported Difficulty','ex. Difficulty hearing in background noise.')+renderHearingAidService('rt')+renderEvaluation('rt')+section('rtDemo','Demonstration',`${cb('rtDemoTech','Demoed New Tech')}${cou('rt')}`)+section('rtTreatment','Treatment Outcome',`${cb('rtBetter','Recommended Better Treatment')}${cb('rtWarranty','Warranty / Trade-In Discussion')}${purchaseOutcome('rt',true)}${trialOutcome('rt')}<div class="subbox"><label class="inline-label"><input type="checkbox" id="rtRejected" onchange="toggleBox('rtRejectedBox',this.checked)">Did Not Trade In</label><div id="rtRejectedBox" class="hidden"><input type="text" id="rtRejectedReason" placeholder="ex. price concern, wants to think it over, not ready to upgrade"></div></div>`)+section('rtFollow','Counseling / Wrap Up',`${cb('rtRealistic','Counseled on Realistic Expectations')}${cb('rtWearCounsel','Counseled on Importance of Daily Full-Time Wear')}${cb('rtCleaningSet','Cleaning Set for 3 Months')}${cb('rtSatisfied','Patient Satisfied')}`)}
-function computer(prefix){return `<div class="subbox"><label class="inline-label"><input type="checkbox" id="${prefix}Connected">Connected to Computer</label><label class="inline-label"><input type="checkbox" id="${prefix}Firmware">Firmware Updated</label><label class="inline-label">Average Wear Time</label><input type="number" id="${prefix}WT" placeholder="ex. 10"><label class="inline-label"><input type="radio" name="${prefix}Prog" value="no" onchange="toggleBox('${prefix}AdjBox',false)">No Programming Changes</label><label class="inline-label"><input type="radio" name="${prefix}Prog" value="yes" onchange="toggleBox('${prefix}AdjBox',this.checked)">Programming Changes</label><div id="${prefix}AdjBox" class="hidden"><input type="text" id="${prefix}Adj" placeholder="ex. Increased speech 1 click AU"><div class="pill-row">${adjustmentPresetPills(prefix+'Adj')}</div></div></div>`}
+function computer(prefix){return `<div class="subbox"><label class="inline-label"><input type="checkbox" id="${prefix}Connected">Connected to Computer</label><label class="inline-label"><input type="checkbox" id="${prefix}Firmware">Firmware Updated</label><label class="inline-label">Average Wear Time</label><input type="number" id="${prefix}WT" placeholder="ex. 10"><label class="inline-label"><input type="radio" name="${prefix}Prog" value="no" onchange="toggleBox('${prefix}AdjBox',false)">No Programming Changes</label><label class="inline-label"><input type="radio" name="${prefix}Prog" value="yes" onchange="toggleBox('${prefix}AdjBox',this.checked)">Programming Changes</label><div id="${prefix}AdjBox" class="hidden"><div class="programming-changes-field-wrap"><textarea class="programming-changes-field" rows="4" id="${prefix}Adj" placeholder="Describe programming changes..." oninput="saveDraftDebounced()"></textarea><button type="button" class="tiny secondary programming-expand-btn" onclick="expandProgrammingChanges('${prefix}Adj')">Expand</button></div><div class="pill-row">${adjustmentPresetPills(prefix+'Adj')}</div></div></div>`}
 function renderRetestUnder(){return renderRetest()}
 function renderRetestOver(){return renderRetest()}
 function deliveryTests(prefix){return `<div class="subbox"><label class="inline-label"><input type="checkbox" id="${prefix}Tests">Delivery Tests Completed</label><button type="button" class="tiny" onclick="checkGroup('${prefix}Test',true)">Check All</button><button type="button" class="tiny secondary" onclick="checkGroup('${prefix}Test',false)">Clear Tests</button><label class="inline-label"><input type="checkbox" class="${prefix}Test" value="WR">WR</label><label class="inline-label"><input type="checkbox" class="${prefix}Test" value="SRT">SRT</label><label class="inline-label"><input type="checkbox" class="${prefix}Test" value="UCL">UCL</label><label class="inline-label"><input type="checkbox" class="${prefix}Test" value="MCL">MCL</label></div>`}
@@ -424,7 +420,7 @@ function saveOutcome(){
     const newId=Date.now().toString();recentlySavedOutcomeId=newId;items.unshift({id:newId,label:capFirst(label||'Unnamed patient'),appointment:appointmentLabel(),appointmentKey:currentAppointment,reminder:capFirst(reminder),note,state:appointmentState,status:'pending',closed:false,savedAt:new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}),savedDate:new Date().toLocaleDateString()});
     setSavedOutcomes(items);clearActiveDraft('Outcome saved. No unfinished appointment.');toast('✓ Outcome saved. Form cleared.');clearAll();document.getElementById('copyStatus').textContent='Outcome saved to Saved Outcomes. Form cleared.';
   }
-  showTab('outcomes',document.querySelectorAll('.tab-btn')[2]);renderOutcomes();renderDashboard();setTimeout(()=>{const saved=document.getElementById('outcomeCard_'+recentlySavedOutcomeId);if(saved)saved.scrollIntoView({behavior:'smooth',block:'start'});},80);
+  showTab('outcomes',document.querySelectorAll('.tab-btn')[2]);renderOutcomes();renderDashboard();window.scrollTo({top:0,behavior:'smooth'});updateOutcomesBackToTop();
 }
 function renderOutcomes(){
   const list=document.getElementById('outcomeList');
@@ -1003,8 +999,8 @@ function hearingLoss(prefix){
 }
 
 function selectOtherHearingType(prefix){
-  if(prefix==='hae'){setHaeHearingStatus('loss');const type=document.getElementById('haeType');if(type)type.value='other';}
-  else{const type=document.getElementById(prefix+'Type');const checkbox=document.getElementById(prefix+'HL');if(type)type.value='other';if(checkbox)checkbox.checked=true;}
+  if(prefix==='hae')setHaeHearingStatus('loss');
+  else{const checkbox=document.getElementById(prefix+'HL');if(checkbox)checkbox.checked=true;}
   markNoteAsNotGenerated();saveDraftDebounced();
 }
 function setHaeHearingStatus(status){
@@ -1039,19 +1035,25 @@ function setHaeHearingStatus(status){
 }
 
 function hlText(prefix){
+  let status='',lat='',type='',custom='';
   if(prefix==='hae'){
-    const status=radio('haeHearingStatus'),other=val('haeOtherHL');
-    if(status==='noLoss'&&!other)return'No hearing loss identified';
-    if(status!=='loss'&&!other)return'';
-    let lat=val('haeLat'),type=val('haeType');if(other)type=other;
-    if(!lat&&!type)return'Hearing loss type/laterality not selected';if(!type)type='hearing loss';
-    return lat==='Bilateral'?`Bilateral ${type} hearing loss`:(lat?`${type} hearing loss ${lat}`:`${type} hearing loss`);
+    status=radio('haeHearingStatus');lat=val('haeLat');type=val('haeType');custom=val('haeOtherHL');
+    if(status==='noLoss'&&!custom)return 'No hearing loss identified';
+    if(status!=='loss'&&!custom)return '';
+  }else{
+    custom=val(prefix+'OtherHL');
+    if(!checked(prefix+'HL')&&!custom)return '';
+    lat=val(prefix+'Lat');type=val(prefix+'Type');
   }
-  const other=val(prefix+'OtherHL');if(!checked(prefix+'HL')&&!other)return'';
-  let lat=val(prefix+'Lat'),type=val(prefix+'Type');if(other)type=other;
-  if(!lat&&!type)return'Hearing loss type/laterality not selected';if(!type)type='hearing loss';
-  if(type==='normal hearing')return lat==='Bilateral'?'Normal hearing bilaterally':(lat?`Normal hearing ${lat}`:'Normal hearing');
-  return lat==='Bilateral'?`Bilateral ${type} hearing loss`:(lat?`${type} hearing loss ${lat}`:`${type} hearing loss`);
+  custom=String(custom||'').trim().replace(/\s+/g,' ');
+  if(type==='other')type=custom.toLowerCase();
+  else if(custom&&type)type=custom.toLowerCase()+' '+type;
+  else if(custom)type=custom.charAt(0).toUpperCase()+custom.slice(1).toLowerCase();
+  if(!lat&&!type)return 'Hearing loss type/laterality not selected';
+  if(!type)type='hearing loss';
+  if(type==='normal hearing')return lat==='Bilateral'?'Normal hearing bilaterally':(lat?'Normal hearing '+lat:'Normal hearing');
+  if(type==='hearing loss')return lat==='Bilateral'?'Bilateral hearing loss':(lat?'Hearing loss '+lat:'Hearing loss');
+  return lat==='Bilateral'?'Bilateral '+type+' hearing loss':(lat?type+' hearing loss '+lat:type+' hearing loss');
 }
 
 /* v1.4.4: removed superseded duplicate function declaration */
@@ -1780,3 +1782,37 @@ function renderReferrals(){
     return `<article class="referral-card"><div class="referral-card-head"><div><h4>${escapeHtml(item.name)}</h4><span class="badge">${escapeHtml(item.type)}</span></div></div>${item.address?`<div class="referral-detail">${escapeHtml(item.address)}</div>`:''}${item.phone?`<div class="referral-detail">${escapeHtml(item.phone)}</div>`:''}${item.website?`<div class="referral-detail">${escapeHtml(item.website)}</div>`:''}${item.notes?`<div class="referral-detail muted">${escapeHtml(item.notes)}</div>`:''}<div class="referral-actions">${call}${directions}${web}<button type="button" class="tiny secondary" onclick="editReferral('${escapeHtml(item.id)}')">Edit</button><button type="button" class="tiny danger-outline" onclick="deleteReferral('${escapeHtml(item.id)}')">Delete</button></div></article>`;
   }).join('');
 }
+
+function expandProgrammingChanges(id){
+  const field=document.getElementById(id);if(!field)return;
+  const overlay=document.createElement('div');overlay.className='programming-expand-overlay';
+  const panel=document.createElement('div');panel.className='programming-expand-panel';panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');
+  const heading=document.createElement('div');heading.className='programming-expand-heading';
+  const title=document.createElement('h3');title.textContent='Programming Changes';
+  const close=document.createElement('button');close.type='button';close.className='secondary';close.textContent='Done';
+  const area=document.createElement('textarea');area.className='programming-expand-textarea';area.value=field.value;area.placeholder='Describe programming changes...';
+  const sync=()=>{field.value=area.value;field.dispatchEvent(new Event('input',{bubbles:true}));};
+  area.addEventListener('input',sync);
+  const dismiss=()=>{sync();overlay.remove();document.body.classList.remove('clinical-tool-open');field.focus();};
+  close.addEventListener('click',dismiss);overlay.addEventListener('click',event=>{if(event.target===overlay)dismiss();});
+  heading.append(title,close);panel.append(heading,area);overlay.appendChild(panel);document.body.appendChild(overlay);
+  document.body.classList.add('clinical-tool-open');area.focus();
+}
+function updateOutcomesBackToTop(){
+  const button=document.getElementById('outcomesBackToTop');
+  if(!button)return;
+  const outcomes=document.getElementById('outcomes');
+  const visible=Boolean(outcomes&&outcomes.classList.contains('active')&&window.scrollY>500);
+  button.classList.toggle('visible',visible);button.setAttribute('aria-hidden',visible?'false':'true');
+}
+function installOutcomesBackToTop(){
+  if(!document.getElementById('outcomesBackToTop')){
+    const button=document.createElement('button');button.id='outcomesBackToTop';button.type='button';button.className='outcomes-back-to-top';
+    button.setAttribute('aria-label','Back to top of Saved Outcomes');button.setAttribute('aria-hidden','true');button.textContent='↑ Top';
+    button.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));document.body.appendChild(button);
+  }
+  window.addEventListener('scroll',updateOutcomesBackToTop,{passive:true});
+  window.addEventListener('resize',updateOutcomesBackToTop);
+  updateOutcomesBackToTop();
+}
+installOutcomesBackToTop();
