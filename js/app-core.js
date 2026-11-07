@@ -1684,6 +1684,18 @@ function closeClinicalTool(id){
   document.body.classList.remove('clinical-tool-open');
   clinicalToolOpener?.focus?.();clinicalToolOpener=null;
 }
+window.openClinicalTool=openClinicalTool;
+window.closeClinicalTool=closeClinicalTool;
+document.addEventListener('click',event=>{
+  const button=event.target.closest?.('[data-clinical-tool-target]');
+  if(!button)return;
+  const panelId=button.dataset.clinicalToolTarget;
+  if(!panelId)return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  openClinicalTool(panelId);
+},true);
+
 function closeClinicalToolFromBackdrop(event){
   if(event.target===event.currentTarget)closeClinicalTool(event.currentTarget.id);
 }
