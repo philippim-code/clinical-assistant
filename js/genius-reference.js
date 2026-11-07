@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.10.0-dev5';
+  const VERSION='1.10.0-dev6';
   const BASE='assets/genius/catalog/';
   const SAVED_CONFIGURATION_STORAGE_KEY='meClinicalAssistantSavedDeviceConfiguration';
   const ears=['left','right'];
@@ -57,7 +57,7 @@
     color:null,
     receiverSelections:{left:{power:null,length:null},right:{power:null,length:null}},
     couplingSelections:{left:{type:null,size:null},right:{type:null,size:null}},
-    retentionSelections:{left:false,right:false},
+    retention:null,
     receiverBinaural:false,couplingBinaural:false
   };
   let sectionObserver=null;
@@ -81,7 +81,7 @@
     state.color=null;
     state.receiverSelections={left:{power:null,length:null},right:{power:null,length:null}};
     state.couplingSelections={left:{type:null,size:null},right:{type:null,size:null}};
-    state.retentionSelections={left:false,right:false};
+    state.retention=null;
     state.receiverBinaural=false;state.couplingBinaural=false;
   }
 
@@ -143,17 +143,14 @@
     return coupling&&size?asset(`couplings/${coupling.id}-${size.id}.${coupling.extension}`):'';
   }
 
-  function retentionSelected(ear){return Boolean(state.retentionSelections[ear]&&receiverReady(ear));}
-  function retentionShortLabel(ear){return receiverReady(ear)?`${state.receiverSelections[ear].power} Concha Lock`:'';}
-  function retentionAsset(ear){return receiverReady(ear)?asset(`retention-locks/${state.receiverSelections[ear].power}.jpg`):'';}
-  function retentionLabel(){
-    const selected=selectedReceiverEars().filter(retentionSelected);
-    if(!selected.length)return 'No concha locks selected';
-    return selected.map(ear=>`${retentionShortLabel(ear)} ${earName(ear)}`).join(' + ');
-  }
+  function retentionSelected(ear){return Boolean(state.retention&&receiverReady(ear));}
+  function retentionShortLabel(){return state.retention?`${state.retention} Concha Lock`:'';}
+  function retentionAsset(size=state.retention){const file=size==='L'?'P':size;return size?asset(`retention-locks/${file}.jpg`):'';}
+  function retentionLabel(){return state.retention?`${state.retention} Concha Lock`:'No concha lock selected';}
+  function retentionCards(){return ['S','M','L'].map(size=>`<button type="button" class="ref-retention-card genius-retention-card ${state.retention===size?'active':''}" data-genius-retention-size="${size}" aria-pressed="${state.retention===size}">${catalogImage(retentionAsset(size),`${size} concha lock`,'genius-retention-image')}<strong>${size==='S'?'Small (S)':size==='M'?'Medium (M)':'Large (L)'}</strong><small>${state.retention===size?'Selected':'Select size'}</small></button>`).join('');}
 
   function configurationComplete(){return Boolean(state.level&&selectedColor()&&receiverConfigurationComplete()&&couplingConfigurationComplete());}
-  function hasAnySelection(){return Boolean(state.level||state.color||ears.some(receiverHasSelection)||ears.some(couplingHasSelection)||ears.some(ear=>state.retentionSelections[ear]));}
+  function hasAnySelection(){return Boolean(state.level||state.color||ears.some(receiverHasSelection)||ears.some(couplingHasSelection)||Boolean(state.retention));}
   function configurationText(){
     const parts=[
       state.level?modelName():'Select treatment level',
@@ -184,14 +181,7 @@
     }
     return selected.map(ear=>`${activeCouplingSize(ear).label} ${activeCoupling(ear).name.toLowerCase()} ${earCode(ear)}`);
   }
-  function retentionClinicalItems(){
-    const selected=selectedReceiverEars().filter(retentionSelected);
-    if(selected.length===2){
-      const leftPower=state.receiverSelections.left.power,rightPower=state.receiverSelections.right.power;
-      if(leftPower===rightPower)return [`${leftPower} concha locks AU`];
-    }
-    return selected.map(ear=>`${state.receiverSelections[ear].power} concha lock ${earCode(ear)}`);
-  }
+  function retentionClinicalItems(){return state.retention?[`${state.retention} concha lock${isBilateral()?'s AU':''}`]:[];}
   function clinicalNoteText(){
     const items=[`Genius ${modelName()}`,selectedColor().name,...receiverClinicalItems(),...couplingClinicalItems(),...retentionClinicalItems()];
     return `${items.join(', ')}.`;
@@ -206,7 +196,7 @@
   function saveConfiguration(button){
     if(!configurationComplete())return;
     const text=clinicalNoteText();
-    const record={source:'Genius Reference',platform:'Genius',family:geniusData.family,model:modelName(),color:selectedColor()?.name||'',patientName:String(document.getElementById('currentPatientLabel')?.value||'').trim(),retention:ears.filter(ear=>state.retentionSelections[ear]).map(ear=>state.receiverSelections[ear].power+' Concha Lock '+earName(ear)).join(', '),deviceText:text.replace(/[.]$/,''),fullText:text,receivers:{left:{...state.receiverSelections.left},right:{...state.receiverSelections.right}},couplings:{left:{...state.couplingSelections.left},right:{...state.couplingSelections.right}},savedAt:new Date().toISOString()};
+    const record={source:'Genius Reference',platform:'Genius',family:geniusData.family,model:modelName(),color:selectedColor()?.name||'',patientName:String(document.getElementById('currentPatientLabel')?.value||'').trim(),retention:state.retention?`${state.retention} Concha Lock`:'',deviceText:text.replace(/[.]$/,''),fullText:text,receivers:{left:{...state.receiverSelections.left},right:{...state.receiverSelections.right}},couplings:{left:{...state.couplingSelections.left},right:{...state.couplingSelections.right}},savedAt:new Date().toISOString()};
     let saved=false;
     try{
       localStorage.setItem(SAVED_CONFIGURATION_STORAGE_KEY,JSON.stringify(record));
@@ -304,11 +294,7 @@
   }
   function couplingPreview(){return `<div class="ref-receiver-preview-grid ref-coupling-preview-grid">${ears.map(couplingPreviewEar).join('')}</div>`;}
 
-  function retentionCard(ear){
-    if(!receiverReady(ear))return `<div class="genius-retention-empty"><span class="ref-side-marker${markerClass(ear)}" aria-hidden="true"></span><strong>${earName(ear)} Ear</strong><small>Select a receiver to match its concha lock.</small></div>`;
-    const label=retentionShortLabel(ear),active=retentionSelected(ear),key=`genius-${ear}-${state.receiverSelections[ear].power}`;
-    return `<button type="button" class="ref-retention-card genius-retention-card ${active?'active':''}" data-retention-card="${key}" data-genius-retention-ear="${ear}" aria-pressed="${active}">${catalogImage(retentionAsset(ear),`${label} for the ${earName(ear).toLowerCase()} ear`,'genius-retention-image')}<strong><span class="ref-side-marker${markerClass(ear)}" aria-hidden="true"></span>${earName(ear)} · ${label}</strong><small>${active?'Included in configuration':'Tap to include'}</small></button>`;
-  }
+
 
   function heroComponents(){
     const items=[];
@@ -318,7 +304,7 @@
   }
   function receiverFact(ear){return receiverReady(ear)?receiverShortLabel(ear):(receiverHasSelection(ear)?'Incomplete':'Not selected');}
   function couplingFact(ear){return couplingReady(ear)?couplingShortLabel(ear):(couplingHasSelection(ear)?'Incomplete':'Not selected');}
-  function retentionFact(ear){return retentionSelected(ear)?retentionShortLabel(ear):'Not selected · Optional';}
+  function retentionFact(){return retentionShortLabel()||'Not selected · Optional';}
 
   function renderProduct(){
     const container=root();if(!container)return;
@@ -329,13 +315,13 @@
       ${breadcrumbs()}
       <div class="ref-page-head"><div><h3>Genius</h3><p class="muted">Configure the MEENERGY RIC T R 5W and review its compatible EarWear 3.0 components.</p></div><div class="ref-page-actions"><button type="button" class="secondary ref-back" data-genius-home>← Hearing Aids</button></div></div>
       ${stickyNav()}
-      <div class="ref-section ref-model-hero"><div class="ref-hero-visual"><div class="ref-image-slot ref-has-catalog-image">${catalogImage(asset(`hearing-aids/${heroColor.file}`),`${geniusData.family} in ${heroColor.name}`)}</div><div class="ref-hero-components">${heroComponents()}</div></div><div><div class="ref-model-name">${modelName()}</div><div class="ref-family-name">${geniusData.family}</div><div class="ref-identity-chips"><span class="ref-identity-chip">Genius</span><span class="ref-identity-chip">RIC</span><span class="ref-identity-chip">Rechargeable</span><span class="ref-identity-chip">Telecoil</span>${state.level?`<span class="ref-identity-chip">ME${state.level}</span>`:''}${color?`<span class="ref-identity-chip">${color.name}</span>`:''}</div><div class="ref-fact-grid"><div class="ref-fact"><span>Model</span><strong>${state.level?modelName():'Not selected'}</strong></div><div class="ref-fact"><span>Color</span><strong>${color?color.name:'Not selected'}</strong></div><div class="ref-fact"><span>Left Receiver</span><strong>${receiverFact('left')}</strong></div><div class="ref-fact"><span>Left Coupling</span><strong>${couplingFact('left')}</strong></div><div class="ref-fact"><span>Right Receiver</span><strong>${receiverFact('right')}</strong></div><div class="ref-fact"><span>Right Coupling</span><strong>${couplingFact('right')}</strong></div><div class="ref-fact"><span>Left Retention</span><strong>${retentionFact('left')}</strong></div><div class="ref-fact"><span>Right Retention</span><strong>${retentionFact('right')}</strong></div></div></div></div>
+      <div class="ref-section ref-model-hero"><div class="ref-hero-visual"><div class="ref-image-slot ref-has-catalog-image">${catalogImage(asset(`hearing-aids/${heroColor.file}`),`${geniusData.family} in ${heroColor.name}`,'ref-catalog-image','eager')}</div><div class="ref-hero-components">${heroComponents()}</div></div><div><div class="ref-model-name">${modelName()}</div><div class="ref-family-name">${geniusData.family}</div><div class="ref-identity-chips"><span class="ref-identity-chip">Genius</span><span class="ref-identity-chip">RIC</span><span class="ref-identity-chip">Rechargeable</span><span class="ref-identity-chip">Telecoil</span>${state.level?`<span class="ref-identity-chip">ME${state.level}</span>`:''}${color?`<span class="ref-identity-chip">${color.name}</span>`:''}</div><div class="ref-fact-grid"><div class="ref-fact"><span>Model</span><strong>${state.level?modelName():'Not selected'}</strong></div><div class="ref-fact"><span>Color</span><strong>${color?color.name:'Not selected'}</strong></div><div class="ref-fact"><span>Left Receiver</span><strong>${receiverFact('left')}</strong></div><div class="ref-fact"><span>Left Coupling</span><strong>${couplingFact('left')}</strong></div><div class="ref-fact"><span>Right Receiver</span><strong>${receiverFact('right')}</strong></div><div class="ref-fact"><span>Right Coupling</span><strong>${couplingFact('right')}</strong></div><div class="ref-fact"><span>Left Retention</span><strong>${retentionFact()}</strong></div><div class="ref-fact"><span>Right Retention</span><strong>${retentionFact()}</strong></div></div></div></div>
       <div class="ref-config-card" aria-label="Current Genius configuration"><div class="ref-config-copy"><div class="ref-config-label">Current Configuration</div><div class="ref-config-value" aria-live="polite">${configurationText()}</div></div><div class="ref-config-actions"><span class="ref-config-badge ${complete?'':'incomplete'}">${complete?'✓ Configured':'Incomplete'}</span><button type="button" class="secondary ref-reset-config" data-genius-reset ${hasSelection?'':'disabled'}>Reset</button><button type="button" class="ref-copy-config" data-genius-save ${complete?'':'disabled'}>Save Configuration</button></div></div>
       <div class="ref-section ref-feature-section" data-genius-section="features"><div class="ref-feature-head"><div><h4>Treatment Level &amp; Features</h4><p class="muted">Compare the verified product specifications supplied for ME2 through ME5.</p></div><span class="ref-solution-badge">${state.level?`ME${state.level} · ${solutionNames[state.level]}`:'Select level'}</span></div><div class="ref-level-row ref-feature-levels" aria-label="Treatment level">${geniusData.levels.map(level=>`<button type="button" class="ref-choice ${state.level===level?'active':''}" data-level="${level}">ME${level}</button>`).join('')}</div><div class="ref-feature-content">${featureMarkup()}</div></div>
       <div class="ref-section" data-genius-section="colors"><h4>Colors</h4><p class="muted">Select the hearing-aid finish.</p><div class="ref-color-grid">${geniusData.colors.map(item=>`<div class="ref-color-card ${state.color===item.id?'active':''}" data-color="${item.id}" role="button" tabindex="0" aria-pressed="${state.color===item.id}"><div class="ref-color-chip">${catalogImage(asset(`hearing-aids/${item.file}`),`${geniusData.family} in ${item.name}`,'ref-color-product','lazy')}</div><strong>${item.name}</strong></div>`).join('')}</div></div>
       <div class="ref-section" data-genius-section="receivers"><h4>EarWear 3.0 Receivers</h4><p class="muted">S, M, and P receivers are available in lengths 0 through 5. Enable Binaural fit to keep both sides matched.</p><button type="button" class="secondary ref-binaural-toggle" data-binaural-fit aria-pressed="${state.receiverBinaural}">${state.receiverBinaural?'Binaural receivers: On':'Enable Binaural receivers'}</button><div class="ref-ear-config-grid">${ears.map(receiverSelector).join('')}</div><div class="ref-component-preview ref-receiver-preview"><div class="ref-component-kicker">Receiver Preview</div>${receiverPreview()}</div></div>
       <div class="ref-section" data-genius-section="couplings"><h4>EarWear 3.0 Couplings</h4><p class="muted">Choose the tip or sleeve used on each selected receiver.</p><button type="button" class="secondary ref-binaural-toggle" data-genius-binaural-coupling aria-pressed="${state.couplingBinaural}">${state.couplingBinaural?'Binaural couplings: On':'Enable Binaural couplings'}</button><div class="ref-ear-config-grid">${ears.map(couplingSelector).join('')}</div><div class="ref-component-preview ref-coupling-preview"><div class="ref-component-kicker">Coupling Preview</div>${couplingPreview()}</div></div>
-      <div class="ref-section" data-genius-section="retention"><div class="ref-section-title-row"><h4>Concha Locks</h4><span class="ref-optional-label">Optional</span></div><p class="muted">Concha locks are matched automatically to each receiver's S, M, or P power. Configure each ear independently.</p><div class="genius-retention-grid">${ears.map(retentionCard).join('')}</div><div class="ref-selection-summary"><strong>${retentionLabel()}</strong></div></div>
+      <div class="ref-section" data-genius-section="retention"><div class="ref-section-title-row"><h4>Concha Locks</h4><span class="ref-optional-label">Optional</span></div><p class="muted">Select an optional concha lock size, like Spark.</p><div class="genius-retention-grid">${retentionCards()}</div><div class="ref-selection-summary"><strong>${retentionLabel()}</strong></div></div>
       <div class="ref-section" data-genius-section="accessories"><h4>Charger &amp; Maintenance</h4><p class="muted">Compatible charging and wax-management accessories supplied for this reference.</p><div class="ref-accessory-grid">${geniusData.accessories.map(item=>`<div class="ref-accessory-card"><div class="ref-image-slot ref-has-catalog-image">${catalogImage(asset(`accessories/${item.file}`),item.name,'ref-catalog-image','lazy')}</div><h5>${item.name}</h5><p>${item.type}</p></div>`).join('')}</div></div>
     </div>`;
     container.querySelectorAll('img[data-genius-image]').forEach(image=>{const src=image.dataset.geniusImage,old=retainedImages.get(src),cached=catalogImageCache.get(src)?.image;if(old&&old.complete&&old.naturalWidth){old.className=image.className;old.alt=image.alt;old.loading=image.loading;old.dataset.geniusImage=src;image.replaceWith(old);}else if(cached&&cached.complete&&cached.naturalWidth){const clone=cached.cloneNode(false);clone.className=image.className;clone.alt=image.alt;clone.loading=image.loading;clone.dataset.geniusImage=src;image.replaceWith(clone);}});
@@ -374,7 +360,7 @@
     container.querySelectorAll('[data-coupling-type]').forEach(button=>button.addEventListener('click',()=>{const ear=button.dataset.couplingEar,item=state.couplingSelections[ear];item.type=button.dataset.couplingType;item.size=null;syncBinauralCoupling(ear);renderProduct();}));
     container.querySelectorAll('[data-coupling-size]').forEach(button=>button.addEventListener('click',()=>{const ear=button.dataset.couplingEar;state.couplingSelections[ear].size=button.dataset.couplingSize;syncBinauralCoupling(ear);renderProduct();}));
     container.querySelectorAll('[data-genius-clear-coupling]').forEach(button=>button.addEventListener('click',()=>{const ear=button.dataset.geniusClearCoupling;state.couplingSelections[ear]={type:null,size:null};syncBinauralCoupling(ear);renderProduct();}));
-    container.querySelectorAll('[data-genius-retention-ear]').forEach(button=>button.addEventListener('click',()=>{const ear=button.dataset.geniusRetentionEar;state.retentionSelections[ear]=!state.retentionSelections[ear];syncBinauralReceiver(ear);renderProduct();}));
+    container.querySelectorAll('[data-genius-retention-size]').forEach(button=>button.addEventListener('click',()=>{const size=button.dataset.geniusRetentionSize;state.retention=state.retention===size?null:size;renderProduct();}));
     container.querySelector('[data-binaural-fit]')?.addEventListener('click',toggleBinauralReceiver);container.querySelector('[data-genius-binaural-coupling]')?.addEventListener('click',toggleBinauralCoupling);
     container.querySelector('[data-genius-reset]')?.addEventListener('click',resetConfiguration);
     container.querySelector('[data-genius-save]')?.addEventListener('click',event=>saveConfiguration(event.currentTarget));
