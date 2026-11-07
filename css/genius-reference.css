@@ -212,9 +212,13 @@ html.appearance-overhaul[data-appearance="dark"] #references .genius-retention-e
 }
 
 @media(max-width:760px){
-  #references .genius-spec-grid,
-  #references .genius-retention-grid {
+  #references .genius-spec-grid {
     grid-template-columns: 1fr;
+  }
+
+  #references .genius-retention-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
   }
 
   #references .genius-spec-card {
@@ -223,11 +227,11 @@ html.appearance-overhaul[data-appearance="dark"] #references .genius-retention-e
 
   #references .genius-retention-card,
   #references .genius-retention-empty {
-    min-height: 190px;
+    min-height: 132px;
   }
 
   #references .genius-retention-image {
-    height: 125px;
+    height: 86px;
   }
 
   #references .genius-receiver-image {
