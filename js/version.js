@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.10.0-dev6';
+  const VERSION='1.10.0-dev7';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
