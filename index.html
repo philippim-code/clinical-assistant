@@ -14,8 +14,8 @@
 <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
 <link rel="apple-touch-icon" sizes="192x192" href="assets/icon-192.png" />
 <link rel="manifest" href="manifest.json" />
-<link rel="stylesheet" href="css/styles.css?v=1.10.0-dev10" />
-<link rel="stylesheet" href="css/genius-reference.css?v=1.10.0-dev10" />
+<link rel="stylesheet" href="css/styles.css?v=1.10.0-dev11" />
+<link rel="stylesheet" href="css/genius-reference.css?v=1.10.0-dev11" />
 </head>
 <body>
 <div id="splash" class="splash"><div class="splash-card"><img src="assets/logo.png" class="splash-logo" alt="Miracle-Ear Logo"><div class="splash-title">Miracle-Ear</div><div class="splash-subtitle">Clinical Assistant <span data-app-version></span></div></div></div>
@@ -64,7 +64,7 @@
 </div>
 <article class="section tool-launch-card" aria-labelledby="medicalReferralsCardTitle">
   <div class="tool-launch-content"><div class="tool-launch-icon" aria-hidden="true">✚</div><div><h3 id="medicalReferralsCardTitle">Medical Referrals</h3><p class="muted">Save referral offices and access referral guidance.</p></div></div>
-  <button type="button" class="primary tool-launch-action" data-clinical-tool-target="medicalReferralsPanel" aria-haspopup="dialog">Open</button>
+  <button type="button" class="primary tool-launch-action" onclick="window.openClinicalTool('medicalReferralsPanel')" aria-haspopup="dialog">Open</button>
 </article>
 <div class="clinical-tool-overlay hidden" id="medicalReferralsPanel" role="dialog" aria-modal="true" aria-labelledby="medicalReferralsTitle" onclick="closeClinicalToolFromBackdrop(event)">
 <div class="clinical-tool-panel" id="medicalReferralsSection" tabindex="-1">
@@ -206,12 +206,12 @@ Ran feedback test"></textarea></div><button class="primary" onclick="saveSetting
 <div class="footer">Miracle-Ear Clinical Assistant <span data-app-version></span> | Ctrl + Enter = Generate & Copy Note | Ctrl + S = Save Outcome</div>
 </div>
 <div id="toast" class="toast"></div>
-<script src="js/version.js?v=1.10.0-dev10"></script>
-<script src="js/app-core.js?v=1.10.0-dev10"></script>
-<script src="js/smart-notes.js?v=1.10.0-dev10"></script>
-<script src="js/references.js?v=1.10.0-dev10"></script>
-<script src="js/reference-images.js?v=1.10.0-dev10"></script>
-<script src="js/genius-reference.js?v=1.10.0-dev10"></script>
-<script src="js/app-enhancements.js?v=1.10.0-dev10"></script>
+<script src="js/version.js?v=1.10.0-dev11"></script>
+<script src="js/app-core.js?v=1.10.0-dev11"></script>
+<script src="js/smart-notes.js?v=1.10.0-dev11"></script>
+<script src="js/references.js?v=1.10.0-dev11"></script>
+<script src="js/reference-images.js?v=1.10.0-dev11"></script>
+<script src="js/genius-reference.js?v=1.10.0-dev11"></script>
+<script src="js/app-enhancements.js?v=1.10.0-dev11"></script>
 </body>
 </html>
