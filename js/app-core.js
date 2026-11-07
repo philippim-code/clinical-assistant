@@ -1670,10 +1670,14 @@ let clinicalToolOpener=null;
 function openClinicalTool(id){
   const overlay=document.getElementById(id);if(!overlay)return;
   clinicalToolOpener=document.activeElement;
-  // Mount dialogs at the document root so tab-panel animations and stacking contexts
-  // cannot clip or cover them.
   if(overlay.parentElement!==document.body)document.body.appendChild(overlay);
   overlay.classList.remove('hidden');
+  overlay.style.setProperty('position','fixed','important');
+  overlay.style.setProperty('inset','0','important');
+  overlay.style.setProperty('z-index','2147483000','important');
+  overlay.style.setProperty('display','flex','important');
+  overlay.style.setProperty('visibility','visible','important');
+  overlay.style.setProperty('opacity','1','important');
   document.body.classList.add('clinical-tool-open');
   if(id==='medicalReferralsPanel')renderReferrals();
   requestAnimationFrame(()=>overlay.querySelector('.clinical-tool-panel')?.focus());
@@ -1681,6 +1685,7 @@ function openClinicalTool(id){
 function closeClinicalTool(id){
   const overlay=document.getElementById(id);if(!overlay)return;
   overlay.classList.add('hidden');
+  ['position','inset','z-index','display','visibility','opacity'].forEach(property=>overlay.style.removeProperty(property));
   document.body.classList.remove('clinical-tool-open');
   clinicalToolOpener?.focus?.();clinicalToolOpener=null;
 }
