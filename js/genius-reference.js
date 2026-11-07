@@ -309,7 +309,7 @@
   function renderProduct(){
     const container=root();if(!container)return;
     if(sectionObserver){sectionObserver.disconnect();sectionObserver=null;}
-    const retainedImages=new Map([...container.querySelectorAll('img[data-genius-image]')].map(image=>[image.dataset.geniusImage,image]));
+    const retainedImages=new Map();[...container.querySelectorAll('img[data-genius-image]')].forEach(image=>{const src=image.dataset.geniusImage;if(!retainedImages.has(src))retainedImages.set(src,[]);retainedImages.get(src).push(image);});
     const color=selectedColor(),heroColor=color||geniusData.colors.find(item=>item.id==='silver'),complete=configurationComplete(),hasSelection=hasAnySelection();
     container.innerHTML=`<div class="ref-shell genius-reference-shell">
       ${breadcrumbs()}
@@ -324,7 +324,7 @@
       <div class="ref-section" data-genius-section="retention"><div class="ref-section-title-row"><h4>Concha Locks</h4><span class="ref-optional-label">Optional</span></div><p class="muted">Select an optional concha lock size, like Spark.</p><div class="genius-retention-grid">${retentionCards()}</div><div class="ref-selection-summary"><strong>${retentionLabel()}</strong></div></div>
       <div class="ref-section" data-genius-section="accessories"><h4>Charger &amp; Maintenance</h4><p class="muted">Compatible charging and wax-management accessories supplied for this reference.</p><div class="ref-accessory-grid">${geniusData.accessories.map(item=>`<div class="ref-accessory-card"><div class="ref-image-slot ref-has-catalog-image">${catalogImage(asset(`accessories/${item.file}`),item.name,'ref-catalog-image','lazy')}</div><h5>${item.name}</h5><p>${item.type}</p></div>`).join('')}</div></div>
     </div>`;
-    container.querySelectorAll('img[data-genius-image]').forEach(image=>{const src=image.dataset.geniusImage,old=retainedImages.get(src),cached=catalogImageCache.get(src)?.image;if(old&&old.complete&&old.naturalWidth){old.className=image.className;old.alt=image.alt;old.loading=image.loading;old.dataset.geniusImage=src;image.replaceWith(old);}else if(cached&&cached.complete&&cached.naturalWidth){const clone=cached.cloneNode(false);clone.className=image.className;clone.alt=image.alt;clone.loading=image.loading;clone.dataset.geniusImage=src;image.replaceWith(clone);}});
+    container.querySelectorAll('img[data-genius-image]').forEach(image=>{const src=image.dataset.geniusImage,old=retainedImages.get(src)?.shift(),cached=catalogImageCache.get(src)?.image;if(old&&old.complete&&old.naturalWidth){old.className=image.className;old.alt=image.alt;old.loading=image.loading;old.dataset.geniusImage=src;image.replaceWith(old);}else if(cached&&cached.complete&&cached.naturalWidth){const clone=cached.cloneNode(false);clone.className=image.className;clone.alt=image.alt;clone.loading=image.loading;clone.dataset.geniusImage=src;image.replaceWith(clone);}});
     wireProduct(container);preloadCatalogAssets();notifyRendered();
   }
 
