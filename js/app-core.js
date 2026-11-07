@@ -1670,14 +1670,23 @@ let clinicalToolOpener=null;
 function openClinicalTool(id){
   const overlay=document.getElementById(id);if(!overlay){toast('This menu could not be found. Refresh the app and try again.');return;}
   clinicalToolOpener=document.activeElement;
-  overlay.classList.remove('hidden');
+  if(overlay instanceof HTMLDialogElement){
+    if(overlay.open)return;
+    overlay.classList.remove('hidden');
+    try{overlay.showModal();}catch(error){overlay.classList.add('hidden');console.error('Unable to open clinical tool dialog:',error);toast('Unable to open this menu. Please refresh the app and try again.');return;}
+  }else{
+    overlay.classList.remove('hidden');
+    overlay.style.display='flex';
+  }
   document.body.classList.add('clinical-tool-open');
   if(id==='medicalReferralsPanel')renderReferrals();
   requestAnimationFrame(()=>overlay.querySelector('.clinical-tool-panel')?.focus());
 }
 function closeClinicalTool(id){
   const overlay=document.getElementById(id);if(!overlay)return;
+  if(overlay instanceof HTMLDialogElement&&overlay.open)overlay.close();
   overlay.classList.add('hidden');
+  overlay.style.removeProperty('display');
   document.body.classList.remove('clinical-tool-open');
   clinicalToolOpener?.focus?.();clinicalToolOpener=null;
 }
