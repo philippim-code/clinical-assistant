@@ -1670,13 +1670,18 @@ let clinicalToolOpener=null;
 function openClinicalTool(id){
   const overlay=document.getElementById(id);if(!overlay)return;
   clinicalToolOpener=document.activeElement;
-  overlay.classList.remove('hidden');document.body.classList.add('clinical-tool-open');
-  renderReferrals();
+  // Mount dialogs at the document root so tab-panel animations and stacking contexts
+  // cannot clip or cover them.
+  if(overlay.parentElement!==document.body)document.body.appendChild(overlay);
+  overlay.classList.remove('hidden');
+  document.body.classList.add('clinical-tool-open');
+  if(id==='medicalReferralsPanel')renderReferrals();
   requestAnimationFrame(()=>overlay.querySelector('.clinical-tool-panel')?.focus());
 }
 function closeClinicalTool(id){
   const overlay=document.getElementById(id);if(!overlay)return;
-  overlay.classList.add('hidden');document.body.classList.remove('clinical-tool-open');
+  overlay.classList.add('hidden');
+  document.body.classList.remove('clinical-tool-open');
   clinicalToolOpener?.focus?.();clinicalToolOpener=null;
 }
 function closeClinicalToolFromBackdrop(event){
