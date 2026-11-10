@@ -4,13 +4,13 @@ let currentAppointment='';let replacedItems=[];let recentlySavedOutcomeId=null;
 const SAVED_DEVICE_CONFIGURATION_STORAGE_KEY='meClinicalAssistantSavedDeviceConfiguration';
 const DEFAULT_SETTINGS={finance:['PatientFi','Powerpay','Paymonthly/Care Credit','HFD'],adjustments:['Increased speech 1 click AU','Ran feedback test'],insuranceGuide:['United Health Care - United Healthcare Hearing','Aetna - Nations Hearing','CT Care - Nations Hearing','BCBS - Hearing Care Solutions OR TruHearing','Cigna - Hearing Select','WellCare - Hear USA','Humana - Hear USA','Care Partners - Hearing Care Solutions','Anthem - State of CT Blue Care'],officeLocation:'Trumbull',officeNumber:'CF299117'};
 function getSettings(){try{return Object.assign({},DEFAULT_SETTINGS,JSON.parse(localStorage.getItem('meClinicalSettings')||'{}'))}catch(e){return DEFAULT_SETTINGS}}
-function saveSettings(){
+function saveSettings(options={}){
   const finance=document.getElementById('settingsFinance').value.split(/\n/).map(x=>x.trim()).filter(Boolean);
   const adjustments=document.getElementById('settingsAdjustments').value.split(/\n/).map(x=>x.trim()).filter(Boolean);
   const existing=getSettings();
   localStorage.setItem('meClinicalSettings',JSON.stringify({...existing,finance:finance.length?finance:DEFAULT_SETTINGS.finance,adjustments:adjustments.length?adjustments:DEFAULT_SETTINGS.adjustments}));
-  const status=document.getElementById('settingsStatus');if(status)status.textContent='Settings saved on this device.';
-  toast('✓ Settings saved.');
+  const status=document.getElementById('settingsStatus');if(status)status.textContent='Changes saved automatically on this device.';
+  if(!options.silent)toast('✓ Settings saved.');
 }
 function resetSettings(){if(!confirm('Reset settings to defaults?'))return;localStorage.removeItem('meClinicalSettings');renderSettings();toast('✓ Settings reset.')}
 function renderSettings(){
@@ -1539,8 +1539,8 @@ const _v150RenderSettings=renderSettings;
 renderSettings=function(){_v150RenderSettings();renderPersonalizationSettings();};
 
 const _v150SaveSettings=saveSettings;
-saveSettings=function(){
-  _v150SaveSettings();
+saveSettings=function(options={}){
+  _v150SaveSettings(options);
   const p={
     appearance:document.getElementById('appearanceMode')?.value||'light',
     theme:document.getElementById('colorTheme')?.value||'clinical',
@@ -1548,16 +1548,20 @@ saveSettings=function(){
   };
   localStorage.setItem(PERSONALIZATION_KEY,JSON.stringify(p));
   applyPersonalization(p);
-  document.getElementById('settingsStatus').textContent='Settings and appearance saved.';
+  const status=document.getElementById('settingsStatus');if(status)status.textContent='Changes saved automatically on this device.';
 };
 
 const _v150ResetSettings=resetSettings;
 resetSettings=function(){
-  if(!confirm('Reset settings and appearance to defaults?'))return;
+  if(!confirm('Reset app settings to defaults?'))return;
   localStorage.removeItem('meClinicalSettings');
   localStorage.removeItem(PERSONALIZATION_KEY);
+  localStorage.removeItem(HOME_PREFS_KEY);
   applyPersonalization(DEFAULT_PERSONALIZATION);
+  applyHomePrefs(DEFAULT_HOME_PREFS);
   renderSettings();
+  document.dispatchEvent(new CustomEvent('clinical-assistant:settings-reset'));
+  const status=document.getElementById('settingsStatus');if(status)status.textContent='Defaults restored. Changes save automatically on this device.';
   toast('✓ Settings reset.');
 };
 
@@ -1637,8 +1641,8 @@ function renderHomePreferenceSettings(){
   if(a)a.checked=p.dashboard;if(b)b.checked=p.newAppointment;if(c)c.checked=p.recent;
 }
 const _v160SaveSettings=saveSettings;
-saveSettings=function(){
-  _v160SaveSettings();
+saveSettings=function(options={}){
+  _v160SaveSettings(options);
   const prefs={
     dashboard:document.getElementById('homeShowDashboard')?.checked!==false,
     newAppointment:document.getElementById('homeShowNewAppointment')?.checked!==false,
@@ -1815,3 +1819,25 @@ function installOutcomesBackToTop(){
 }
 installOutcomesBackToTop();
 
+
+
+/* Settings fields can live in panels outside the Settings tab. Match by ID. */
+const SETTINGS_AUTOSAVE_FIELDS=new Set([
+  'settingsFinance','settingsAdjustments','appearanceMode','colorTheme','defaultLanding',
+  'homeShowDashboard','homeShowNewAppointment','homeShowRecent',
+  'homeShowContinueWorking','homeShowQuickTools','homeShowClinicalReference'
+]);
+function autoSaveSettingsChange(event){
+  if(!SETTINGS_AUTOSAVE_FIELDS.has(event.target?.id))return;
+  try{window.saveSettings({silent:true});}
+  catch(error){
+    console.error('Unable to save app settings:',error);
+    const status=document.getElementById('settingsStatus');
+    if(status)status.textContent='Unable to save changes on this device.';
+    toast('Unable to save settings on this device.');
+  }
+}
+document.addEventListener('input',event=>{
+  if(event.target?.id==='settingsFinance'||event.target?.id==='settingsAdjustments')autoSaveSettingsChange(event);
+});
+document.addEventListener('change',autoSaveSettingsChange);

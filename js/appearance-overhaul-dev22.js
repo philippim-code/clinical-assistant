@@ -58,9 +58,6 @@
           <button type="button" class="secondary" id="oaHomeDashboardSettingsClose">Close</button>
         </div>
         <div class="oa-home-dashboard-settings-body"></div>
-        <div class="oa-home-dashboard-settings-actions">
-          <button type="button" class="primary" id="oaHomeDashboardSettingsSave">Save Settings</button>
-        </div>
       </div>`;
     document.body.appendChild(overlay);
     overlay.querySelector('.oa-home-dashboard-settings-body')?.appendChild(group);
@@ -68,10 +65,6 @@
     launcher.querySelector('#oaHomeDashboardSettingsOpen')?.addEventListener('click',openHomeDashboardSettings);
     overlay.querySelector('#oaHomeDashboardSettingsClose')?.addEventListener('click',closeHomeDashboardSettings);
     overlay.addEventListener('click',event=>{if(event.target===overlay)closeHomeDashboardSettings();});
-    overlay.querySelector('#oaHomeDashboardSettingsSave')?.addEventListener('click',()=>{
-      if(typeof window.saveSettings==='function')window.saveSettings();
-      closeHomeDashboardSettings();
-    });
   }
 
   function init(){
@@ -83,3 +76,4 @@
   window.addEventListener('load',init,{once:true});
   window.addEventListener('pageshow',()=>{installHomeDashboardSettings();closeHomeDashboardSettings();});
 })();
+

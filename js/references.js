@@ -467,7 +467,10 @@ const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
     state.view='home';
     if(sectionObserver){sectionObserver.disconnect();sectionObserver=null;}
     const root=referencesRoot();if(!root)return;
-    root.innerHTML=`<div class="ref-shell">
+    root.innerHTML=`<div class="section tab-menu-panel" aria-labelledby="referencesHeading">
+      <h3 id="referencesHeading">References</h3>
+      <p class="muted tab-menu-intro">Quick guides for hearing aids, insurance, and patient equipment.</p>
+      <div class="ref-shell">
       <details class="ref-accordion" open>
         <summary>🦻 Hearing Aids</summary>
         <div class="ref-accordion-body">
@@ -493,6 +496,7 @@ const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
           <div id='equipmentSheetContainer'></div>
         </div>
       </details>
+    </div>
     </div>`;
     renderInsuranceGuide(root);renderEquipmentSheet(root);
     root.querySelector('[data-ref-product="spark"]').addEventListener('click',renderSparkLanding);
@@ -585,3 +589,4 @@ const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   window.addEventListener('pageshow',applyVersion);
 })();
+

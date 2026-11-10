@@ -1,15 +1,15 @@
-const CACHE_NAME='clinical-assistant-v1.10.0-dev17';
+const CACHE_NAME='clinical-assistant-v1.10.0-dev18';
 const APP_ASSETS=[
   './index.html',
-  './css/styles.css?v=1.10.0-dev17',
-  './css/genius-reference.css?v=1.10.0-dev17',
-  './js/version.js?v=1.10.0-dev17',
-  './js/app-core.js?v=1.10.0-dev17',
-  './js/smart-notes.js?v=1.10.0-dev17',
-  './js/references.js?v=1.10.0-dev17',
-  './js/reference-images.js?v=1.10.0-dev17',
-  './js/genius-reference.js?v=1.10.0-dev17',
-  './js/app-enhancements.js?v=1.10.0-dev17',
+  './css/styles.css?v=1.10.0-dev18',
+  './css/genius-reference.css?v=1.10.0-dev18',
+  './js/version.js?v=1.10.0-dev18',
+  './js/app-core.js?v=1.10.0-dev18',
+  './js/smart-notes.js?v=1.10.0-dev18',
+  './js/references.js?v=1.10.0-dev18',
+  './js/reference-images.js?v=1.10.0-dev18',
+  './js/genius-reference.js?v=1.10.0-dev18',
+  './js/app-enhancements.js?v=1.10.0-dev18',
   './manifest.json',
   './clinical-assistant-icon-v2.png',
   './icon-192.png',
@@ -73,4 +73,5 @@ self.addEventListener('fetch',event=>{
     }).catch(()=>caches.match(event.request).then(cached=>cached||caches.match('./index.html')))
   );
 });
+
 

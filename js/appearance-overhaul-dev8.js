@@ -174,7 +174,7 @@
   }
 
   function installCommandPreferenceControls(){
-    const grid=document.querySelector('#settings .home-toggle-grid');
+    const grid=document.getElementById('homeShowDashboard')?.closest('.home-toggle-grid');
     if(!grid)return;
     const prefs=getCommandPrefs();
     const controls=[
@@ -196,10 +196,11 @@
   }
 
   function saveCommandPreferenceControls(){
+    const current=getCommandPrefs();
     setCommandPrefs({
-      continueWorking:document.getElementById('homeShowContinueWorking')?.checked!==false,
-      quickTools:document.getElementById('homeShowQuickTools')?.checked!==false,
-      clinicalReference:document.getElementById('homeShowClinicalReference')?.checked!==false
+      continueWorking:document.getElementById('homeShowContinueWorking')?.checked??current.continueWorking,
+      quickTools:document.getElementById('homeShowQuickTools')?.checked??current.quickTools,
+      clinicalReference:document.getElementById('homeShowClinicalReference')?.checked??current.clinicalReference
     });
     applyCommandPrefs();
   }
@@ -285,7 +286,13 @@
     installSparkSelectionTargeting();
   }
 
+  document.addEventListener('clinical-assistant:settings-reset',()=>{
+    localStorage.removeItem(HOME_COMMAND_PREFS_KEY);
+    installCommandPreferenceControls();
+    applyCommandPrefs();
+  });
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   window.addEventListener('load',()=>{installHomeStructure();installCommandPreferenceControls();applyCommandPrefs();},{once:true});
   window.addEventListener('pageshow',()=>{applyCommandPrefs();renderContinueWorking();});
 })();
+
