@@ -221,7 +221,7 @@ html.appearance-overhaul .oa-office-form {
 
 html.appearance-overhaul .oa-office-form-grid {
   display: grid;
-  grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(130px,.45fr);
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(120px,.45fr) minmax(150px,.6fr);
   gap: 12px;
 }
 

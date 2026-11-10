@@ -14,7 +14,8 @@
 <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
 <link rel="apple-touch-icon" sizes="192x192" href="assets/icon-192.png" />
 <link rel="manifest" href="manifest.json" />
-<link rel="stylesheet" href="css/styles.css?v=1.8.0" />
+<link rel="stylesheet" href="css/styles.css?v=1.10.0" />
+<link rel="stylesheet" href="css/genius-reference.css?v=1.10.0" />
 </head>
 <body>
 <div id="splash" class="splash"><div class="splash-card"><img src="assets/logo.png" class="splash-logo" alt="Miracle-Ear Logo"><div class="splash-title">Miracle-Ear</div><div class="splash-subtitle">Clinical Assistant <span data-app-version></span></div></div></div>
@@ -51,10 +52,14 @@
     <div id="homeRecent"><p class="muted">No saved activity yet.</p></div>
   </div>
 </div>
-<div id="notes" class="tab-panel"><h3>Select Appointment Type</h3><div class="appt-grid"><div class="appt-card" onclick="loadAppointment('hae',this)">HAE</div><div class="appt-card" onclick="loadAppointment('aftercare',this)">Aftercare</div><div class="appt-card" onclick="loadAppointment('delivery',this)">Delivery</div><div class="appt-card" onclick="loadAppointment('retest',this)">Annual Retest</div></div><div class="section active-patient-panel"><h3>Current Patient / Quick Label</h3><div class="grid-2"><div><label class="inline-label">Patient label <span class="muted">(initials, first name, or appointment time)</span></label><input type="text" id="currentPatientLabel" placeholder="ex. 10:30 AM - J.S."></div><div><label class="inline-label">Optional reminder/status</label><input type="text" id="currentPatientReminder" placeholder="ex. Needs closeout, waiting on payment"></div></div><p class="muted">Used when saving to Saved Outcomes. Keep identifiers minimal if possible. Keep identifiers minimal if possible.</p></div><div class="layout"><div class="section" id="workflow"><h3>Workflow</h3><p>Select an appointment type above.</p></div><div><div class="section"><h3>Additional Details</h3><textarea id="details" placeholder="Add any extra details here..."></textarea></div><div class="section"><h3>Generated Note</h3><p class="muted">Generate the note, then edit it freely before copying or saving. Saved Outcomes preserves the text exactly as shown here.</p><textarea id="output" placeholder="Click Generate Note when finished..."></textarea><button class="success" onclick="generateNote()">✓ Generate & Copy Note</button><button class="primary" onclick="saveOutcome()">💾 Save Outcome</button><button class="danger-outline" onclick="clearAll()">Clear</button><div class="muted" id="copyStatus"></div></div></div></div></div>
+<div id="notes" class="tab-panel"><h3>Select Appointment Type</h3><div class="appt-grid"><div class="appt-card" onclick="loadAppointment('hae',this)">HAE</div><div class="appt-card" onclick="loadAppointment('aftercare',this)">Aftercare</div><div class="appt-card" onclick="loadAppointment('delivery',this)">Delivery</div><div class="appt-card" onclick="loadAppointment('retest',this)">Annual Retest</div></div><div class="section active-patient-panel"><h3>Current Patient / Quick Label</h3><div class="grid-2"><div><label class="inline-label">Patient label <span class="muted">(initials, first name, or appointment time)</span></label><input type="text" id="currentPatientLabel" placeholder="ex. 10:30 AM - J.S."></div><div><label class="inline-label">Optional reminder/status</label><input type="text" id="currentPatientReminder" placeholder="ex. Needs closeout, waiting on payment"></div></div><p class="muted">Used when saving to Saved Outcomes. Keep identifiers minimal if possible.</p></div><div class="layout"><div class="section" id="workflow"><h3>Workflow</h3><p>Select an appointment type above.</p></div><div><div class="section"><h3>Additional Details</h3><textarea id="details" placeholder="Add any extra details here..."></textarea></div><div class="section"><h3>Generated Note</h3><p class="muted">Generate the note, then edit it freely before copying or saving. Saved Outcomes preserves the text exactly as shown here.</p><textarea id="output" placeholder="Click Generate Note when finished..."></textarea><button class="success" onclick="generateNote()">✓ Generate & Copy Note</button><button class="primary" onclick="saveOutcome()">💾 Save Outcome</button><button class="danger-outline" onclick="clearAll()">Clear</button><div class="muted" id="copyStatus"></div></div></div></div></div>
 
 <div id="outcomes" class="tab-panel"><div class="section"><h3>Saved Outcomes</h3><p class="muted">Saved outcomes stay on this computer/browser using local storage. Use initials, first name, appointment time, or another minimal identifier if possible.</p><div class="grid-2 outcomes-toolbar-grid"><div class="outcomes-search"><label class="inline-label">Search Saved Outcomes</label><input type="text" id="outcomeSearch" placeholder="Search patient label, appointment type, reminder, or note..." oninput="renderOutcomes()"></div><div class="toolbar-actions outcomes-actions"><button class="info" onclick="exportTodaysOutcomes()">Export Saved Outcomes</button><button class="success-outline" onclick="markAllOutcomesComplete()">Mark All Complete</button><button class="danger-outline" onclick="clearCompletedOutcomes()">Clear Completed</button></div></div><div id="outcomeSummary" class="result-box">No saved outcomes yet.</div><div id="outcomeList" style="margin-top:14px;"><p>No saved outcomes yet.</p></div></div></div>
 <div id="tools" class="tab-panel">
+<div class="section tab-menu-panel" aria-labelledby="clinicalToolsHeading">
+<h3 id="clinicalToolsHeading">Clinical Tools</h3>
+<p class="muted tab-menu-intro">Calculations, referrals, and clinical terms in one place.</p>
+<div class="tab-menu-list" data-clinical-tools-list>
 <div class="section" data-pta-severity-tool><h3>PTA Severity Calculator</h3>
 <div class="grid-2"><div><label class="inline-label">Right Ear PTA</label><input type="number" id="toolRightPTA" placeholder="ex. 45" oninput="updateStandalonePTA()"></div><div><label class="inline-label">Left Ear PTA</label><input type="number" id="toolLeftPTA" placeholder="ex. 40" oninput="updateStandalonePTA()"></div></div>
 <div class="result-box" id="toolPTAResult">Enter PTA values to see severity.</div>
@@ -65,6 +70,13 @@
   <div class="tool-launch-content"><div class="tool-launch-icon" aria-hidden="true">✚</div><div><h3 id="medicalReferralsCardTitle">Medical Referrals</h3><p class="muted">Save referral offices and access referral guidance.</p></div></div>
   <button type="button" class="primary tool-launch-action" onclick="openClinicalTool('medicalReferralsPanel')" aria-haspopup="dialog">Open</button>
 </article>
+<div class="section"><h3>Clinical Terminology</h3>
+<p class="muted">Quick-reference terminology for clinical workflow and studying.</p>
+<input type="text" id="terminologySearch" placeholder="Search terminology..." oninput="renderClinicalTerminology()">
+<div id="terminologyList" class="terminology-grid"></div>
+</div>
+</div>
+</div>
 <div class="clinical-tool-overlay hidden" id="medicalReferralsPanel" role="dialog" aria-modal="true" aria-labelledby="medicalReferralsTitle" onclick="closeClinicalToolFromBackdrop(event)">
 <div class="clinical-tool-panel" id="medicalReferralsSection" tabindex="-1">
 <div class="clinical-tool-panel-head"><div><span class="tool-panel-eyebrow">Clinical Tool</span><h3 id="medicalReferralsTitle">Medical Referrals</h3></div><button type="button" class="secondary clinical-tool-close" onclick="closeClinicalTool('medicalReferralsPanel')" aria-label="Close Medical Referrals">Close</button></div>
@@ -83,22 +95,17 @@
 <div class="clinical-learning-box referral-considerations"><h4>Referral Considerations</h4><p class="muted">Common findings that may warrant medical evaluation can include sudden or rapidly changing hearing, unilateral or asymmetric findings, ear pain, drainage, visible abnormalities, excessive or impacted cerumen, dizziness, tinnitus concerns, or an air-bone gap. Follow applicable scope-of-practice requirements, company policy, and referral standards.</p><p class="muted"><strong>Informational only:</strong> Clinical Assistant does not determine whether a patient requires referral. Use professional judgment and document only what was observed and recommended.</p></div>
 </div>
 </div>
-<div class="section"><h3>Clinical Terminology</h3>
-<p class="muted">Quick-reference terminology for clinical workflow and studying.</p>
-<input type="text" id="terminologySearch" placeholder="Search terminology..." oninput="renderClinicalTerminology()">
-<div id="terminologyList" class="terminology-grid"></div>
-</div>
 </div>
 <div id="references" class="tab-panel"><div class="section"><h3>Quick Reference</h3><p>This tab is ready for future tools like product lookup, receiver/dome guide, consumer guide prompts, financing reference, and counseling reminders.</p></div></div>
 
-<div id="settings" class="tab-panel"><div class="section"><h3>Settings</h3><p class="muted">These settings are saved on this computer/browser. They are meant to keep the app easy to customize without editing code.</p>
+<div id="settings" class="tab-panel"><div class="section tab-menu-panel"><h3>Settings</h3><p class="muted">Customize the app. Changes save automatically on this device.</p>
 <div class="settings-group"><h4>Appearance & Experience</h4>
 <div class="grid-3">
 <div><label class="inline-label" for="appearanceMode">Appearance</label><select id="appearanceMode" onchange="previewPersonalization()"><option value="light">Light</option><option value="dark">Dark</option><option value="system">System</option></select></div>
 <div><label class="inline-label" for="colorTheme">Color Theme</label><select id="colorTheme" onchange="previewPersonalization()"><option value="clinical">Clinical Teal</option><option value="sycle">Sycle</option></select></div>
 <div><label class="inline-label" for="defaultLanding">Default Landing Page</label><select id="defaultLanding"><option value="home">Home</option><option value="notes">Sycle Notes</option><option value="outcomes">Saved Outcomes</option></select></div>
 </div>
-<p class="muted settings-hint">Appearance and theme preview immediately. Choose Save Settings to keep your selections.</p></div>
+<p class="muted settings-hint">Changes save automatically on this device.</p></div>
 <div class="settings-group"><h4>Home Dashboard</h4>
 <p class="muted">Choose which Home sections are visible on this device.</p>
 <div class="home-toggle-grid">
@@ -112,7 +119,7 @@ Powerpay
 Paymonthly/Care Credit
 HFD"></textarea></div>
 <div class="settings-group" data-settings-programming-presets><h4>Common Programming Presets</h4><label class="inline-label">Presets <span class="muted">one per line</span></label><textarea id="settingsAdjustments" placeholder="Increased speech 1 click AU
-Ran feedback test"></textarea></div><button class="primary" onclick="saveSettings()">Save Settings</button><button class="danger-outline" onclick="resetSettings()">Reset Defaults</button><div class="result-box" id="settingsStatus">Settings ready.</div></div></div>
+Ran feedback test"></textarea></div><button class="danger-outline" onclick="resetSettings()">Reset Defaults</button><div class="result-box" id="settingsStatus" role="status" aria-live="polite">Changes save automatically on this device.</div></div></div>
 <div id="about" class="tab-panel">
   <div class="about-hero section">
     <div class="about-brand">
@@ -205,11 +212,14 @@ Ran feedback test"></textarea></div><button class="primary" onclick="saveSetting
 <div class="footer">Miracle-Ear Clinical Assistant <span data-app-version></span> | Ctrl + Enter = Generate & Copy Note | Ctrl + S = Save Outcome</div>
 </div>
 <div id="toast" class="toast"></div>
-<script src="js/version.js?v=1.8.0"></script>
-<script src="js/app-core.js?v=1.8.0"></script>
-<script src="js/smart-notes.js?v=1.8.0"></script>
-<script src="js/references.js?v=1.8.0"></script>
-<script src="js/reference-images.js?v=1.8.0"></script>
-<script src="js/app-enhancements.js?v=1.8.0"></script>
+<script src="js/version.js?v=1.10.0"></script>
+<script src="js/app-core.js?v=1.10.0"></script>
+<script src="js/smart-notes.js?v=1.10.0"></script>
+<script src="js/references.js?v=1.10.0"></script>
+<script src="js/reference-images.js?v=1.10.0"></script>
+<script src="js/genius-reference.js?v=1.10.0"></script>
+<script src="js/app-enhancements.js?v=1.10.0"></script>
 </body>
 </html>
+
+

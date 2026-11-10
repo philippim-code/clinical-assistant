@@ -59,9 +59,6 @@
           <button type="button" class="secondary" id="oaAppearanceSettingsClose">Close</button>
         </div>
         <div class="oa-appearance-settings-body"></div>
-        <div class="oa-appearance-settings-actions">
-          <button type="button" class="primary" id="oaAppearanceSettingsSave">Save Settings</button>
-        </div>
       </div>`;
     document.body.appendChild(overlay);
     overlay.querySelector('.oa-appearance-settings-body')?.appendChild(group);
@@ -69,10 +66,6 @@
     launcher.querySelector('#oaAppearanceSettingsOpen')?.addEventListener('click',openAppearanceSettings);
     overlay.querySelector('#oaAppearanceSettingsClose')?.addEventListener('click',closeAppearanceSettings);
     overlay.addEventListener('click',event=>{if(event.target===overlay)closeAppearanceSettings();});
-    overlay.querySelector('#oaAppearanceSettingsSave')?.addEventListener('click',()=>{
-      if(typeof window.saveSettings==='function')window.saveSettings();
-      closeAppearanceSettings();
-    });
   }
 
   function init(){
@@ -84,3 +77,4 @@
   window.addEventListener('load',init,{once:true});
   window.addEventListener('pageshow',()=>{installAppearanceSettings();closeAppearanceSettings();});
 })();
+

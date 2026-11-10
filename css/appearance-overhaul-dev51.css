@@ -13,3 +13,12 @@ html.appearance-overhaul[data-appearance="dark"] .status-pending {
   color: #f0d26f !important;
   border-color: #6d5b24 !important;
 }
+
+/* Outcome state surfaces and current equipment handoff */
+html.appearance-overhaul .outcome-card.pending{background:#fff9e9!important;border-color:#ead8a7!important}
+html.appearance-overhaul .outcome-card.closed{background:#eef8f1!important;border-color:#c8e2d0!important}
+html.appearance-overhaul[data-appearance="dark"] .outcome-card.pending{background:#302a1a!important;border-color:#685a34!important}
+html.appearance-overhaul[data-appearance="dark"] .outcome-card.closed{background:#1d2b23!important;border-color:#355843!important}
+html.appearance-overhaul .current-equipment-card{margin-top:16px;padding:16px;border:1px solid var(--oa-border);border-radius:var(--oa-radius-md);background:var(--oa-surface-soft)}
+html.appearance-overhaul .current-equipment-card h4{margin:0;color:var(--oa-text)}
+html.appearance-overhaul .current-equipment-details{padding:11px;border:1px solid var(--oa-border);border-radius:var(--oa-radius-sm);background:var(--oa-surface);line-height:1.55}

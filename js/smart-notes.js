@@ -14,14 +14,7 @@
     if(currentAppointment==='retest'||currentAppointment==='retestUnder'||currentAppointment==='retestOver')return'rt';
     return'';
   }
-  function attributedConcern(raw){
-    const text=cleanText(raw); if(!text)return'';
-    const alreadyAttributed=/^(patient|pt\.?|wife|husband|spouse|daughter|son|family|caregiver|parent|mother|father)\b/i.test(text);
-    const alreadyReporting=/^(reports?|reported|states?|stated|denies?|denied|complains?|complained)\b/i.test(text);
-    if(alreadyAttributed)return fixAcronyms(text);
-    if(alreadyReporting)return fixAcronyms('Patient '+text.charAt(0).toLowerCase()+text.slice(1));
-    return fixAcronyms('Patient reports '+text.charAt(0).toLowerCase()+text.slice(1));
-  }
+  function attributedConcern(raw){const text=cleanText(raw);if(!text)return'';return fixAcronyms(text.replace(/^patient reports\s*[:,.-]?\s*/i,''));}
   function getStructuredParts(){
     let arr=[];
     if(currentAppointment==='hae')arr=generateHae();
@@ -74,8 +67,8 @@
   function collapseAppearanceAndHomeSettings(){const settings=document.getElementById('settings');if(!settings||document.getElementById('appearanceHomeSettingsPanel'))return;const groups=[...settings.querySelectorAll('.settings-group')];const appearance=groups.find(g=>g.querySelector('h4')?.textContent.trim()==='Appearance & Experience');const home=groups.find(g=>g.querySelector('h4')?.textContent.trim()==='Home Dashboard');if(!appearance||!home)return;const launcher=createToolLauncher('Appearance & Home','Appearance, color theme, landing page, and Home Dashboard visibility.','appearanceHomeSettingsPanel','⚙️');appearance.parentNode.insertBefore(launcher,appearance);const overlay=createOverlay('appearanceHomeSettingsPanel','Appearance & Home',[appearance,home],'Settings');settings.appendChild(overlay);}
   function collapseFinancingSettings(){const settings=document.getElementById('settings');if(!settings||document.getElementById('financingSettingsPanel'))return;const financing=settings.querySelector('[data-settings-financing]');if(!financing)return;const launcher=createToolLauncher('Financing Companies','Customize the financing companies available in documentation workflows.','financingSettingsPanel','💳');financing.parentNode.insertBefore(launcher,financing);const overlay=createOverlay('financingSettingsPanel','Financing Companies',[financing],'Settings');settings.appendChild(overlay);}
   function collapseProgrammingPresets(){const settings=document.getElementById('settings');if(!settings||document.getElementById('programmingPresetsSettingsPanel'))return;const presets=settings.querySelector('[data-settings-programming-presets]');if(!presets)return;const launcher=createToolLauncher('Common Programming Presets','Customize reusable programming-note presets.','programmingPresetsSettingsPanel','🎛️');presets.parentNode.insertBefore(launcher,presets);const overlay=createOverlay('programmingPresetsSettingsPanel','Common Programming Presets',[presets],'Settings');settings.appendChild(overlay);}
-  function collapsePTASeverity(){const tools=document.getElementById('tools');if(!tools||document.getElementById('ptaSeverityPanel'))return;const section=tools.querySelector('[data-pta-severity-tool]');if(!section)return;const launcher=createToolLauncher('PTA Severity Calculator','Classify right- and left-ear PTA severity when needed.','ptaSeverityPanel','📊');tools.insertBefore(launcher,section);const overlay=createOverlay('ptaSeverityPanel','PTA Severity Calculator',[section],'Clinical Tool');tools.appendChild(overlay);}
-  function collapseClinicalTerminology(){const tools=document.getElementById('tools');if(!tools||document.getElementById('clinicalTerminologyPanel'))return;const section=[...tools.querySelectorAll(':scope > .section')].find(s=>s.querySelector('h3')?.textContent.trim()==='Clinical Terminology');if(!section)return;const launcher=createToolLauncher('Clinical Terminology','Quick-reference terminology for clinical workflow and studying.','clinicalTerminologyPanel','📚');tools.insertBefore(launcher,section);const overlay=createOverlay('clinicalTerminologyPanel','Clinical Terminology',[section],'Clinical Tool');tools.appendChild(overlay);}
+  function collapsePTASeverity(){const tools=document.getElementById('tools');if(!tools||document.getElementById('ptaSeverityPanel'))return;const section=tools.querySelector('[data-pta-severity-tool]');if(!section)return;const launcher=createToolLauncher('PTA Severity Calculator','Classify right- and left-ear PTA severity when needed.','ptaSeverityPanel','📊');section.parentNode.insertBefore(launcher,section);const overlay=createOverlay('ptaSeverityPanel','PTA Severity Calculator',[section],'Clinical Tool');tools.appendChild(overlay);}
+  function collapseClinicalTerminology(){const tools=document.getElementById('tools');if(!tools||document.getElementById('clinicalTerminologyPanel'))return;const list=tools.querySelector('[data-clinical-tools-list]')||tools;const section=[...list.querySelectorAll(':scope > .section')].find(s=>s.querySelector('h3')?.textContent.trim()==='Clinical Terminology');if(!section)return;const launcher=createToolLauncher('Clinical Terminology','Quick-reference terminology for clinical workflow and studying.','clinicalTerminologyPanel','📚');section.parentNode.insertBefore(launcher,section);const overlay=createOverlay('clinicalTerminologyPanel','Clinical Terminology',[section],'Clinical Tool');tools.appendChild(overlay);}
   function removeSmartNoteIndicator(){document.getElementById('smartNoteIndicator')?.remove();}
 
   function installBadgeStyles(){
@@ -128,3 +121,5 @@
   if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',initPatch);else initPatch();
   window.addEventListener('load',initPatch);window.addEventListener('pageshow',updatePendingOutcomeBadge);window.addEventListener('storage',updatePendingOutcomeBadge);
 })();
+
+

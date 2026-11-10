@@ -11,7 +11,8 @@
     name:'Trumbull',
     phone:'2038805883',
     extension:'',
-    address:'132 Monroe Turnpike, Trumbull, CT 06611'
+    address:'132 Monroe Turnpike, Trumbull, CT 06611',
+    officeNumber:'CF299117'
   };
   let editingOfficeId=null;
 
@@ -29,9 +30,27 @@
   function mapsHref(address){return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address||'')}`;}
 
   function initializeOfficeStorage(){
-    if(localStorage.getItem(OFFICE_PROFILES_KEY)===null){
-      localStorage.setItem(OFFICE_PROFILES_KEY,JSON.stringify([DEFAULT_OFFICE]));
-      localStorage.setItem(CURRENT_OFFICE_KEY,DEFAULT_OFFICE.id);
+    let legacy={};
+    try{legacy=JSON.parse(localStorage.getItem('meClinicalSettings')||'{}')||{};}catch(e){}
+    const stored=localStorage.getItem(OFFICE_PROFILES_KEY);
+    if(stored===null){
+      const office={...DEFAULT_OFFICE,name:String(legacy.officeLocation||DEFAULT_OFFICE.name),officeNumber:String(legacy.officeNumber||DEFAULT_OFFICE.officeNumber||'')};
+      localStorage.setItem(OFFICE_PROFILES_KEY,JSON.stringify([office]));
+      localStorage.setItem(CURRENT_OFFICE_KEY,office.id);
+      return;
+    }
+    let offices=[];
+    try{offices=JSON.parse(stored)||[];}catch(e){}
+    if(!Array.isArray(offices)||!offices.length)return;
+    const currentId=localStorage.getItem(CURRENT_OFFICE_KEY)||'';
+    let target=offices.find(office=>office&&office.id===currentId);
+    if(!target){
+      target=offices.find(office=>office&&String(office.name||'').toLowerCase()===String(legacy.officeLocation||'').toLowerCase())||offices[0];
+      if(target&&target.id)localStorage.setItem(CURRENT_OFFICE_KEY,target.id);
+    }
+    if(target&&!target.officeNumber){
+      const number=String(legacy.officeNumber||((target.name||'').toLowerCase()==='trumbull'?DEFAULT_OFFICE.officeNumber:'')).trim();
+      if(number){target.officeNumber=number;localStorage.setItem(OFFICE_PROFILES_KEY,JSON.stringify(offices));}
     }
   }
 
@@ -108,7 +127,7 @@
     launcher.className='tool-launch-card oa-office-settings-launcher';
     launcher.innerHTML=`
       <div class="tool-launch-content">
-        <div class="tool-launch-icon" aria-hidden="true">⌖</div>
+        <div class="tool-launch-icon" aria-hidden="true">🏢</div>
         <div><h3>Office Profiles</h3><p class="muted">Choose the current office and manage locally saved office contact information.</p><div class="oa-office-settings-current" id="oaOfficeSettingsCurrent"></div></div>
       </div>
       <button type="button" class="primary tool-launch-action" id="oaOfficeSettingsOpen">Open</button>`;
@@ -122,7 +141,7 @@
     const line=document.getElementById('oaOfficeSettingsCurrent');
     if(!line)return;
     const office=getCurrentOffice();
-    line.textContent=office?`Current: ${office.name}`:'No current office selected';
+    line.textContent=office?`Current: ${office.name}${office.officeNumber?' · '+office.officeNumber:''}`:'No current office selected';
   }
 
   function installOfficeManager(){
@@ -152,6 +171,7 @@
               <div><label class="inline-label" for="oaOfficeName">Office Name</label><input type="text" id="oaOfficeName" required placeholder="ex. Trumbull"></div>
               <div><label class="inline-label" for="oaOfficePhone">Phone Number</label><input type="tel" id="oaOfficePhone" required placeholder="(203) 555-1234"></div>
               <div><label class="inline-label" for="oaOfficeExtension">Extension <span class="muted">(optional)</span></label><input type="text" id="oaOfficeExtension" placeholder="ex. 201"></div>
+              <div><label class="inline-label" for="oaOfficeNumber">Office Number <span class="muted">(optional)</span></label><input type="text" id="oaOfficeNumber" placeholder="ex. CF299117"></div>
             </div>
             <label class="inline-label" for="oaOfficeAddress">Address</label><input type="text" id="oaOfficeAddress" required placeholder="Street, city, state, ZIP">
             <div class="oa-office-form-actions"><button type="submit" class="primary" id="oaOfficeSave">Add Office</button><button type="button" class="secondary hidden" id="oaOfficeCancelEdit">Cancel Edit</button></div>
@@ -174,8 +194,8 @@
     select.innerHTML=offices.length?offices.map(office=>`<option value="${escapeHtml(office.id)}" ${office.id===currentId?'selected':''}>${escapeHtml(office.name)}</option>`).join(''):'<option value="">No offices saved</option>';
     select.disabled=!offices.length;
     list.innerHTML=offices.length?offices.map(office=>{
-      const current=office.id===currentId,phone=formatPhone(office.phone),ext=office.extension?` · Ext. ${escapeHtml(office.extension)}`:'';
-      return `<div class="oa-office-list-card ${current?'current':''}" data-office-id="${escapeHtml(office.id)}"><div class="oa-office-list-copy"><strong>${escapeHtml(office.name)}${current?' · Current':''}</strong><span>${escapeHtml(phone)}${ext}</span><span>${escapeHtml(office.address)}</span></div><div class="oa-office-list-actions">${current?'':`<button type="button" class="tiny secondary" data-office-current="${escapeHtml(office.id)}">Set Current</button>`}<button type="button" class="tiny secondary" data-office-edit="${escapeHtml(office.id)}">Edit</button><button type="button" class="tiny danger-outline" data-office-delete="${escapeHtml(office.id)}">Delete</button></div></div>`;
+      const current=office.id===currentId,phone=formatPhone(office.phone),ext=office.extension?` · Ext. ${escapeHtml(office.extension)}`:'',number=office.officeNumber?` · Office # ${escapeHtml(office.officeNumber)}`:'';
+      return `<div class="oa-office-list-card ${current?'current':''}" data-office-id="${escapeHtml(office.id)}"><div class="oa-office-list-copy"><strong>${escapeHtml(office.name)}${current?' · Current':''}</strong><span>${escapeHtml(phone)}${ext}${number}</span><span>${escapeHtml(office.address)}</span></div><div class="oa-office-list-actions">${current?'':`<button type="button" class="tiny secondary" data-office-current="${escapeHtml(office.id)}">Set Current</button>`}<button type="button" class="tiny secondary" data-office-edit="${escapeHtml(office.id)}">Edit</button><button type="button" class="tiny danger-outline" data-office-delete="${escapeHtml(office.id)}">Delete</button></div></div>`;
     }).join(''):'<div class="muted">No office profiles saved.</div>';
     list.querySelectorAll('[data-office-current]').forEach(button=>button.addEventListener('click',()=>setCurrentOffice(button.dataset.officeCurrent)));
     list.querySelectorAll('[data-office-edit]').forEach(button=>button.addEventListener('click',()=>beginEditOffice(button.dataset.officeEdit)));
@@ -203,16 +223,17 @@
     const name=document.getElementById('oaOfficeName')?.value.trim()||'';
     const phone=normalizePhone(document.getElementById('oaOfficePhone')?.value||'');
     const extension=document.getElementById('oaOfficeExtension')?.value.trim()||'';
+    const officeNumber=document.getElementById('oaOfficeNumber')?.value.trim()||'';
     const address=document.getElementById('oaOfficeAddress')?.value.trim()||'';
     if(!name||!phone||!address)return;
     const offices=getOffices();
     if(editingOfficeId){
       const index=offices.findIndex(office=>office.id===editingOfficeId);
-      if(index>=0)offices[index]={...offices[index],name,phone,extension,address};
+      if(index>=0)offices[index]={...offices[index],name,phone,extension,address,officeNumber};
       saveOffices(offices);
       if(typeof window.toast==='function')window.toast('✓ Office updated.');
     }else{
-      const office={id:`office-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,name,phone,extension,address};
+      const office={id:`office-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,name,phone,extension,address,officeNumber};
       offices.push(office);saveOffices(offices);
       if(offices.length===1)setCurrentOffice(office.id,false);
       if(typeof window.toast==='function')window.toast(`✓ ${name} office added.`);
@@ -227,6 +248,7 @@
     document.getElementById('oaOfficeName').value=office.name||'';
     document.getElementById('oaOfficePhone').value=formatPhone(office.phone);
     document.getElementById('oaOfficeExtension').value=office.extension||'';
+    document.getElementById('oaOfficeNumber').value=office.officeNumber||'';
     document.getElementById('oaOfficeAddress').value=office.address||'';
     document.getElementById('oaOfficeSave').textContent='Save Changes';
     document.getElementById('oaOfficeCancelEdit').classList.remove('hidden');

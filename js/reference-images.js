@@ -198,6 +198,7 @@
     setImage(root.querySelector('.ref-product-card[data-ref-product="spark"] .ref-image-slot'),FAMILY.standard['silver-gray'],'Miracle-Ear Spark MEMINI E RIC in Silver Gray');
     setImage(root.querySelector('.ref-family-card[data-family="standard"] .ref-image-slot'),FAMILY.standard['silver-gray'],'Miracle-Ear Spark MEMINI E RIC in Silver Gray');
     setImage(root.querySelector('.ref-family-card[data-family="ai"] .ref-image-slot'),FAMILY.ai['silver-gray'],'Miracle-Ear Spark MEMINI E AI RIC in Silver Gray');
+    if(root.querySelector('.genius-reference-shell'))return;
 
     const hero=root.querySelector('.ref-model-hero');
     if(hero){
