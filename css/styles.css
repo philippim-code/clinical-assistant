@@ -444,6 +444,10 @@ textarea.programming-expand-textarea{flex:1;width:100%;min-height:0;height:auto;
 .equipment-sheet-controls{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:12px 0 16px}
 .equipment-sheet-controls label{flex:1 1 260px;font-weight:700}
 .equipment-sheet-controls button{margin:0}
+.ref-equipment-accordion{margin-top:18px}
+.equipment-card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.equipment-card-heading h4,.equipment-card-heading button{margin:0}
+.ref-equipment-card-button{min-height:38px;margin:0;padding:8px 12px;border-radius:10px;font-size:12px;white-space:nowrap}
 .equipment-print-sheet{max-width:860px;padding:22px;border:1px solid var(--border);border-radius:14px;background:var(--card,#fff);color:var(--text)}
 .equipment-sheet-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:2px solid var(--teal)}
 .equipment-sheet-kicker,.equipment-sheet-date span{display:block;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}

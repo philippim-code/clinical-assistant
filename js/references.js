@@ -291,6 +291,7 @@
     const text=clinicalNoteText(),record={source:'Spark Reference',platform:'Spark',family:activeFamily().title,model:activeFamily().modelName(state.level),color:selectedColor()?.name||'',patientName:String(document.getElementById('currentPatientLabel')?.value||'').trim(),retention:state.retention?state.retention+' Retention Lock':'',deviceText:text.replace(/[.]$/,''),fullText:text,receivers:{left:{...state.receiverSelections.left},right:{...state.receiverSelections.right}},couplings:{left:{...state.couplingSelections.left},right:{...state.couplingSelections.right}},savedAt:new Date().toISOString()};
     let saved=false;
     try{localStorage.setItem(SPARK_SAVED_CONFIGURATION_STORAGE_KEY,JSON.stringify(record));saved=true;window.dispatchEvent(new CustomEvent('clinical-assistant:configuration-saved',{detail:record}));}catch(e){saved=false;}
+    wireEquipmentCardAction(referencesRoot(),'Spark',text);
     const finish=(copied)=>{
       if(typeof window.toast==='function')window.toast(saved?(copied?'✓ Configuration saved and copied.':'✓ Configuration saved. Clipboard unavailable.'):(copied?'Configuration copied. Saving unavailable.':'Could not save configuration.'));
       if(button){button.textContent=saved?'Saved ✓':(copied?'Copied':'Try Again');setTimeout(()=>{if(button.isConnected)button.textContent='Save Configuration'},1600)}
@@ -425,6 +426,32 @@ const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
   function equipmentRow(label,value){
     return '<tr><th scope="row">'+referenceEscape(label)+'</th><td>'+referenceEscape(value||'Not recorded')+'</td></tr>';
   }
+  function wireEquipmentCardAction(root,platform,text){
+    const button=root?.querySelector('[data-open-equipment-card]');if(!button)return;
+    const saved=readSavedEquipmentConfiguration();
+    const ready=Boolean(text&&saved?.platform===platform&&(saved.deviceText||saved.fullText||'').replace(/[.]$/,'')===text.replace(/[.]$/,''));
+    button.disabled=!ready;
+    button.title=ready?'View and print this saved configuration.':'Save this configuration to enable the equipment card.';
+    if(!button.dataset.equipmentBound){
+      button.dataset.equipmentBound='1';
+      button.addEventListener('click',()=>openEquipmentCard(root,button));
+    }
+  }
+  function openEquipmentCard(root,opener){
+    if(!root||opener.disabled)return;
+    let panel=root.querySelector('.ref-equipment-panel');
+    if(!panel){
+      panel=document.createElement('section');
+      panel.id='currentEquipmentSection';panel.className='ref-section ref-equipment-panel';
+      panel.setAttribute('aria-labelledby','equipmentCardHeading');panel.tabIndex=-1;
+      panel.innerHTML='<div class="equipment-card-heading"><h4 id="equipmentCardHeading">📋 Current Equipment</h4><button type="button" class="secondary" data-equipment-close>Close</button></div><p class="muted">Review the saved configuration, enter the patient name, and print for their folder.</p><div id="equipmentSheetContainer"></div>';
+      root.querySelector('.ref-config-card').insertAdjacentElement('afterend',panel);
+      renderEquipmentSheet(root);
+      panel.querySelector('[data-equipment-close]').addEventListener('click',()=>{panel.remove();opener.setAttribute('aria-expanded','false');opener.focus({preventScroll:true});});
+    }
+    opener.setAttribute('aria-expanded','true');
+    panel.focus({preventScroll:true});panel.scrollIntoView({behavior:'smooth',block:'start'});
+  }
   function renderEquipmentSheet(root){
     const section=root.querySelector('#currentEquipmentSection');if(!section)return;
     const container=section.querySelector('#equipmentSheetContainer');if(!container)return;
@@ -471,7 +498,7 @@ const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
       <h3 id="referencesHeading">References</h3>
       <p class="muted tab-menu-intro">Quick guides for hearing aids, insurance, and patient equipment.</p>
       <div class="ref-shell">
-      <details class="ref-accordion" open>
+      <details class="ref-accordion" id="hearingAidsSection">
         <summary>🦻 Hearing Aids</summary>
         <div class="ref-accordion-body">
           <p class="muted" style="margin-top:0">Select a hearing-aid platform to open its product reference.</p>
@@ -479,6 +506,13 @@ const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
             <article class="ref-product-card" data-ref-product="spark" role="button" tabindex="0">${placeholder('Spark · Silver Gray')}<h3>Spark</h3><p>MEMINI E RIC and MEMINI E AI RIC</p></article>
             <article class="ref-product-card" data-ref-product="genius" role="button" tabindex="0">${placeholder('Genius · Silver')}<h3>Genius</h3><p>MEENERGY RIC T R 5W</p></article>
           </div>
+          <details class="ref-accordion ref-equipment-accordion" id="currentEquipmentSection">
+            <summary>📋 Current Equipment</summary>
+            <div class="ref-accordion-body">
+              <p class="muted">Print a quick patient record from the latest saved Spark or Genius configuration.</p>
+              <div id="equipmentSheetContainer"></div>
+            </div>
+          </details>
         </div>
       </details>
       <details class='ref-accordion' id='insuranceGuideSection'>
@@ -487,13 +521,6 @@ const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
           <div class='insurance-guide-toolbar'><p class='muted'>Health insurance companies and their hearing-aid vendors.</p><button type='button' class='secondary' data-insurance-edit>Edit Guide</button></div>
           <table class='insurance-guide-table'><thead><tr><th scope='col'>Health Insurance Company</th><th scope='col'>Vendor</th></tr></thead><tbody id='insuranceGuideRows'></tbody></table>
           <div id='insuranceGuideEditor' class='insurance-guide-editor' hidden></div>
-        </div>
-      </details>
-      <details class='ref-accordion' id='currentEquipmentSection'>
-        <summary>🦻 Current Equipment</summary>
-        <div class='ref-accordion-body'>
-          <p class='muted'>Print a quick patient record from the latest saved Spark or Genius configuration.</p>
-          <div id='equipmentSheetContainer'></div>
         </div>
       </details>
     </div>
@@ -554,7 +581,7 @@ const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
       <div class="ref-page-head"><div><h3>${family.title}</h3><p class="muted">Configure the device and review compatible Spark fitting components.</p></div><div class="ref-page-actions"><button type="button" class="secondary ref-back" data-ref-breadcrumb="spark">← Spark</button><button type="button" class="primary" id="openSparkStore">Open Spark Store ↗</button></div></div>
       ${stickyNav(model)}
       <div class="ref-section ref-model-hero"><div class="ref-hero-visual">${placeholder(color?`${family.title} · ${color.name}`:family.title)}<div class="ref-hero-components">${heroComponentsMarkup()}</div></div><div><div class="ref-model-name">${model}</div><div class="ref-family-name">${family.title}</div><div class="ref-identity-chips"><span class="ref-identity-chip">Spark</span><span class="ref-identity-chip">RIC</span>${state.level?`<span class="ref-identity-chip">E${state.level}</span>`:''}${color?`<span class="ref-identity-chip">${color.name}</span>`:''}</div><div class="ref-fact-grid"><div class="ref-fact"><span>Model</span><strong>${state.level?model:'Not selected'}</strong></div><div class="ref-fact"><span>Color</span><strong>${color?color.name:'Not selected'}</strong></div><div class="ref-fact"><span>Left Receiver</span><strong>${receiverFactText('left')}</strong></div><div class="ref-fact"><span>Left Coupling</span><strong>${couplingFactText('left')}</strong></div><div class="ref-fact"><span>Right Receiver</span><strong>${receiverFactText('right')}</strong></div><div class="ref-fact"><span>Right Coupling</span><strong>${couplingFactText('right')}</strong></div><div class="ref-fact ref-fact-wide"><span>Retention</span><strong>${state.retention?`${state.retention} Lock`:'Not selected · Optional'}</strong></div></div></div></div>
-      <div class="ref-config-card" aria-label="Current Spark configuration"><div class="ref-config-copy"><div class="ref-config-label">Current Configuration</div><div class="ref-config-value" aria-live="polite">${configurationText()}</div></div><div class="ref-config-actions"><span class="ref-config-badge ${isComplete?'':'incomplete'}">${isComplete?'✓ Configured':'Incomplete'}</span><button type="button" class="secondary ref-reset-config" data-reset-configuration ${hasAnySelection?'':'disabled'}>Reset</button><button type="button" class="ref-copy-config" data-save-configuration ${isComplete?'':'disabled'}>Save Configuration</button></div></div>
+      <div class="ref-config-card" aria-label="Current Spark configuration"><div class="ref-config-copy"><div class="ref-config-label">Current Configuration</div><div class="ref-config-value" aria-live="polite">${configurationText()}</div></div><div class="ref-config-actions"><span class="ref-config-badge ${isComplete?'':'incomplete'}">${isComplete?'✓ Configured':'Incomplete'}</span><button type="button" class="secondary ref-reset-config" data-reset-configuration ${hasAnySelection?'':'disabled'}>Reset</button><button type="button" class="ref-copy-config" data-save-configuration ${isComplete?'':'disabled'}>Save Configuration</button><button type="button" class="secondary ref-equipment-card-button" data-open-equipment-card aria-expanded="false" aria-controls="currentEquipmentSection" disabled>📋 Equipment Card</button></div></div>
       <div class="ref-section ref-feature-section" data-ref-section="features"><div class="ref-feature-head"><div><h4>Treatment Level &amp; Features</h4><p class="muted">Switch levels to compare included and unavailable features.</p></div><span class="ref-solution-badge">${state.level?`E${state.level} · ${solutionNames[state.level]}`:'Select level'}</span></div><div class="ref-level-row ref-feature-levels" aria-label="Treatment level">${family.levels.map(level=>`<button type="button" class="ref-choice ${state.level===level?'active':''}" data-level="${level}">E${level}</button>`).join('')}</div><div class="ref-feature-content">${state.level?'':'<div class="ref-empty-prompt">Select a treatment level to compare its included features.</div>'}</div></div>
       <div class="ref-section" data-ref-section="colors"><h4>Colors</h4><p class="muted">Select the hearing-aid finish.</p><div class="ref-color-grid">${sparkData.colors.map(item=>`<div class="ref-color-card ${state.color===item.id?'active':''}" data-color="${item.id}" role="button" tabindex="0"><div class="ref-color-chip" style="background:${colorVisual(item.id)}"></div><strong>${item.name}</strong></div>`).join('')}</div></div>
       <div class="ref-section" data-ref-section="receivers"><h4>Receivers</h4><p class="muted">Configure each ear independently, or enable Binaural fit to keep both sides matched.</p><button type="button" class="secondary ref-binaural-toggle" data-binaural-toggle aria-pressed="${state.receiverBinaural}">${state.receiverBinaural?'Binaural receivers: On':'Enable Binaural receivers'}</button><div class="ref-ear-config-grid">${receiverEars.map(receiverSelectorMarkup).join('')}</div><div class="ref-component-preview ref-receiver-preview"><div class="ref-component-kicker">Receiver Preview</div>${receiverPreviewMarkup()}</div></div>
@@ -576,6 +603,7 @@ const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
     root.querySelector('[data-binaural-toggle]')?.addEventListener('click',toggleBinauralReceiver);root.querySelector('[data-binaural-coupling]')?.addEventListener('click',toggleBinauralCoupling);
     root.querySelector('[data-reset-configuration]')?.addEventListener('click',resetCurrentConfiguration);
     root.querySelector('[data-save-configuration]')?.addEventListener('click',e=>saveConfigurationForWorkflow(e.currentTarget));
+    wireEquipmentCardAction(root,'Spark',isComplete?clinicalNoteText():'');
     notifyRendered();
   }
 
@@ -585,6 +613,7 @@ const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
   const previousRenderAbout=window.renderAbout;if(typeof previousRenderAbout==='function')window.renderAbout=function(){const result=previousRenderAbout();applyVersion();return result;};
   function init(){installStyles();renderHome();applyVersion();}
   window.renderHearingAidReferencesHome=renderHome;
+  window.wireHearingAidEquipmentCard=wireEquipmentCardAction;
   window.renderSparkReference=renderSparkLanding;
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   window.addEventListener('pageshow',applyVersion);
