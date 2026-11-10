@@ -1,3 +1,22 @@
+Miracle-Ear Clinical Assistant v1.10.0
+
+v1.10.0
+November 10, 2026
+
+- Complete Genius hearing-aid reference and configuration builder.
+- Separate binaural receiver and coupling controls with selected-state colors.
+- Printable Equipment Card after saving a Spark or Genius configuration.
+- Editable two-column Insurance Guide in References.
+- Office numbers in Office Profiles.
+- Distinct outcome statuses and a back-to-top shortcut.
+- Expandable Programming Changes field.
+- Annual retest stable/progression options.
+- Automatic settings saving.
+- Bug fixes.
+
+Previous release history
+------------------------
+
 Miracle-Ear Clinical Assistant v1.10.0-dev2
 
 v1.10.0-dev2

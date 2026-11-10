@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.10.0-dev20';
+  const VERSION='1.10.0';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -49,26 +49,28 @@
   ];
 
   const RELEASE_NOTE_TEXT=[
-    'Binaural receiver and coupling fit controls in Spark and Genius',
-    'Printable equipment cards after saving a Spark or Genius configuration',
+    'Complete Genius hearing-aid reference and configuration builder',
+    'Separate binaural receiver and coupling controls in Spark and Genius',
+    'Printable Equipment Card after saving a configuration',
     'Editable two-column Insurance Guide in References',
     'Office numbers managed inside Office Profiles',
-    'Pending and completed outcomes use distinct backgrounds and return to the top after saving',
-    'Programming Changes can expand for longer adjustments',
-    'Annual retest stable/progression options and concise clinical note wording',
-    'Genius image selection stability',
+    'Distinct outcome statuses and a back-to-top shortcut',
+    'Expandable Programming Changes field',
+    'Annual retest stable/progression options',
+    'Automatic settings saving',
     'Bug fixes'
   ];
 
   const RELEASE_NOTES=[
-    '<li><strong>Binaural fit</strong> has separate controls for matching receivers and couplings in Spark and Genius.</li>',
-    '<li><strong>Current Equipment</strong> opens through the Equipment Card shortcut after saving a Spark or Genius configuration. Printable cards include the patient name and today\'s date.</li>',
-    '<li><strong>Insurance Guide</strong> now shows health insurance companies and vendors in separate columns, with editable company/vendor fields saved on this device.</li>',
-    '<li><strong>Office Profiles</strong> now stores an office number alongside each office, and the duplicate settings card has been combined.</li>',
-    '<li><strong>Saved Outcomes</strong> use distinct pending/completed backgrounds, return to the top after saving, and include a back-to-top button while scrolling.</li>',
-    '<li><strong>Programming Changes</strong> uses a taller text area that can be expanded for longer adjustments.</li>',
-    '<li><strong>Annual Retest</strong> supports stable hearing or significant progression. Note wording removes automatic “Patient reports,” keeps concise otoscopy phrasing, and adds custom hearing-loss descriptions without changing the selected type.</li>',
-    '<li><strong>Genius</strong> keeps loaded product images in place during selections to prevent the white flash.</li>',
+    '<li><strong>Genius Reference</strong> includes product features, colors, receivers, couplings, concha locks, accessories, and saved configurations.</li>',
+    '<li><strong>Binaural fit</strong> has separate receiver and coupling controls in Spark and Genius, with colored selected states.</li>',
+    '<li><strong>Equipment Card</strong> opens after saving a configuration and creates a printable patient sheet with the patient name and today\'s date.</li>',
+    '<li><strong>Insurance Guide</strong> shows companies and vendors in separate columns, with editable entries saved on this device.</li>',
+    '<li><strong>Office Profiles</strong> stores an office number alongside each office.</li>',
+    '<li><strong>Saved Outcomes</strong> uses distinct pending/completed backgrounds and includes a back-to-top shortcut.</li>',
+    '<li><strong>Programming Changes</strong> uses a taller text area that can expand for longer adjustments.</li>',
+    '<li><strong>Annual Retest</strong> supports stable hearing or significant progression.</li>',
+    '<li><strong>Settings</strong> saves preferences, Home options, financing companies, and programming presets automatically.</li>',
     '<li><strong>Bug fixes</strong></li>'
   ];
 
@@ -121,7 +123,7 @@
     const headingText="What's New in v"+VERSION;
     if(heading&&heading.textContent!==headingText)heading.textContent=headingText;
     const dateBadge=document.querySelector('#aboutWhatsNew .about-section-head > .badge');
-    if(dateBadge&&dateBadge.textContent!=='November 6, 2026')dateBadge.textContent='November 6, 2026';
+    if(dateBadge&&dateBadge.textContent!=='November 10, 2026')dateBadge.textContent='November 10, 2026';
     const list=document.querySelector('#aboutWhatsNew .changelog-list');
     const notesMarkup=RELEASE_NOTES.join('');
     if(list&&list.innerHTML!==notesMarkup)list.innerHTML=notesMarkup;

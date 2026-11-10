@@ -1,6 +1,6 @@
 /* Clinical Assistant: float the quiet pending count in the tab corner. */
 html.appearance-overhaul .saved-outcomes-nav-badge-host .pending-outcome-nav-badge {
   top: -4px !important;
-  right: 4px !important;
+  right: -7px !important;
   transform: none !important;
 }
