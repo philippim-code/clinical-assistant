@@ -14,8 +14,8 @@
 <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
 <link rel="apple-touch-icon" sizes="192x192" href="assets/icon-192.png" />
 <link rel="manifest" href="manifest.json" />
-<link rel="stylesheet" href="css/styles.css?v=1.10.0-dev15" />
-<link rel="stylesheet" href="css/genius-reference.css?v=1.10.0-dev15" />
+<link rel="stylesheet" href="css/styles.css?v=1.10.0-dev16" />
+<link rel="stylesheet" href="css/genius-reference.css?v=1.10.0-dev16" />
 </head>
 <body>
 <div id="splash" class="splash"><div class="splash-card"><img src="assets/logo.png" class="splash-logo" alt="Miracle-Ear Logo"><div class="splash-title">Miracle-Ear</div><div class="splash-subtitle">Clinical Assistant <span data-app-version></span></div></div></div>
@@ -64,9 +64,9 @@
 </div>
 <article class="section tool-launch-card" aria-labelledby="medicalReferralsCardTitle">
   <div class="tool-launch-content"><div class="tool-launch-icon" aria-hidden="true">✚</div><div><h3 id="medicalReferralsCardTitle">Medical Referrals</h3><p class="muted">Save referral offices and access referral guidance.</p></div></div>
-  <button type="button" class="primary tool-launch-action" onclick="window.openClinicalTool('medicalReferralsPanel')" aria-haspopup="dialog">Open</button>
+  <button type="button" class="primary tool-launch-action" onclick="openClinicalTool('medicalReferralsPanel')" aria-haspopup="dialog">Open</button>
 </article>
-<dialog class="clinical-tool-overlay hidden" id="medicalReferralsPanel" role="dialog" aria-modal="true" aria-labelledby="medicalReferralsTitle" onclick="closeClinicalToolFromBackdrop(event)">
+<div class="clinical-tool-overlay hidden" id="medicalReferralsPanel" role="dialog" aria-modal="true" aria-labelledby="medicalReferralsTitle" onclick="closeClinicalToolFromBackdrop(event)">
 <div class="clinical-tool-panel" id="medicalReferralsSection" tabindex="-1">
 <div class="clinical-tool-panel-head"><div><span class="tool-panel-eyebrow">Clinical Tool</span><h3 id="medicalReferralsTitle">Medical Referrals</h3></div><button type="button" class="secondary clinical-tool-close" onclick="closeClinicalTool('medicalReferralsPanel')" aria-label="Close Medical Referrals">Close</button></div>
 <p class="muted">Create a reusable provider directory stored only in this browser. Do not include patient-identifying information.</p>
@@ -84,7 +84,6 @@
 <div class="clinical-learning-box referral-considerations"><h4>Referral Considerations</h4><p class="muted">Common findings that may warrant medical evaluation can include sudden or rapidly changing hearing, unilateral or asymmetric findings, ear pain, drainage, visible abnormalities, excessive or impacted cerumen, dizziness, tinnitus concerns, or an air-bone gap. Follow applicable scope-of-practice requirements, company policy, and referral standards.</p><p class="muted"><strong>Informational only:</strong> Clinical Assistant does not determine whether a patient requires referral. Use professional judgment and document only what was observed and recommended.</p></div>
 </div>
 </div>
-</dialog>
 <div class="section"><h3>Clinical Terminology</h3>
 <p class="muted">Quick-reference terminology for clinical workflow and studying.</p>
 <input type="text" id="terminologySearch" placeholder="Search terminology..." oninput="renderClinicalTerminology()">
@@ -202,16 +201,18 @@ Ran feedback test"></textarea></div><button class="primary" onclick="saveSetting
     <strong>© 2026 Philip Pim. All rights reserved.</strong>
     <span>Miracle-Ear Clinical Assistant · Version <span data-app-version></span></span>
   </div>
+</div>
 
 <div class="footer">Miracle-Ear Clinical Assistant <span data-app-version></span> | Ctrl + Enter = Generate & Copy Note | Ctrl + S = Save Outcome</div>
 </div>
 <div id="toast" class="toast"></div>
-<script src="js/version.js?v=1.10.0-dev15"></script>
-<script src="js/app-core.js?v=1.10.0-dev15"></script>
-<script src="js/smart-notes.js?v=1.10.0-dev15"></script>
-<script src="js/references.js?v=1.10.0-dev15"></script>
-<script src="js/reference-images.js?v=1.10.0-dev15"></script>
-<script src="js/genius-reference.js?v=1.10.0-dev15"></script>
-<script src="js/app-enhancements.js?v=1.10.0-dev15"></script>
+<script src="js/version.js?v=1.10.0-dev16"></script>
+<script src="js/app-core.js?v=1.10.0-dev16"></script>
+<script src="js/smart-notes.js?v=1.10.0-dev16"></script>
+<script src="js/references.js?v=1.10.0-dev16"></script>
+<script src="js/reference-images.js?v=1.10.0-dev16"></script>
+<script src="js/genius-reference.js?v=1.10.0-dev16"></script>
+<script src="js/app-enhancements.js?v=1.10.0-dev16"></script>
 </body>
 </html>
+

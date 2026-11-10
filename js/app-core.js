@@ -1272,7 +1272,6 @@ function normalizeFragmentAfterComma(text){
   return text.charAt(0).toLowerCase()+text.slice(1);
 }
 
-window.addEventListener('clinical-assistant:configuration-saved',refreshCurrentEquipmentCard);
 function generateNote(){
   let arr=[];
   if(currentAppointment==='hae')arr=generateHae();
@@ -1319,7 +1318,6 @@ window.addEventListener('load',()=>{
   renderDashboard();
   renderOutcomes();
   renderAbout();
-  refreshCurrentEquipmentCard();
 });
 
 /* v1.4.4: removed superseded duplicate function declaration */
@@ -1668,30 +1666,17 @@ const REFERRALS_KEY='meClinicalReferrals';
 let clinicalToolOpener=null;
 
 function openClinicalTool(id){
-  const overlay=document.getElementById(id);if(!overlay){toast('This menu could not be found. Refresh the app and try again.');return;}
+  const overlay=document.getElementById(id);if(!overlay)return;
   clinicalToolOpener=document.activeElement;
-  if(overlay instanceof HTMLDialogElement){
-    if(overlay.open)return;
-    overlay.classList.remove('hidden');
-    try{overlay.showModal();}catch(error){overlay.classList.add('hidden');console.error('Unable to open clinical tool dialog:',error);toast('Unable to open this menu. Please refresh the app and try again.');return;}
-  }else{
-    overlay.classList.remove('hidden');
-    overlay.style.display='flex';
-  }
-  document.body.classList.add('clinical-tool-open');
-  if(id==='medicalReferralsPanel')renderReferrals();
+  overlay.classList.remove('hidden');document.body.classList.add('clinical-tool-open');
+  renderReferrals();
   requestAnimationFrame(()=>overlay.querySelector('.clinical-tool-panel')?.focus());
 }
 function closeClinicalTool(id){
   const overlay=document.getElementById(id);if(!overlay)return;
-  if(overlay instanceof HTMLDialogElement&&overlay.open)overlay.close();
-  overlay.classList.add('hidden');
-  overlay.style.removeProperty('display');
-  document.body.classList.remove('clinical-tool-open');
+  overlay.classList.add('hidden');document.body.classList.remove('clinical-tool-open');
   clinicalToolOpener?.focus?.();clinicalToolOpener=null;
 }
-window.openClinicalTool=openClinicalTool;
-window.closeClinicalTool=closeClinicalTool;
 function closeClinicalToolFromBackdrop(event){
   if(event.target===event.currentTarget)closeClinicalTool(event.currentTarget.id);
 }
@@ -1829,3 +1814,4 @@ function installOutcomesBackToTop(){
   updateOutcomesBackToTop();
 }
 installOutcomesBackToTop();
+
