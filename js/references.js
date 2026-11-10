@@ -506,13 +506,6 @@ const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
             <article class="ref-product-card" data-ref-product="spark" role="button" tabindex="0">${placeholder('Spark · Silver Gray')}<h3>Spark</h3><p>MEMINI E RIC and MEMINI E AI RIC</p></article>
             <article class="ref-product-card" data-ref-product="genius" role="button" tabindex="0">${placeholder('Genius · Silver')}<h3>Genius</h3><p>MEENERGY RIC T R 5W</p></article>
           </div>
-          <details class="ref-accordion ref-equipment-accordion" id="currentEquipmentSection">
-            <summary>📋 Current Equipment</summary>
-            <div class="ref-accordion-body">
-              <p class="muted">Print a quick patient record from the latest saved Spark or Genius configuration.</p>
-              <div id="equipmentSheetContainer"></div>
-            </div>
-          </details>
         </div>
       </details>
       <details class='ref-accordion' id='insuranceGuideSection'>
@@ -525,7 +518,7 @@ const INSURANCE_GUIDE_KEY='meClinicalInsuranceGuideV1';
       </details>
     </div>
     </div>`;
-    renderInsuranceGuide(root);renderEquipmentSheet(root);
+    renderInsuranceGuide(root);
     root.querySelector('[data-ref-product="spark"]').addEventListener('click',renderSparkLanding);
     root.querySelector('[data-ref-product="genius"]').addEventListener('click',()=>typeof window.renderGeniusReference==='function'?window.renderGeniusReference():renderGeniusPlaceholder());
     root.querySelectorAll('[data-ref-product]').forEach(card=>card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}}));

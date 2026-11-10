@@ -2,12 +2,9 @@
    Saved Outcomes pending indicator: stable, quiet Option B.
 */
 
-/* Keep the Saved Outcomes content geometry identical whether a pending badge
-   exists or not. The badge lives in permanently reserved space on the right
-   and never participates in the tab's flex layout. */
+/* The badge is positioned independently of the tab label. */
 html.appearance-overhaul .tabs .saved-outcomes-nav-badge-host {
   position: relative !important;
-  padding-right: 48px !important;
 }
 
 html.appearance-overhaul .saved-outcomes-nav-badge-host .pending-outcome-nav-badge {
@@ -73,13 +70,8 @@ html.appearance-overhaul[data-appearance="dark"] .saved-outcomes-nav-badge-host.
   color: #f0d993 !important;
 }
 
-/* Narrow layouts keep the same stable-label behavior, with a slightly tighter
-   reserved slot so horizontal navigation stays compact. */
+/* Keep the count compact on narrow navigation. */
 @media (max-width: 899px) {
-  html.appearance-overhaul .tabs .saved-outcomes-nav-badge-host {
-    padding-right: 42px !important;
-  }
-
   html.appearance-overhaul .saved-outcomes-nav-badge-host .pending-outcome-nav-badge {
     right: 8px !important;
     min-width: 25px !important;
@@ -88,3 +80,4 @@ html.appearance-overhaul[data-appearance="dark"] .saved-outcomes-nav-badge-host.
     font-size: 9.5px !important;
   }
 }
+

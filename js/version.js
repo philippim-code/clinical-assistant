@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='1.10.0-dev19';
+  const VERSION='1.10.0-dev20';
 
   const APPEARANCE_STYLESHEETS=[
     'css/appearance-overhaul.css?v='+encodeURIComponent(VERSION),
@@ -50,7 +50,7 @@
 
   const RELEASE_NOTE_TEXT=[
     'Binaural receiver and coupling fit controls in Spark and Genius',
-    'Printable equipment cards inside Hearing Aids and both configuration builders',
+    'Printable equipment cards after saving a Spark or Genius configuration',
     'Editable two-column Insurance Guide in References',
     'Office numbers managed inside Office Profiles',
     'Pending and completed outcomes use distinct backgrounds and return to the top after saving',
@@ -62,7 +62,7 @@
 
   const RELEASE_NOTES=[
     '<li><strong>Binaural fit</strong> has separate controls for matching receivers and couplings in Spark and Genius.</li>',
-    '<li><strong>Current Equipment</strong> is inside Hearing Aids, with an Equipment Card shortcut after saving a Spark or Genius configuration. Printable cards include the patient name and today\'s date.</li>',
+    '<li><strong>Current Equipment</strong> opens through the Equipment Card shortcut after saving a Spark or Genius configuration. Printable cards include the patient name and today\'s date.</li>',
     '<li><strong>Insurance Guide</strong> now shows health insurance companies and vendors in separate columns, with editable company/vendor fields saved on this device.</li>',
     '<li><strong>Office Profiles</strong> now stores an office number alongside each office, and the duplicate settings card has been combined.</li>',
     '<li><strong>Saved Outcomes</strong> use distinct pending/completed backgrounds, return to the top after saving, and include a back-to-top button while scrolling.</li>',
