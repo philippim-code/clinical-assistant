@@ -472,3 +472,6 @@ textarea.programming-expand-textarea{flex:1;width:100%;min-height:0;height:auto;
   body.equipment-print-mode .equipment-sheet-heading h2,body.equipment-print-mode .equipment-sheet-table th,body.equipment-print-mode .equipment-sheet-table td{color:#111}
   body.equipment-print-mode .equipment-sheet-table th,body.equipment-print-mode .equipment-sheet-table td{border-color:#bbb}
 }
+
+/* Match spacing between References menus to Clinical Tools cards. */
+#references .ref-shell > .ref-accordion + .ref-accordion{margin-top:18px}
